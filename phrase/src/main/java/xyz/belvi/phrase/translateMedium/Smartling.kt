@@ -1,4 +1,4 @@
-package xyz.belvi.phrase.TranslateMedium
+package xyz.belvi.phrase.translateMedium
 
 final class Smartling(val apiKey: String) : TranslationMedium() {
     override fun detect() {

@@ -1,6 +1,6 @@
 package xyz.belvi.phrase
 
-import xyz.belvi.phrase.TranslateMedium.TranslationMedium
+import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 internal class PhraseImpl internal constructor() : PhraseUseCase {
 
