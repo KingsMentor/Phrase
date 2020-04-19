@@ -1,0 +1,3 @@
+rootProject.name='Phrase'
+include ':app'
+include ':phrase'
