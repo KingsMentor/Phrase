@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.annotation.RawRes
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.translate.TranslateOptions
+import xyz.belvi.phrase.PhraseImpl
 import java.io.InputStream
 
-class GoogleTranslate(
+final class GoogleTranslate(
     context: Context, @RawRes authCredentials: Int,
     val targetedLanguage: String
 ) : TranslationMedium() {

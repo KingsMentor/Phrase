@@ -2,13 +2,12 @@ package xyz.belvi.phrase
 
 import xyz.belvi.phrase.TranslateMedium.TranslationMedium
 
-interface PhraseUseCase {
-
-    fun with(medium: TranslationMedium): PhraseBuilderUseCase
+internal interface PhraseUseCase {
+    fun translate(): String
 }
 
 interface PhraseBuilderUseCase {
     fun options(phraseOptions: PhraseOptions): PhraseBuilderUseCase
     fun includeFallback(medium: TranslationMedium): PhraseBuilderUseCase
-    fun setUp(medium: TranslationMedium): PhraseUseCase
+    fun setUp(): Phrase
 }
