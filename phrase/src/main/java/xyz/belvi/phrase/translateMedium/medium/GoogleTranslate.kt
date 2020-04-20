@@ -1,9 +1,10 @@
-package xyz.belvi.phrase.translateMedium
+package xyz.belvi.phrase.translateMedium.medium
 
 import android.content.Context
 import androidx.annotation.RawRes
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.translate.TranslateOptions
+import xyz.belvi.phrase.translateMedium.TranslationMedium
 import java.io.InputStream
 
 final class GoogleTranslate(
