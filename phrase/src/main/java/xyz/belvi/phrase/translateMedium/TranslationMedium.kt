@@ -1,8 +1,8 @@
 package xyz.belvi.phrase.translateMedium
 
-abstract class TranslationMedium(creditRes: Int = 0) {
+abstract class TranslationMedium<D>(creditRes: Int = 0) {
 
-    abstract fun init()
-    abstract fun detect(text: String)
+    abstract fun detect(text: String): D
+    abstract fun detectedLanguage(text: String): String
     abstract fun translate(text: String): String
 }
