@@ -1,4 +1,4 @@
-package xyz.belvi.phrase.watcher
+package xyz.belvi.phrase.helpers
 
 import android.text.Editable
 import android.text.TextWatcher

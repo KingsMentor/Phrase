@@ -1,13 +1,19 @@
 package xyz.belvi.phrase
 
+import android.widget.TextView
 import androidx.annotation.AnimRes
 import xyz.belvi.phrase.behaviour.Behaviour
+import xyz.belvi.phrase.helpers.PhraseSpannableStringBuilder
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 internal interface PhraseUseCase {
-    fun translate(): String
+    fun bindTextView(textView: TextView)
+    fun detect(text: String): String
+    fun translate(text: String): PhraseSpannableStringBuilder
+    fun translatePlain(text: String): String
+    fun updateOptions(phraseOptions: PhraseOptions)
 
 }
 
@@ -22,14 +28,14 @@ interface PhraseSourceTranslationUseCase {
 }
 
 interface PhraseOptionsUseCase {
-    fun switchAnim(@AnimRes anim: Int): PhraseOptionsUseCase
     fun includeBehaviours(vararg behaviour: Behaviour): PhraseOptionsUseCase
     fun specifySourceTranslation(preferred: SourceTranslationPreference): PhraseOptionsUseCase
+    fun switchAnim(@AnimRes anim: Int): PhraseOptionsUseCase
     fun build(): PhraseOptions
 }
 
 interface PhraseBuilderUseCase {
-    fun options(phraseOptions: PhraseOptions): PhraseBuilderUseCase
     fun includeFallback(medium: TranslationMedium): PhraseBuilderUseCase
+    fun options(phraseOptions: PhraseOptions): PhraseBuilderUseCase
     fun setUp(): Phrase
 }

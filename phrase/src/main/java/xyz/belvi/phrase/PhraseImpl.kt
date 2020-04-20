@@ -1,6 +1,8 @@
 package xyz.belvi.phrase
 
+import android.widget.TextView
 import xyz.belvi.phrase.behaviour.Behaviour
+import xyz.belvi.phrase.helpers.PhraseSpannableStringBuilder
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.translateMedium.SourceTranslationOption
 import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
@@ -86,7 +88,24 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
         }
     }
 
-    override fun translate(): String {
+    override fun bindTextView(textView: TextView) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun detect(text: String): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun translate(text: String): PhraseSpannableStringBuilder {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun translatePlain(text: String): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun updateOptions(phraseOptions: PhraseOptions) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
 }
