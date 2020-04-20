@@ -13,7 +13,7 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
     companion object {
         internal lateinit var phrase: Phrase
 
-        class Builder(private val medium: TranslationMedium) : PhraseBuilderUseCase {
+        class Builder(medium: TranslationMedium) : PhraseBuilderUseCase {
             private var translationMedium = mutableListOf<TranslationMedium>(medium)
             override fun options(phraseOptions: PhraseOptions): PhraseBuilderUseCase {
                 phrase.phraseOptions = phraseOptions
