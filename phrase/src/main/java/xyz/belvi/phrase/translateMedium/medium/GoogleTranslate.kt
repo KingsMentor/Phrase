@@ -13,7 +13,7 @@ import java.io.InputStream
 class GoogleTranslate(
     context: Context, @RawRes authCredentials: Int,
     private val targetedLanguage: String
-) : TranslationMedium<Detection>() {
+) : TranslationMedium() {
     private val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
 
     private val stream: InputStream = context.resources.openRawResource(authCredentials)

@@ -10,6 +10,7 @@ android {
         applicationId "com.example.phrase"
         minSdkVersion 16
         targetSdkVersion 29
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
 
@@ -21,6 +22,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    packagingOptions {
+        exclude 'project.properties'
+        exclude 'META-INF/INDEX.LIST'
     }
 
 }

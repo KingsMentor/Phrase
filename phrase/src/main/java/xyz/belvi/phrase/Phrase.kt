@@ -5,6 +5,7 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 class Phrase internal constructor() {
     internal lateinit var phraseOptions: PhraseOptions
+
     companion object {
         fun with(translationMedium: TranslationMedium): PhraseBuilderUseCase {
             return PhraseImpl.Companion.Builder(translationMedium)

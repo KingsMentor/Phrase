@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Phrase.with(GoogleTranslate(this, 0, "fr"))
+        Phrase.with(GoogleTranslate(this, R.raw.credential, "fr"))
             .setUp()
     }
 }
