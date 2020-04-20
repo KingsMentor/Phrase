@@ -2,8 +2,11 @@ package xyz.belvi.phrase
 
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.translateMedium.TranslationMedium
+import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
-class Phrase internal constructor() {
+data class Phrase internal constructor(
+    var translationMedium: List<TranslationMedium>
+) {
     internal lateinit var phraseOptions: PhraseOptions
 
     companion object {
@@ -16,7 +19,7 @@ class Phrase internal constructor() {
         }
     }
 
-    fun translate(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun translate(text: String): String {
+        return translationMedium.first().translate(text)
     }
 }

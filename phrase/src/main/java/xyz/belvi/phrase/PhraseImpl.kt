@@ -29,7 +29,7 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
             }
 
             override fun setUp(): Phrase {
-                phrase = Phrase()
+                phrase = Phrase(translationMedium)
                 return phrase
             }
 
