@@ -40,8 +40,8 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
             PhraseOptionsUseCase {
             private var switchAnim: Int = 0
             private var behaviours = mutableListOf<Behaviour>()
-            private lateinit var sourceTranslation: SourceTranslationPreference
-            private lateinit var preferredDetectionMedium: TranslationMedium
+            private var sourceTranslation: SourceTranslationPreference? = null
+            private var preferredDetectionMedium: TranslationMedium? = null
             override fun switchAnim(anim: Int): PhraseOptionsUseCase {
                 switchAnim = anim
                 return this
