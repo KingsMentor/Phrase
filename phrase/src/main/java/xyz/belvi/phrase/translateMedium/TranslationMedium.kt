@@ -1,8 +1,14 @@
 package xyz.belvi.phrase.translateMedium
 
-abstract class TranslationMedium(creditRes: Int = 0) {
+import java.util.*
 
-    abstract fun detect(text: String): Any
+
+abstract class TranslationMedium(
+    protected open val targetedLanguage: String = Locale.getDefault().language,
+    protected open val creditRes: Int = 0
+) {
+
+    abstract fun <T> detect(text: String): T
     abstract fun detectedLanguage(text: String): String
     abstract fun translate(text: String): String
 }

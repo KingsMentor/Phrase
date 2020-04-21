@@ -20,7 +20,6 @@ internal interface PhraseUseCase {
 interface PhraseSourceTranslationUseCase {
     fun specifyTranslateOption(
         source: String,
-        detect: TranslationMedium,
         translate: TranslationMedium
     ): PhraseSourceTranslationUseCase
 
@@ -29,6 +28,7 @@ interface PhraseSourceTranslationUseCase {
 
 interface PhraseOptionsUseCase {
     fun includeBehaviours(vararg behaviour: Behaviour): PhraseOptionsUseCase
+    fun preferredDetectionMedium(medium: TranslationMedium): PhraseOptionsUseCase
     fun specifySourceTranslation(preferred: SourceTranslationPreference): PhraseOptionsUseCase
     fun switchAnim(@AnimRes anim: Int): PhraseOptionsUseCase
     fun build(): PhraseOptions

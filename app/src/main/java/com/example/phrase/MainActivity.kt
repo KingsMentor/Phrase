@@ -18,5 +18,6 @@ class MainActivity : AppCompatActivity() {
             val text = phrase.translate(edit.text.toString())
             textView.text = text
         }
+
     }
 }

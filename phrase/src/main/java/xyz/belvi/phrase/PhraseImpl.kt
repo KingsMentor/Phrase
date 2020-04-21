@@ -10,13 +10,14 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 internal class PhraseImpl internal constructor() : PhraseUseCase {
 
-    companion object {
-        internal lateinit var phrase: Phrase
+    internal var phraseOptions: PhraseOptions? = null
+    internal lateinit var translationMedium: List<TranslationMedium>
 
-        class Builder(medium: TranslationMedium) : PhraseBuilderUseCase {
-            private var translationMedium = mutableListOf<TranslationMedium>(medium)
+    companion object {
+        class Builder(medium: TranslationMedium, val phrase: Phrase) : PhraseBuilderUseCase {
+            private var translationMedium = mutableListOf(medium)
             override fun options(phraseOptions: PhraseOptions): PhraseBuilderUseCase {
-                phrase.phraseOptions = phraseOptions
+                phrase.phraseImpl.phraseOptions = phraseOptions
                 return this
             }
 
@@ -29,7 +30,7 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
             }
 
             override fun setUp(): Phrase {
-                phrase = Phrase(translationMedium)
+                phrase.phraseImpl.translationMedium = translationMedium
                 return phrase
             }
 
@@ -40,6 +41,7 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
             private var switchAnim: Int = 0
             private var behaviours = mutableListOf<Behaviour>()
             private lateinit var sourceTranslation: SourceTranslationPreference
+            private lateinit var preferredDetectionMedium: TranslationMedium
             override fun switchAnim(anim: Int): PhraseOptionsUseCase {
                 switchAnim = anim
                 return this
@@ -52,6 +54,11 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
                 return this
             }
 
+            override fun preferredDetectionMedium(medium: TranslationMedium): PhraseOptionsUseCase {
+                preferredDetectionMedium = medium
+                return this
+            }
+
             override fun specifySourceTranslation(preferred: SourceTranslationPreference): PhraseOptionsUseCase {
                 sourceTranslation = preferred
                 return this
@@ -59,7 +66,12 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
 
 
             override fun build(): PhraseOptions {
-                return PhraseOptions(behaviours, sourceTranslation, switchAnim)
+                return PhraseOptions(
+                    behaviours,
+                    sourceTranslation,
+                    preferredDetectionMedium,
+                    switchAnim
+                )
             }
         }
 
@@ -68,15 +80,14 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
             private var sourceTranslationOptions = mutableListOf<SourceTranslationOption>()
             override fun specifyTranslateOption(
                 source: String,
-                detect: TranslationMedium,
                 translate: TranslationMedium
             ): PhraseSourceTranslationUseCase {
                 val index = sourceTranslationOptions.indexOfFirst { it.source == source }
                 if (index >= 0)
                     sourceTranslationOptions[index] =
-                        SourceTranslationOption(source, detect, translate)
+                        SourceTranslationOption(source, translate)
                 else
-                    sourceTranslationOptions.add(SourceTranslationOption(source, detect, translate))
+                    sourceTranslationOptions.add(SourceTranslationOption(source, translate))
 
                 return this
             }
@@ -101,7 +112,17 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
     }
 
     override fun translatePlain(text: String): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val detectionMedium = phraseOptions?.preferredDetection ?: run {
+            translationMedium.first()
+        }
+        val translationMedium =
+            phraseOptions?.sourcePreferredTranslation?.sourceTranslateOption?.find {
+                detectionMedium.detectedLanguage(text) == it.source
+            }?.let {
+                it.translate
+            } ?: translationMedium.first()
+
+        return translationMedium.translate(text)
     }
 
     override fun updateOptions(phraseOptions: PhraseOptions) {

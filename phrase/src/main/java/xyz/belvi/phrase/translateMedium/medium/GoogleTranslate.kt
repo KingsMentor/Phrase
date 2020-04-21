@@ -12,8 +12,8 @@ import java.io.InputStream
 
 class GoogleTranslate(
     context: Context, @RawRes authCredentials: Int,
-    private val targetedLanguage: String
-) : TranslationMedium() {
+    override val targetedLanguage: String
+) : TranslationMedium(targetedLanguage) {
     private val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
 
     private val stream: InputStream = context.resources.openRawResource(authCredentials)
@@ -26,17 +26,17 @@ class GoogleTranslate(
         StrictMode.setThreadPolicy(policy)
     }
 
-    override fun detect(text: String): Detection {
-        return translate.detect(text)
-    }
-
     override fun translate(text: String): String {
 
         return translate.translate(text, Translate.TranslateOption.targetLanguage(targetedLanguage))
             .translatedText
     }
 
+    override fun <T> detect(text: String): T {
+        return translate.detect(text) as T
+    }
+
     override fun detectedLanguage(text: String): String {
-        return detect(text).language
+        return (detect(text) as Detection).language
     }
 }
