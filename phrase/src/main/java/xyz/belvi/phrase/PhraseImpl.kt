@@ -104,9 +104,10 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
         textView.addTextChangedListener(PhraseTextWatcher(options ?: phraseOptions))
     }
 
-    override fun detect(text: String, options: PhraseOptions?): String {
+    override fun <T> detect(text: String, options: PhraseOptions?): T {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
 
     override fun translate(
         text: String,
