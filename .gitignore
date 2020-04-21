@@ -9,7 +9,7 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
-*/raw/credential.json
+**/raw
 /captures
 .externalNativeBuild
 .cxx
