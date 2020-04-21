@@ -3,6 +3,7 @@ package xyz.belvi.phrase
 import android.widget.TextView
 import xyz.belvi.phrase.behaviour.Behaviour
 import xyz.belvi.phrase.helpers.PhraseSpannableStringBuilder
+import xyz.belvi.phrase.helpers.PhraseTextWatcher
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.translateMedium.SourceTranslationOption
 import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
@@ -99,24 +100,28 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
         }
     }
 
-    override fun bindTextView(textView: TextView) {
+    override fun bindTextView(textView: TextView, options: PhraseOptions?) {
+        textView.addTextChangedListener(PhraseTextWatcher(options ?: phraseOptions))
+    }
+
+    override fun detect(text: String, options: PhraseOptions?): String {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun detect(text: String): String {
+    override fun translate(
+        text: String,
+        options: PhraseOptions?
+    ): PhraseSpannableStringBuilder {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun translate(text: String): PhraseSpannableStringBuilder {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun translatePlain(text: String): String {
-        val detectionMedium = phraseOptions?.preferredDetection ?: run {
+    override fun translatePlain(text: String, options: PhraseOptions?): String {
+        val phraseOption = options ?: this.phraseOptions
+        val detectionMedium = phraseOption?.preferredDetection ?: run {
             translationMedium.first()
         }
         val translationMedium =
-            phraseOptions?.sourcePreferredTranslation?.sourceTranslateOption?.find {
+            phraseOption?.sourcePreferredTranslation?.sourceTranslateOption?.find {
                 detectionMedium.detectedLanguage(text) == it.source
             }?.let {
                 it.translate
@@ -125,8 +130,8 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
         return translationMedium.translate(text)
     }
 
-    override fun updateOptions(phraseOptions: PhraseOptions) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun updateOptions(options: PhraseOptions) {
+        this.phraseOptions = options
     }
 
 }
