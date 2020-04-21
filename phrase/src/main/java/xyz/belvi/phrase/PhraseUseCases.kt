@@ -9,10 +9,10 @@ import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 internal interface PhraseUseCase {
-    fun bindTextView(textView: TextView, options: PhraseOptions?)
-    fun detect(text: String,options: PhraseOptions?): String
-    fun translate(text: String, options: PhraseOptions?): PhraseSpannableStringBuilder
-    fun translatePlain(text: String, options: PhraseOptions?): String
+    fun bindTextView(textView: TextView, options: PhraseOptions? = null)
+    fun detect(text: String, options: PhraseOptions? = null): String
+    fun translate(text: String, options: PhraseOptions? = null): PhraseSpannableStringBuilder
+    fun translatePlain(text: String, options: PhraseOptions? = null): String
     fun updateOptions(options: PhraseOptions)
 
 }

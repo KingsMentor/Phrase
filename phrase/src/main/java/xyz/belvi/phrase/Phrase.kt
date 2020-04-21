@@ -19,7 +19,7 @@ class Phrase internal constructor() {
         }
     }
 
-    fun translate(text: String): String {
-        return phraseImpl.translatePlain(text)
+    fun translate(text: String, options: PhraseOptions? = null): String {
+        return phraseImpl.translatePlain(text, options)
     }
 }
