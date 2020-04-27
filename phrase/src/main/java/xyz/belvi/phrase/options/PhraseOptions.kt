@@ -11,6 +11,9 @@ data class PhraseOptions internal constructor(
     val behaviours: List<Behaviour>,
     val sourcePreferredTranslation: SourceTranslationPreference?,
     val preferredDetection: TranslationMedium?,
+    val targetLanguageCode: String,
+    val translateText: String?,
+    val translateFrom: ((translation: PhraseTranslation) -> String)?,
     val switchAnim: Int
 ) {
     companion object {

@@ -2,10 +2,8 @@ package xyz.belvi.phrase
 
 import android.widget.TextView
 import xyz.belvi.phrase.behaviour.Behaviour
-import xyz.belvi.phrase.helpers.PhraseSpannableStringBuilder
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
-import xyz.belvi.phrase.options.DetectedLanguage
-import xyz.belvi.phrase.options.PhraseOptions
+import xyz.belvi.phrase.options.*
 import xyz.belvi.phrase.translateMedium.SourceTranslationOption
 import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
 import xyz.belvi.phrase.translateMedium.TranslationMedium
@@ -31,9 +29,8 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
                 return this
             }
 
-            override fun setUp(): Phrase {
+            override fun setUp() {
                 phrase.phraseImpl.translationMedium = translationMedium
-                return phrase
             }
 
         }
@@ -41,11 +38,18 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
         class OptionsBuilder :
             PhraseOptionsUseCase {
             private var switchAnim: Int = 0
+            private var targetLanguage: String = ""
             private var behaviours = mutableListOf<Behaviour>()
             private var sourceTranslation: SourceTranslationPreference? = null
             private var preferredDetectionMedium: TranslationMedium? = null
+
             override fun switchAnim(anim: Int): PhraseOptionsUseCase {
                 switchAnim = anim
+                return this
+            }
+
+            override fun targeting(languageCode: String): PhraseOptionsUseCase {
+                targetLanguage = languageCode
                 return this
             }
 
@@ -67,11 +71,17 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
             }
 
 
-            override fun build(): PhraseOptions {
+            override fun build(
+                translateText: String?,
+                translateFrom: ((translation: PhraseTranslation) -> String)?
+            ): PhraseOptions {
                 return PhraseOptions(
                     behaviours,
                     sourceTranslation,
                     preferredDetectionMedium,
+                    targetLanguage,
+                    translateText,
+                    translateFrom,
                     switchAnim
                 )
             }
@@ -105,28 +115,37 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
         textView.addTextChangedListener(PhraseTextWatcher(options ?: phraseOptions))
     }
 
-    override fun detect(text: String, options: PhraseOptions?): DetectedLanguage {
+    override fun detect(text: String, options: PhraseOptions?): PhraseDetected {
         val phraseOption = options ?: this.phraseOptions
         val detectionMedium = phraseOption?.preferredDetection ?: run {
             translationMedium.first()
         }
-        val code = detectionMedium.detectedLanguage(text)
-        return DetectedLanguage(code,detectionMedium.detectedLanguageName(text))
+        val code = detectionMedium.detectedLanguageCode(text)
+        return PhraseDetected(
+            text,
+            code,
+            detectionMedium.detectedLanguageName(text),
+            detectionMedium
+        )
     }
 
-    override fun translate(text: String, options: PhraseOptions?): String {
+    override fun translate(text: String, options: PhraseOptions?): PhraseTranslation {
         val phraseOption = options ?: this.phraseOptions
-        val detectionMedium = phraseOption?.preferredDetection ?: run {
-            translationMedium.first()
-        }
+        requireNotNull(phraseOption)
+        val detected = detect(text, options)
         val translationMedium =
-            phraseOption?.sourcePreferredTranslation?.sourceTranslateOption?.find {
-                detectionMedium.detectedLanguage(text) == it.source
+            phraseOption.sourcePreferredTranslation?.sourceTranslateOption?.find {
+                detected.code == it.source
             }?.let {
                 it.translate
             } ?: translationMedium.first()
 
-        return translationMedium.translate(text)
+        return PhraseTranslation(
+            translationMedium.translate(
+                text,
+                phraseOption.targetLanguageCode
+            ), detected, translationMedium
+        )
     }
 
     override fun updateOptions(options: PhraseOptions) {

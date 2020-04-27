@@ -11,9 +11,8 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
 import java.io.InputStream
 
 class GoogleTranslate(
-    context: Context, @RawRes authCredentials: Int,
-    override val targetedLanguage: String
-) : TranslationMedium(targetedLanguage) {
+    context: Context, @RawRes authCredentials: Int
+) : TranslationMedium() {
 
     val translate by lazy {
         GlobalScope.async(Dispatchers.IO) {
@@ -25,15 +24,19 @@ class GoogleTranslate(
         }
     }
 
-    override fun translate(text: String): String {
+    override fun translate(text: String, target: String): String {
         return runBlocking {
             withContext(Dispatchers.IO) {
                 translate.await().translate(
                     text,
-                    Translate.TranslateOption.targetLanguage(targetedLanguage)
+                    Translate.TranslateOption.targetLanguage(target)
                 ).translatedText
             }
         }
+    }
+
+    override fun name(): String {
+        return "Google"
     }
 
     override fun <T> detect(text: String): T {
@@ -44,7 +47,7 @@ class GoogleTranslate(
         }
     }
 
-    override fun detectedLanguage(text: String): String {
+    override fun detectedLanguageCode(text: String): String {
         return (detect(text) as Detection).language
     }
 

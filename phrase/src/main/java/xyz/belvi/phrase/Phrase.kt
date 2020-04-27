@@ -1,10 +1,9 @@
 package xyz.belvi.phrase
 
-import xyz.belvi.phrase.helpers.PhraseSpannableStringBuilder
-import xyz.belvi.phrase.options.DetectedLanguage
+import xyz.belvi.phrase.options.PhraseDetected
 import xyz.belvi.phrase.options.PhraseOptions
+import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.translateMedium.TranslationMedium
-import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
 class Phrase internal constructor() {
 
@@ -21,11 +20,11 @@ class Phrase internal constructor() {
         }
     }
 
-    fun translate(text: String, options: PhraseOptions? = null): String {
+    fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation {
         return phraseImpl.translate(text, options)
     }
 
-    fun detectLanguage(text: String, options: PhraseOptions? = null): DetectedLanguage {
+    fun detectLanguage(text: String, options: PhraseOptions? = null): PhraseDetected {
         return phraseImpl.detect(text, options)
     }
 }

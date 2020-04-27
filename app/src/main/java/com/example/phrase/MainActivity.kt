@@ -14,12 +14,19 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val phrase = Phrase.with(GoogleTranslate(this, R.raw.credential, "fr"))
-            .options(PhraseOptions.options().build())
+        Phrase.with(GoogleTranslate(this, R.raw.credential, "fr"))
+            .options(
+                PhraseOptions.options().build(
+                    translateText = "Translate Text",
+                    translateFrom = { medium ->
+                        "Translated from ${medium.source.name} with ${medium.translationMedium.name()} "
+                    }
+                ))
             .setUp()
 
+
         button.setOnClickListener {
-            val text = object : PhraseSpannableStringBuilder(edit.text.toString()){
+            val text = object : PhraseSpannableStringBuilder(edit.text.toString()) {
                 override fun notifyUpdate(text: PhraseSpannableStringBuilder) {
                     super.notifyUpdate(text)
                     textView.text = text

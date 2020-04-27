@@ -5,20 +5,25 @@ import android.text.Spanned
 import android.text.style.ClickableSpan
 import android.view.View
 import xyz.belvi.phrase.Phrase
+import xyz.belvi.phrase.options.PhraseOptions
+import xyz.belvi.phrase.options.PhraseTranslation
 
-open class PhraseSpannableStringBuilder constructor(private val source: String) :
+open class PhraseSpannableStringBuilder constructor(
+    private val source: String,
+    val phraseOptions: PhraseOptions? = null
+) :
     SpannableStringBuilder(source),
     SpannablePhraseInterface {
 
     private var showingTranslation = false
-    private var translated = ""
-    private var sourceLanguage = ""
+    private lateinit var phraseTranslation: PhraseTranslation
 
     init {
+        val options = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
         appendln("\n")
         this.apply {
             val start = length
-            append("Translate")
+            append(options?.translateText ?: "Translate")
             setSpan(
                 SpannablePhraseClikableSpan(),
                 start,
@@ -34,8 +39,9 @@ open class PhraseSpannableStringBuilder constructor(private val source: String) 
         append(source)
         appendln("\n")
         val start = length
+        val options = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
         if (showingTranslation) {
-            append("Translate")
+            append(options?.translateText ?: "Translate")
             setSpan(
                 SpannablePhraseClikableSpan(),
                 start,
@@ -43,7 +49,7 @@ open class PhraseSpannableStringBuilder constructor(private val source: String) 
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         } else {
-            append("Translate from $sourceLanguage With")
+            append(options?.translateFrom?.invoke(phraseTranslation)?:"Translate with ${phraseTranslation.translationMedium.name()}")
             setSpan(
                 SpannablePhraseClikableSpan(),
                 start,
@@ -51,16 +57,15 @@ open class PhraseSpannableStringBuilder constructor(private val source: String) 
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             appendln("\n")
-            append(translated)
+            append(phraseTranslation.translation)
         }
         showingTranslation = !showingTranslation
     }
 
     inner class SpannablePhraseClikableSpan : ClickableSpan() {
         override fun onClick(widget: View) {
-            if (translated.isEmpty()) {
-                sourceLanguage = Phrase.instance().detectLanguage(source).name
-                translated = Phrase.instance().translate(source)
+            if (!::phraseTranslation.isInitialized) {
+                phraseTranslation = Phrase.instance().translate(source, phraseOptions)
             }
             notifyUpdate(this@PhraseSpannableStringBuilder)
         }
