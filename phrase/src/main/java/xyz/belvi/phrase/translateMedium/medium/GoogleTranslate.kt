@@ -7,6 +7,7 @@ import com.google.cloud.translate.Detection
 import com.google.cloud.translate.Translate
 import com.google.cloud.translate.TranslateOptions
 import kotlinx.coroutines.*
+import xyz.belvi.phrase.options.PhraseDetected
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 import java.io.InputStream
 
@@ -24,12 +25,12 @@ class GoogleTranslate(
         }
     }
 
-    override fun translate(text: String, target: String): String {
+    override fun translate(text: String, targeting: String): String {
         return runBlocking {
             withContext(Dispatchers.IO) {
                 translate.await().translate(
                     text,
-                    Translate.TranslateOption.targetLanguage(target)
+                    Translate.TranslateOption.targetLanguage(targeting)
                 ).translatedText
             }
         }
@@ -39,26 +40,17 @@ class GoogleTranslate(
         return "Google"
     }
 
-    override fun <T> detect(text: String): T {
-        return runBlocking {
-            withContext(Dispatchers.IO) {
-                translate.await().detect(text) as T
-            }
-        }
-    }
-
-    override fun detectedLanguageCode(text: String): String {
-        return (detect(text) as Detection).language
-    }
-
-    override fun detectedLanguageName(text: String): String {
+    override fun detect(text: String): PhraseDetected {
         return runBlocking {
             withContext(Dispatchers.IO) {
                 translate.await().let {
-                    val detect = translate.await().detect(text).language
-                    it.listSupportedLanguages().find { it.code == detect }?.name ?: detect
+                    val detect = it.detect(text).language
+                    val languageName =
+                        it.listSupportedLanguages().find { it.code == detect }?.name ?: detect
+                    PhraseDetected(text, detect, languageName, this@GoogleTranslate)
                 }
             }
         }
     }
+
 }

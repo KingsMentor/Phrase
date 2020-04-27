@@ -14,9 +14,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Phrase.with(GoogleTranslate(this, R.raw.credential, "fr"))
+        Phrase.with(GoogleTranslate(this, R.raw.credential))
             .options(
-                PhraseOptions.options().build(
+                PhraseOptions.options().targeting("fr").build(
                     translateText = "Translate Text",
                     translateFrom = { medium ->
                         "Translated from ${medium.source.name} with ${medium.translationMedium.name()} "

@@ -7,6 +7,7 @@ import xyz.belvi.phrase.options.*
 import xyz.belvi.phrase.translateMedium.SourceTranslationOption
 import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
 import xyz.belvi.phrase.translateMedium.TranslationMedium
+import java.util.*
 
 internal class PhraseImpl internal constructor() : PhraseUseCase {
 
@@ -38,7 +39,7 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
         class OptionsBuilder :
             PhraseOptionsUseCase {
             private var switchAnim: Int = 0
-            private var targetLanguage: String = ""
+            private var targetLanguage: String = Locale.getDefault().language
             private var behaviours = mutableListOf<Behaviour>()
             private var sourceTranslation: SourceTranslationPreference? = null
             private var preferredDetectionMedium: TranslationMedium? = null
@@ -117,16 +118,11 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
 
     override fun detect(text: String, options: PhraseOptions?): PhraseDetected {
         val phraseOption = options ?: this.phraseOptions
-        val detectionMedium = phraseOption?.preferredDetection ?: run {
+        requireNotNull(phraseOption)
+        val detectionMedium = phraseOption.preferredDetection ?: run {
             translationMedium.first()
         }
-        val code = detectionMedium.detectedLanguageCode(text)
-        return PhraseDetected(
-            text,
-            code,
-            detectionMedium.detectedLanguageName(text),
-            detectionMedium
-        )
+        return detectionMedium.detect(text)
     }
 
     override fun translate(text: String, options: PhraseOptions?): PhraseTranslation {

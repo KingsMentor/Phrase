@@ -1,10 +1,11 @@
 package xyz.belvi.phrase.translateMedium.medium
 
+import xyz.belvi.phrase.options.PhraseDetected
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 final class DeepL(val apiKey: String) : TranslationMedium() {
 
-    override fun translate(text: String, target: String): String {
+    override fun translate(text: String, targeting: String): String {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -12,15 +13,7 @@ final class DeepL(val apiKey: String) : TranslationMedium() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun <T> detect(text: String): T {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun detectedLanguageCode(text: String): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun detectedLanguageName(text: String): String {
+    override fun detect(text: String): PhraseDetected {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
