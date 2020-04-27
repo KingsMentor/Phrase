@@ -11,6 +11,10 @@ final class Smartling(val apiKey: String) : TranslationMedium() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun detectedLanguageName(text: String): String {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun translate(text: String): String {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

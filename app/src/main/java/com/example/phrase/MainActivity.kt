@@ -1,9 +1,11 @@
 package com.example.phrase
 
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
+import xyz.belvi.phrase.helpers.PhraseSpannableStringBuilder
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
@@ -17,9 +19,16 @@ class MainActivity : AppCompatActivity() {
             .setUp()
 
         button.setOnClickListener {
-            val text = phrase.translate(edit.text.toString())
+            val text = object : PhraseSpannableStringBuilder(edit.text.toString()){
+                override fun notifyUpdate(text: PhraseSpannableStringBuilder) {
+                    super.notifyUpdate(text)
+                    textView.text = text
+                }
+            }
             textView.text = text
         }
 
+        textView.movementMethod = LinkMovementMethod.getInstance();
     }
+
 }

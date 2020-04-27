@@ -4,15 +4,15 @@ import android.widget.TextView
 import androidx.annotation.AnimRes
 import xyz.belvi.phrase.behaviour.Behaviour
 import xyz.belvi.phrase.helpers.PhraseSpannableStringBuilder
+import xyz.belvi.phrase.options.DetectedLanguage
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 internal interface PhraseUseCase {
     fun bindTextView(textView: TextView, options: PhraseOptions? = null)
-    fun <T>detect(text: String, options: PhraseOptions? = null): T
-    fun translate(text: String, options: PhraseOptions? = null): PhraseSpannableStringBuilder
-    fun translatePlain(text: String, options: PhraseOptions? = null): String
+    fun detect(text: String, options: PhraseOptions? = null): DetectedLanguage
+    fun translate(text: String, options: PhraseOptions? = null): String
     fun updateOptions(options: PhraseOptions)
 
 }

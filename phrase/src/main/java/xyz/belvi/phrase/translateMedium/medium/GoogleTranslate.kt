@@ -1,41 +1,61 @@
 package xyz.belvi.phrase.translateMedium.medium
 
 import android.content.Context
-import android.os.StrictMode
 import androidx.annotation.RawRes
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.translate.Detection
 import com.google.cloud.translate.Translate
 import com.google.cloud.translate.TranslateOptions
+import kotlinx.coroutines.*
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 import java.io.InputStream
 
 class GoogleTranslate(
     context: Context, @RawRes authCredentials: Int,
-    override val targetedLanguage: String,
-    private val translateOption: Translate.TranslateOption? = null
+    override val targetedLanguage: String
 ) : TranslationMedium(targetedLanguage) {
-    private val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
 
-    private val stream: InputStream = context.resources.openRawResource(authCredentials)
-    private val myCredentials: GoogleCredentials = GoogleCredentials.fromStream(stream);
-    private val translateOptions: TranslateOptions =
-        TranslateOptions.newBuilder().setCredentials(myCredentials).build();
-    private val translate = translateOptions.service
-
-    init {
-        StrictMode.setThreadPolicy(policy)
+    val translate by lazy {
+        GlobalScope.async(Dispatchers.IO) {
+            val stream: InputStream = context.resources.openRawResource(authCredentials)
+            val myCredentials = GoogleCredentials.fromStream(stream)
+            val translateOptions: TranslateOptions =
+                TranslateOptions.newBuilder().setCredentials(myCredentials).build()
+            translateOptions.service
+        }
     }
 
     override fun translate(text: String): String {
-        return translate.translate(text, this.translateOption ?: Translate.TranslateOption.targetLanguage(targetedLanguage)).translatedText
+        return runBlocking {
+            withContext(Dispatchers.IO) {
+                translate.await().translate(
+                    text,
+                    Translate.TranslateOption.targetLanguage(targetedLanguage)
+                ).translatedText
+            }
+        }
     }
 
     override fun <T> detect(text: String): T {
-        return translate.detect(text) as T
+        return runBlocking {
+            withContext(Dispatchers.IO) {
+                translate.await().detect(text) as T
+            }
+        }
     }
 
     override fun detectedLanguage(text: String): String {
         return (detect(text) as Detection).language
+    }
+
+    override fun detectedLanguageName(text: String): String {
+        return runBlocking {
+            withContext(Dispatchers.IO) {
+                translate.await().let {
+                    val detect = translate.await().detect(text).language
+                    it.listSupportedLanguages().find { it.code == detect }?.name ?: detect
+                }
+            }
+        }
     }
 }

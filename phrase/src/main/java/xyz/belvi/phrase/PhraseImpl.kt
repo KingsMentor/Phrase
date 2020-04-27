@@ -4,6 +4,7 @@ import android.widget.TextView
 import xyz.belvi.phrase.behaviour.Behaviour
 import xyz.belvi.phrase.helpers.PhraseSpannableStringBuilder
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
+import xyz.belvi.phrase.options.DetectedLanguage
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.translateMedium.SourceTranslationOption
 import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
@@ -104,19 +105,16 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
         textView.addTextChangedListener(PhraseTextWatcher(options ?: phraseOptions))
     }
 
-    override fun <T> detect(text: String, options: PhraseOptions?): T {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun detect(text: String, options: PhraseOptions?): DetectedLanguage {
+        val phraseOption = options ?: this.phraseOptions
+        val detectionMedium = phraseOption?.preferredDetection ?: run {
+            translationMedium.first()
+        }
+        val code = detectionMedium.detectedLanguage(text)
+        return DetectedLanguage(code,detectionMedium.detectedLanguageName(text))
     }
 
-
-    override fun translate(
-        text: String,
-        options: PhraseOptions?
-    ): PhraseSpannableStringBuilder {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun translatePlain(text: String, options: PhraseOptions?): String {
+    override fun translate(text: String, options: PhraseOptions?): String {
         val phraseOption = options ?: this.phraseOptions
         val detectionMedium = phraseOption?.preferredDetection ?: run {
             translationMedium.first()

@@ -10,5 +10,6 @@ abstract class TranslationMedium(
 
     abstract fun <T> detect(text: String): T
     abstract fun detectedLanguage(text: String): String
+    abstract fun detectedLanguageName(text: String): String
     abstract fun translate(text: String): String
 }
