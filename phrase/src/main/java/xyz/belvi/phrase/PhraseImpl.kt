@@ -1,13 +1,13 @@
 package xyz.belvi.phrase
 
+import android.graphics.Typeface
 import android.widget.TextView
-import xyz.belvi.phrase.behaviour.Behaviour
+import xyz.belvi.phrase.options.Behaviour
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
 import xyz.belvi.phrase.options.*
 import xyz.belvi.phrase.translateMedium.SourceTranslationOption
 import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
 import xyz.belvi.phrase.translateMedium.TranslationMedium
-import java.util.*
 
 internal class PhraseImpl internal constructor() : PhraseUseCase {
 
@@ -36,30 +36,12 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
 
         }
 
-        class OptionsBuilder :
+        class OptionsBuilder(private val targetLanguageCode: String) :
             PhraseOptionsUseCase {
-            private var switchAnim: Int = 0
-            private var targetLanguage: String = Locale.getDefault().language
-            private var behaviours = mutableListOf<Behaviour>()
+            private var behaviourOptions: BehaviourOptions? = null
             private var sourceTranslation: SourceTranslationPreference? = null
             private var preferredDetectionMedium: TranslationMedium? = null
 
-            override fun switchAnim(anim: Int): PhraseOptionsUseCase {
-                switchAnim = anim
-                return this
-            }
-
-            override fun targeting(languageCode: String): PhraseOptionsUseCase {
-                targetLanguage = languageCode
-                return this
-            }
-
-            override fun includeBehaviours(vararg behaviour: Behaviour): PhraseOptionsUseCase {
-                behaviour.forEach {
-                    behaviours.add(it)
-                }
-                return this
-            }
 
             override fun preferredDetectionMedium(medium: TranslationMedium): PhraseOptionsUseCase {
                 preferredDetectionMedium = medium
@@ -71,21 +53,62 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
                 return this
             }
 
+            override fun behaviourOptions(behaviourOptions: BehaviourOptions): PhraseOptionsUseCase {
+                this.behaviourOptions = behaviourOptions
+                return this
+            }
+
 
             override fun build(
-                translateText: String?,
-                translateFrom: ((translation: PhraseTranslation) -> String)?
+                translateText: String,
+                translateFrom: ((translation: PhraseTranslation) -> String)
             ): PhraseOptions {
                 return PhraseOptions(
-                    behaviours,
+                    behaviourOptions,
                     sourceTranslation,
                     preferredDetectionMedium,
-                    targetLanguage,
+                    targetLanguageCode,
                     translateText,
-                    translateFrom,
-                    switchAnim
+                    translateFrom
                 )
             }
+        }
+
+
+        class BehaviourOptionsBuilder :
+            BehaviourOptionsUseCase {
+            private var switchAnim: Int = 0
+            private var signatureColor: Int = 0
+            private var signatureTypeface: Typeface? = null
+            private var behaviours = mutableListOf<Behaviour>()
+
+            override fun includeBehaviours(vararg behaviour: Behaviour): BehaviourOptionsUseCase {
+                behaviour.forEach {
+                    behaviours.add(it)
+                }
+                return this
+            }
+
+            override fun switchAnim(switchAnim: Int): BehaviourOptionsUseCase {
+                this.switchAnim = switchAnim
+                return this
+            }
+
+            override fun signatureTypeFace(typeFace: Typeface): BehaviourOptionsUseCase {
+                this.signatureTypeface = typeFace
+                return this
+            }
+
+            override fun signatureColor(color: Int): BehaviourOptionsUseCase {
+                signatureColor = color
+                return this
+            }
+
+            override fun build(): BehaviourOptions {
+                return BehaviourOptions(behaviours, signatureTypeface, signatureColor, switchAnim)
+            }
+
+
         }
 
         class SourceOptionsBuilder :

@@ -12,3 +12,10 @@ data class PhraseTranslation(
     val source: PhraseDetected,
     val translationMedium: TranslationMedium
 )
+
+object Behaviour {
+    object AUTO_DETECT
+    object AUTO_TRANSLATE
+    object REPLACE_SOURCE_TEXT
+    object HIDE_CREDIT_MEDIUM
+}

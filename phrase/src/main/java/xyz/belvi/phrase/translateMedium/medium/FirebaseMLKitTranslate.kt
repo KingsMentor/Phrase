@@ -1,11 +1,9 @@
 package xyz.belvi.phrase.translateMedium.medium
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import androidx.annotation.RawRes
 import androidx.core.content.ContextCompat
 import com.google.auth.oauth2.GoogleCredentials
-import com.google.cloud.translate.Detection
 import com.google.cloud.translate.Translate
 import com.google.cloud.translate.TranslateOptions
 import kotlinx.coroutines.*
@@ -14,10 +12,9 @@ import xyz.belvi.phrase.options.PhraseDetected
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 import java.io.InputStream
 
-class GoogleTranslate(
+class FirebaseMLKitTranslate(
     context: Context, @RawRes authCredentials: Int
 ) : TranslationMedium() {
-
     val translate by lazy {
         GlobalScope.async(Dispatchers.IO) {
             val stream: InputStream = context.resources.openRawResource(authCredentials)
@@ -51,7 +48,7 @@ class GoogleTranslate(
                     val detect = it.detect(text).language
                     val languageName =
                         it.listSupportedLanguages().find { it.code == detect }?.name ?: detect
-                    PhraseDetected(text, detect, languageName, this@GoogleTranslate)
+                    PhraseDetected(text, detect, languageName, this@FirebaseMLKitTranslate)
                 }
             }
         }

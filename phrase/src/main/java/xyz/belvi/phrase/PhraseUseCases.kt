@@ -1,14 +1,13 @@
 package xyz.belvi.phrase
 
+import android.graphics.Typeface
 import android.widget.TextView
 import androidx.annotation.AnimRes
-import xyz.belvi.phrase.behaviour.Behaviour
-import xyz.belvi.phrase.options.PhraseDetected
-import xyz.belvi.phrase.options.PhraseOptions
-import xyz.belvi.phrase.options.PhraseTranslation
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import xyz.belvi.phrase.options.*
 import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
 import xyz.belvi.phrase.translateMedium.TranslationMedium
-import java.util.*
 
 internal interface PhraseUseCase {
     fun bindTextView(textView: TextView, options: PhraseOptions? = null)
@@ -28,15 +27,21 @@ interface PhraseSourceTranslationUseCase {
 }
 
 interface PhraseOptionsUseCase {
-    fun includeBehaviours(vararg behaviour: Behaviour): PhraseOptionsUseCase
     fun preferredDetectionMedium(medium: TranslationMedium): PhraseOptionsUseCase
     fun specifySourceTranslation(preferred: SourceTranslationPreference): PhraseOptionsUseCase
-    fun switchAnim(@AnimRes anim: Int): PhraseOptionsUseCase
-    fun targeting(languageCode: String = Locale.getDefault().language): PhraseOptionsUseCase
+    fun behaviourOptions(behaviourOptions: BehaviourOptions): PhraseOptionsUseCase
     fun build(
-        translateText: String?,
-        translateFrom: ((translation: PhraseTranslation) -> String)? = null
+        translateText: String,
+        translateFrom: (translation: PhraseTranslation) -> String
     ): PhraseOptions
+}
+
+interface BehaviourOptionsUseCase {
+    fun includeBehaviours(vararg behaviour: Behaviour): BehaviourOptionsUseCase
+    fun switchAnim(@AnimRes switchAnim: Int): BehaviourOptionsUseCase
+    fun signatureTypeFace(typeFace: Typeface): BehaviourOptionsUseCase
+    fun signatureColor(@ColorInt color: Int): BehaviourOptionsUseCase
+    fun build(): BehaviourOptions
 }
 
 interface PhraseBuilderUseCase {

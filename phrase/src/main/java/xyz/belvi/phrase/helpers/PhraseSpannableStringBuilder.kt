@@ -1,12 +1,20 @@
 package xyz.belvi.phrase.helpers
 
+import android.graphics.Paint
+import android.graphics.Typeface
+import android.os.Build
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextPaint
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.MetricAffectingSpan
+import android.text.style.TypefaceSpan
 import android.view.View
 import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
+
 
 open class PhraseSpannableStringBuilder constructor(
     private var source: String,
@@ -15,28 +23,33 @@ open class PhraseSpannableStringBuilder constructor(
     SpannableStringBuilder(source),
     SpannablePhraseInterface {
 
-    val options = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
+    private val options = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
     private var showingTranslation = false
-    private lateinit var phraseTranslation: PhraseTranslation
+    private var phraseTranslation: PhraseTranslation? = null
 
     init {
         buildWithoutTranslation()
     }
 
-    override fun notifyUpdate(text: PhraseSpannableStringBuilder) {
+    override fun notifyUpdate(phraseTranslation: PhraseTranslation?) {
         if (showingTranslation) {
             buildWithoutTranslation()
         } else {
             buildShowingTranslation()
         }
         showingTranslation = !showingTranslation
+
+    }
+
+    override fun translating() {
+
     }
 
 
     fun updateSource(source: String) {
         this.source = source
-        showingTranslation = false
-        buildWithoutTranslation()
+        showingTranslation = true
+        notifyUpdate(phraseTranslation)
 
     }
 
@@ -47,7 +60,7 @@ open class PhraseSpannableStringBuilder constructor(
         if (detect.code != options.targetLanguageCode) {
             appendln("\n")
             val start = length
-            append(options.translateText ?: "Translate")
+            append(options.translateText)
             setSpan(
                 SpannablePhraseClickableSpan(),
                 start,
@@ -58,21 +71,43 @@ open class PhraseSpannableStringBuilder constructor(
     }
 
     private fun buildShowingTranslation() {
-        init()
-        appendln("\n")
-        val start = length
-        append(
-            options?.translateFrom?.invoke(phraseTranslation)
-                ?: "Translate with ${phraseTranslation.translationMedium.name()}"
-        )
-        setSpan(
-            SpannablePhraseClickableSpan(),
-            start,
-            length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        appendln("\n")
-        append(phraseTranslation.translation)
+        requireNotNull(options)
+        phraseTranslation?.let { phraseTranslation ->
+            init()
+            appendln("\n")
+            var start = length
+            append(options.translateFrom.invoke(phraseTranslation))
+            setSpan(
+                SpannablePhraseClickableSpan(),
+                start,
+                length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            options.behavioursOptions?.signatureTypeFace?.let { typeFace ->
+                start = length
+                append(" ${phraseTranslation.translationMedium.name()}")
+                setSpan(
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) TypefaceSpan(typeFace) else CustomTypefaceSpan(
+                        typeFace
+                    ),
+                    start,
+                    length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                options.behavioursOptions.signatureColor?.let { color ->
+                    setSpan(
+                        ForegroundColorSpan(color),
+                        start,
+                        length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+
+            }
+            appendln("\n")
+            append(phraseTranslation.translation)
+        }
     }
 
     private fun init() {
@@ -82,10 +117,34 @@ open class PhraseSpannableStringBuilder constructor(
 
     inner class SpannablePhraseClickableSpan : ClickableSpan() {
         override fun onClick(widget: View) {
-            if (!::phraseTranslation.isInitialized || phraseTranslation.source.text != source) {
+            if (phraseTranslation == null || phraseTranslation?.source?.text != source) {
+                translating()
                 phraseTranslation = Phrase.instance().translate(source, phraseOptions)
             }
-            notifyUpdate(this@PhraseSpannableStringBuilder)
+            notifyUpdate(phraseTranslation)
+            widget.invalidate()
+        }
+
+        override fun updateDrawState(ds: TextPaint) {
+            super.updateDrawState(ds)
+            ds.isUnderlineText = false
+        }
+
+    }
+
+    internal class CustomTypefaceSpan(private val typeface: Typeface) : MetricAffectingSpan() {
+        override fun updateDrawState(ds: TextPaint) {
+            applyCustomTypeFace(ds, typeface)
+        }
+
+        override fun updateMeasureState(paint: TextPaint) {
+            applyCustomTypeFace(paint, typeface)
+        }
+
+        companion object {
+            private fun applyCustomTypeFace(paint: Paint, tf: Typeface) {
+                paint.typeface = tf
+            }
         }
 
     }

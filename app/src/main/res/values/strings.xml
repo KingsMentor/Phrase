@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Phrase</string>
+    <string name="detected_language">Detected Language:</string>
+    <string name="update_source">Update Source</string>
 </resources>

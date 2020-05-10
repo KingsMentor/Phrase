@@ -1,24 +1,22 @@
 package xyz.belvi.phrase.options
 
-import com.google.cloud.translate.Detection
 import xyz.belvi.phrase.PhraseImpl
 import xyz.belvi.phrase.PhraseOptionsUseCase
-import xyz.belvi.phrase.behaviour.Behaviour
 import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
 import xyz.belvi.phrase.translateMedium.TranslationMedium
+import java.util.*
 
 data class PhraseOptions internal constructor(
-    val behaviours: List<Behaviour>,
+    val behavioursOptions: BehaviourOptions?,
     val sourcePreferredTranslation: SourceTranslationPreference?,
     val preferredDetection: TranslationMedium?,
-    val targetLanguageCode: String,
-    val translateText: String?,
-    val translateFrom: ((translation: PhraseTranslation) -> String)?,
-    val switchAnim: Int
+    val targetLanguageCode: String = Locale.getDefault().language,
+    val translateText: String,
+    val translateFrom: ((translation: PhraseTranslation) -> String)
 ) {
     companion object {
-        fun options(): PhraseOptionsUseCase {
-            return PhraseImpl.Companion.OptionsBuilder()
+        fun options(targetLanguageCode: String = Locale.getDefault().language): PhraseOptionsUseCase {
+            return PhraseImpl.Companion.OptionsBuilder(targetLanguageCode)
         }
     }
 }
