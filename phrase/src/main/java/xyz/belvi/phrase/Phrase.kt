@@ -24,7 +24,7 @@ class Phrase internal constructor() {
         return phraseImpl.translate(text, options)
     }
 
-    fun detectLanguage(text: String, options: PhraseOptions? = null): PhraseDetected {
+    fun detectLanguage(text: String, options: PhraseOptions? = null): PhraseDetected? {
         return phraseImpl.detect(text, options)
     }
 }

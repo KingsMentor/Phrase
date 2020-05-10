@@ -56,17 +56,18 @@ open class PhraseSpannableStringBuilder constructor(
     private fun buildWithoutTranslation() {
         init()
         requireNotNull(options)
-        val detect = Phrase.instance().detectLanguage(source)
-        if (detect.code != options.targetLanguageCode) {
-            appendln("\n")
-            val start = length
-            append(options.translateText)
-            setSpan(
-                SpannablePhraseClickableSpan(),
-                start,
-                length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+        Phrase.instance().detectLanguage(source)?.let { phraseDetected ->
+            if (phraseDetected.code != options.targetLanguageCode) {
+                appendln("\n")
+                val start = length
+                append(options.translateText)
+                setSpan(
+                    SpannablePhraseClickableSpan(),
+                    start,
+                    length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
         }
     }
 

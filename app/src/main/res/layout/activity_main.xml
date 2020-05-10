@@ -41,6 +41,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:lineSpacingExtra="-5dp"
         android:layout_marginTop="8dp"
         android:textColorHighlight="@android:color/transparent"
         android:textColorLink="@color/colorPrimaryDark"

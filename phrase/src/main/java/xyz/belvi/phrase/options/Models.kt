@@ -19,3 +19,9 @@ object Behaviour {
     object REPLACE_SOURCE_TEXT
     object HIDE_CREDIT_MEDIUM
 }
+
+object TranslateOptions {
+    object USE_PREFERRED_ONLY
+    object TRANSLATE_ALL
+    object USE_EXCLUDE_ONLY
+}

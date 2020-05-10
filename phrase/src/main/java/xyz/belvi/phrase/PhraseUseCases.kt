@@ -27,6 +27,7 @@ interface PhraseSourceTranslationUseCase {
 }
 
 interface PhraseOptionsUseCase {
+    fun excludeSource(code: List<String>): PhraseOptionsUseCase
     fun preferredDetectionMedium(medium: TranslationMedium): PhraseOptionsUseCase
     fun specifySourceTranslation(preferred: SourceTranslationPreference): PhraseOptionsUseCase
     fun behaviourOptions(behaviourOptions: BehaviourOptions): PhraseOptionsUseCase

@@ -39,8 +39,14 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
         class OptionsBuilder(private val targetLanguageCode: String) :
             PhraseOptionsUseCase {
             private var behaviourOptions: BehaviourOptions? = null
+            private var sourcesToExclude: List<String> = emptyList()
             private var sourceTranslation: SourceTranslationPreference? = null
             private var preferredDetectionMedium: TranslationMedium? = null
+
+            override fun excludeSource(code: List<String>): PhraseOptionsUseCase {
+                this.sourcesToExclude = code
+                return this
+            }
 
 
             override fun preferredDetectionMedium(medium: TranslationMedium): PhraseOptionsUseCase {
@@ -67,6 +73,7 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
                     behaviourOptions,
                     sourceTranslation,
                     preferredDetectionMedium,
+                    sourcesToExclude,
                     targetLanguageCode,
                     translateText,
                     translateFrom

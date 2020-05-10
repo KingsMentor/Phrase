@@ -10,6 +10,7 @@ data class PhraseOptions internal constructor(
     val behavioursOptions: BehaviourOptions?,
     val sourcePreferredTranslation: SourceTranslationPreference?,
     val preferredDetection: TranslationMedium?,
+    val excludeSources: List<String> = emptyList(),
     val targetLanguageCode: String = Locale.getDefault().language,
     val translateText: String,
     val translateFrom: ((translation: PhraseTranslation) -> String)
