@@ -11,7 +11,7 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 internal interface PhraseUseCase {
     fun bindTextView(textView: TextView, options: PhraseOptions? = null)
-    fun detect(text: String, options: PhraseOptions? = null): PhraseDetected
+    fun detect(text: String, options: PhraseOptions? = null): PhraseDetected?
     fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation
     fun updateOptions(options: PhraseOptions)
 
@@ -27,7 +27,7 @@ interface PhraseSourceTranslationUseCase {
 }
 
 interface PhraseOptionsUseCase {
-    fun excludeSource(code: List<String>): PhraseOptionsUseCase
+    fun excludeSources(code: List<String>): PhraseOptionsUseCase
     fun preferredDetectionMedium(medium: TranslationMedium): PhraseOptionsUseCase
     fun specifySourceTranslation(preferred: SourceTranslationPreference): PhraseOptionsUseCase
     fun behaviourOptions(behaviourOptions: BehaviourOptions): PhraseOptionsUseCase
@@ -38,7 +38,7 @@ interface PhraseOptionsUseCase {
 }
 
 interface BehaviourOptionsUseCase {
-    fun includeBehaviours(vararg behaviour: Behaviour): BehaviourOptionsUseCase
+    fun includeBehaviours(@BehaviorInt vararg behaviour: Int): BehaviourOptionsUseCase
     fun switchAnim(@AnimRes switchAnim: Int): BehaviourOptionsUseCase
     fun signatureTypeFace(typeFace: Typeface): BehaviourOptionsUseCase
     fun signatureColor(@ColorInt color: Int): BehaviourOptionsUseCase

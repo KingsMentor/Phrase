@@ -7,8 +7,8 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
 import java.util.*
 
 data class PhraseOptions internal constructor(
-    val behavioursOptions: BehaviourOptions?,
-    val sourcePreferredTranslation: SourceTranslationPreference?,
+    val behavioursOptions: BehaviourOptions = BehaviourOptions(),
+    val sourcePreferredTranslation: SourceTranslationPreference = SourceTranslationPreference(),
     val preferredDetection: TranslationMedium?,
     val excludeSources: List<String> = emptyList(),
     val targetLanguageCode: String = Locale.getDefault().language,

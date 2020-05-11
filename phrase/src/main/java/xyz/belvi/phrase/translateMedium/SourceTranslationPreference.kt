@@ -5,7 +5,7 @@ import xyz.belvi.phrase.PhraseSourceTranslationUseCase
 
 
 data class SourceTranslationPreference internal constructor(
-    internal val sourceTranslateOption: List<SourceTranslationOption>
+    internal val sourceTranslateOption: List<SourceTranslationOption> = emptyList()
 ) {
     companion object {
         fun options(): PhraseSourceTranslationUseCase {

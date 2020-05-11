@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.helpers.PhraseSpannableStringBuilder
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         Phrase.with(GoogleTranslate(this, R.raw.credential))
             .options(
                 PhraseOptions.options("fr")
+                    .excludeSources(listOf("es"))
                     .behaviourOptions(
                         BehaviourOptions.options()
                             .signatureColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
@@ -54,6 +56,8 @@ class MainActivity : AppCompatActivity() {
         update_source_btn.setOnClickListener {
             phraseSpannableStringBuilder.updateSource(source_edit.text.toString())
         }
+
+        FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 
         source_edit.text.clear()
         translated_txt.movementMethod = LinkMovementMethod.getInstance()

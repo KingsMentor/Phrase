@@ -2,7 +2,6 @@ package xyz.belvi.phrase
 
 import android.graphics.Typeface
 import android.widget.TextView
-import xyz.belvi.phrase.options.Behaviour
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
 import xyz.belvi.phrase.options.*
 import xyz.belvi.phrase.translateMedium.SourceTranslationOption
@@ -38,12 +37,12 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
 
         class OptionsBuilder(private val targetLanguageCode: String) :
             PhraseOptionsUseCase {
-            private var behaviourOptions: BehaviourOptions? = null
+            private var behaviourOptions = BehaviourOptions()
             private var sourcesToExclude: List<String> = emptyList()
-            private var sourceTranslation: SourceTranslationPreference? = null
+            private var sourceTranslation = SourceTranslationPreference()
             private var preferredDetectionMedium: TranslationMedium? = null
 
-            override fun excludeSource(code: List<String>): PhraseOptionsUseCase {
+            override fun excludeSources(code: List<String>): PhraseOptionsUseCase {
                 this.sourcesToExclude = code
                 return this
             }
@@ -87,11 +86,11 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
             private var switchAnim: Int = 0
             private var signatureColor: Int = 0
             private var signatureTypeface: Typeface? = null
-            private var behaviours = mutableListOf<Behaviour>()
+            private var behaviour = Behaviour()
 
-            override fun includeBehaviours(vararg behaviour: Behaviour): BehaviourOptionsUseCase {
+            override fun includeBehaviours(@BehaviorInt vararg behaviour: Int): BehaviourOptionsUseCase {
                 behaviour.forEach {
-                    behaviours.add(it)
+                    this.behaviour.includeBehavior(it)
                 }
                 return this
             }
@@ -112,7 +111,7 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
             }
 
             override fun build(): BehaviourOptions {
-                return BehaviourOptions(behaviours, signatureTypeface, signatureColor, switchAnim)
+                return BehaviourOptions(behaviour, signatureTypeface, signatureColor, switchAnim)
             }
 
 
@@ -146,9 +145,11 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
         textView.addTextChangedListener(PhraseTextWatcher(options ?: phraseOptions))
     }
 
-    override fun detect(text: String, options: PhraseOptions?): PhraseDetected {
+    override fun detect(text: String, options: PhraseOptions?): PhraseDetected? {
         val phraseOption = options ?: this.phraseOptions
         requireNotNull(phraseOption)
+        if (phraseOption.behavioursOptions.behaviours.skipDetection())
+            return null
         val detectionMedium = phraseOption.preferredDetection ?: run {
             translationMedium.first()
         }
@@ -158,19 +159,30 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
     override fun translate(text: String, options: PhraseOptions?): PhraseTranslation {
         val phraseOption = options ?: this.phraseOptions
         requireNotNull(phraseOption)
+
         val detected = detect(text, options)
-        val translationMedium =
-            phraseOption.sourcePreferredTranslation?.sourceTranslateOption?.find {
-                detected.code == it.source
-            }?.let {
-                it.translate
-            } ?: translationMedium.first()
+
+        val translationMedium = if (detected != null) {
+            if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly()) {
+                phraseOption.sourcePreferredTranslation.sourceTranslateOption.find {
+                    detected.code == it.source
+                }?.let {
+                    it.translate
+                }
+            } else {
+                phraseOption.sourcePreferredTranslation.sourceTranslateOption.find {
+                    detected.code == it.source
+                }?.let {
+                    it.translate
+                } ?: translationMedium.first()
+            }
+        } else translationMedium.first()
 
         return PhraseTranslation(
-            translationMedium.translate(
+            translationMedium?.translate(
                 text,
                 phraseOption.targetLanguageCode
-            ), detected, translationMedium
+            ) ?: text, detected, translationMedium
         )
     }
 

@@ -12,6 +12,7 @@ import android.text.style.MetricAffectingSpan
 import android.text.style.TypefaceSpan
 import android.view.View
 import xyz.belvi.phrase.Phrase
+import xyz.belvi.phrase.options.Behaviour
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 
@@ -56,18 +57,29 @@ open class PhraseSpannableStringBuilder constructor(
     private fun buildWithoutTranslation() {
         init()
         requireNotNull(options)
+        if (options.behavioursOptions.behaviours.skipDetection())
+            return
         Phrase.instance().detectLanguage(source)?.let { phraseDetected ->
-            if (phraseDetected.code != options.targetLanguageCode) {
-                appendln("\n")
-                val start = length
-                append(options.translateText)
-                setSpan(
-                    SpannablePhraseClickableSpan(),
-                    start,
-                    length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
+            if (options.behavioursOptions.behaviours.translatePreferredSourceOnly()) {
+                val sourceIndex =
+                    options.sourcePreferredTranslation.sourceTranslateOption.indexOfFirst { it.source == phraseDetected.code }
+                if (sourceIndex < 0)
+                    return
             }
+            if (phraseDetected.code == options.targetLanguageCode || options.excludeSources.contains(phraseDetected.code))
+            {
+                return
+            }
+            appendln("\n")
+            val start = length
+            append(options.translateText)
+            setSpan(
+                SpannablePhraseClickableSpan(),
+                start,
+                length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
         }
     }
 
@@ -84,27 +96,28 @@ open class PhraseSpannableStringBuilder constructor(
                 length,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            options.behavioursOptions?.signatureTypeFace?.let { typeFace ->
-                start = length
-                append(" ${phraseTranslation.translationMedium.name()}")
-                setSpan(
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) TypefaceSpan(typeFace) else CustomTypefaceSpan(
-                        typeFace
-                    ),
-                    start,
-                    length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-
-                options.behavioursOptions.signatureColor?.let { color ->
+            if (options.behavioursOptions?.behaviours?.hideSignature() != true) {
+                options.behavioursOptions?.signatureTypeFace?.let { typeFace ->
+                    start = length
+                    append(" ${phraseTranslation.translationMedium?.name()}")
                     setSpan(
-                        ForegroundColorSpan(color),
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) TypefaceSpan(typeFace) else CustomTypefaceSpan(
+                            typeFace
+                        ),
                         start,
                         length,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-                }
 
+                    options.behavioursOptions.signatureColor?.let { color ->
+                        setSpan(
+                            ForegroundColorSpan(color),
+                            start,
+                            length,
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                    }
+                }
             }
             appendln("\n")
             append(phraseTranslation.translation)
