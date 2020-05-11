@@ -16,12 +16,13 @@ data class PhraseTranslation(
 
 class Behaviour {
 
-    @BehaviorInt val AUTO_DETECT: Int = 0
-    @BehaviorInt val AUTO_TRANSLATE: Int = 1
-    @BehaviorInt val REPLACE_SOURCE_TEXT: Int = 2
-    @BehaviorInt val BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY: Int = 3
-    @BehaviorInt val SKIP_DETECTION: Int = 4
-    @BehaviorInt val BEHAVIOR_HIDE_CREDIT_SIGNATURE: Int = 5
+    companion object{
+        @BehaviorInt val REPLACE_SOURCE_TEXT: Int = 1
+        @BehaviorInt val BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY: Int = 2
+        @BehaviorInt val BEHAVIOR_SKIP_DETECTION: Int = 3
+        @BehaviorInt val BEHAVIOR_HIDE_CREDIT_SIGNATURE: Int = 4
+    }
+
 
     private val behaviorSet = mutableSetOf<Int>()
 
@@ -33,7 +34,9 @@ class Behaviour {
         return behaviorSet.contains(behavior)
     }
 
-    internal fun skipDetection() =  behaviorSet.contains(SKIP_DETECTION)
+    internal fun replaceSourceText() =  behaviorSet.contains(REPLACE_SOURCE_TEXT)
+
+    internal fun skipDetection() =  behaviorSet.contains(BEHAVIOR_SKIP_DETECTION)
 
     internal fun translatePreferredSourceOnly() =  behaviorSet.contains(BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY)
 

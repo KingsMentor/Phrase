@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -33,7 +34,7 @@ class MainActivity : AppCompatActivity() {
                             .signatureTypeFace(font).build()
                     )
                     .build("Translate") { phraseTranslation ->
-                        "Translated from ${phraseTranslation.source.name} by"
+                        "Translated from ${phraseTranslation.source?.name} by"
                     }
             )
             .setUp()
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity() {
                     translated_txt.text = phraseSpannableStringBuilder
                     phraseTranslation?.let {
                         detected_language.text =
-                            ("${phraseTranslation.source.name} (${phraseTranslation.source.code})")
+                            ("${phraseTranslation.source?.name} (${phraseTranslation.source?.code})")
                     }
                 }
             }
@@ -55,6 +56,10 @@ class MainActivity : AppCompatActivity() {
 
         update_source_btn.setOnClickListener {
             phraseSpannableStringBuilder.updateSource(source_edit.text.toString())
+        }
+
+        textView.setOnClickListener {
+            Log.e("text", translated_txt.text.toString())
         }
 
         FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT

@@ -86,8 +86,10 @@ open class PhraseSpannableStringBuilder constructor(
     private fun buildShowingTranslation() {
         requireNotNull(options)
         phraseTranslation?.let { phraseTranslation ->
-            init()
-            appendln("\n")
+            if(options.behavioursOptions.behaviours.replaceSourceText()) {
+                init()
+                appendln("\n")
+            }
             var start = length
             append(options.translateFrom.invoke(phraseTranslation))
             setSpan(
@@ -96,8 +98,8 @@ open class PhraseSpannableStringBuilder constructor(
                 length,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            if (options.behavioursOptions?.behaviours?.hideSignature() != true) {
-                options.behavioursOptions?.signatureTypeFace?.let { typeFace ->
+            if (!options.behavioursOptions.behaviours.hideSignature()) {
+                options.behavioursOptions.signatureTypeFace?.let { typeFace ->
                     start = length
                     append(" ${phraseTranslation.translationMedium?.name()}")
                     setSpan(
@@ -109,7 +111,7 @@ open class PhraseSpannableStringBuilder constructor(
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
 
-                    options.behavioursOptions.signatureColor?.let { color ->
+                    options.behavioursOptions.signatureColor.let { color ->
                         setSpan(
                             ForegroundColorSpan(color),
                             start,
