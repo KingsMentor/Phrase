@@ -6,16 +6,18 @@ import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 
 open class PhraseTextWatcher(
-    phraseTranslateListener: PhraseTranslateListener?,
-    phraseOptions: PhraseOptions?
+    phraseOptions: PhraseOptions? = null,
+    phraseTranslateListener: PhraseTranslateListener? = null
 ) : TextWatcher {
     private var phraseSpannableStringBuilder: PhraseSpannableStringBuilder =
         object : PhraseSpannableStringBuilder("", phraseOptions) {
             override fun translating() {
+                super.translating()
                 phraseTranslateListener?.onPhraseTranslating()
             }
 
             override fun notifyUpdate(phraseTranslation: PhraseTranslation?) {
+                super.notifyUpdate(phraseTranslation)
                 phraseTranslateListener?.onPhraseTranslated(phraseTranslation)
             }
         }
