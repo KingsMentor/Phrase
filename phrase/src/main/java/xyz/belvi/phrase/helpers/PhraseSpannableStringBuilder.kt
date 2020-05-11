@@ -19,7 +19,7 @@ import xyz.belvi.phrase.options.PhraseTranslation
 
 open class PhraseSpannableStringBuilder constructor(
     private var source: String,
-    val phraseOptions: PhraseOptions? = null
+    private val phraseOptions: PhraseOptions? = null
 ) :
     SpannableStringBuilder(source),
     SpannablePhraseInterface {
@@ -66,8 +66,10 @@ open class PhraseSpannableStringBuilder constructor(
                 if (sourceIndex < 0)
                     return
             }
-            if (phraseDetected.code == options.targetLanguageCode || options.excludeSources.contains(phraseDetected.code))
-            {
+            if (phraseDetected.code == options.targetLanguageCode || options.excludeSources.contains(
+                    phraseDetected.code
+                )
+            ) {
                 return
             }
             appendln("\n")
@@ -86,7 +88,7 @@ open class PhraseSpannableStringBuilder constructor(
     private fun buildShowingTranslation() {
         requireNotNull(options)
         phraseTranslation?.let { phraseTranslation ->
-            if(options.behavioursOptions.behaviours.replaceSourceText()) {
+            if (options.behavioursOptions.behaviours.replaceSourceText()) {
                 init()
                 appendln("\n")
             }
