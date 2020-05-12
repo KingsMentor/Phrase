@@ -5,7 +5,12 @@ import android.graphics.Typeface
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
-import xyz.belvi.phrase.options.*
+import xyz.belvi.phrase.options.BehaviorInt
+import xyz.belvi.phrase.options.Behaviour
+import xyz.belvi.phrase.options.BehaviourOptions
+import xyz.belvi.phrase.options.PhraseDetected
+import xyz.belvi.phrase.options.PhraseOptions
+import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.translateMedium.SourceTranslationOption
 import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
 import xyz.belvi.phrase.translateMedium.TranslationMedium
@@ -34,7 +39,6 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
             override fun setUp() {
                 phrase.phraseImpl.translationMedium = translationMedium
             }
-
         }
 
         class OptionsBuilder(private val targetLanguageCode: String) :
@@ -48,7 +52,6 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
                 this.sourcesToExclude = code
                 return this
             }
-
 
             override fun preferredDetectionMedium(medium: TranslationMedium): PhraseOptionsUseCase {
                 preferredDetectionMedium = medium
@@ -65,7 +68,6 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
                 return this
             }
 
-
             override fun build(
                 translateText: String,
                 translateFrom: ((translation: PhraseTranslation) -> String)
@@ -81,7 +83,6 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
                 )
             }
         }
-
 
         class BehaviourOptionsBuilder :
             BehaviourOptionsUseCase {
@@ -115,8 +116,6 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
             override fun build(): BehaviourOptions {
                 return BehaviourOptions(behaviour, signatureTypeface, signatureColor, switchAnim)
             }
-
-
         }
 
         class SourceOptionsBuilder :
@@ -139,7 +138,6 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
             override fun makeOptions(): SourceTranslationPreference {
                 return SourceTranslationPreference(sourceTranslationOptions)
             }
-
         }
     }
 
@@ -193,5 +191,4 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
     override fun updateOptions(options: PhraseOptions) {
         this.phraseOptions = options
     }
-
 }

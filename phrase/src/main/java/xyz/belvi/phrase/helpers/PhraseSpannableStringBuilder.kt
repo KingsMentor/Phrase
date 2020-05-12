@@ -12,10 +12,8 @@ import android.text.style.MetricAffectingSpan
 import android.text.style.TypefaceSpan
 import android.view.View
 import xyz.belvi.phrase.Phrase
-import xyz.belvi.phrase.options.Behaviour
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
-
 
 open class PhraseSpannableStringBuilder constructor(
     private var source: String,
@@ -39,19 +37,15 @@ open class PhraseSpannableStringBuilder constructor(
             buildShowingTranslation()
         }
         showingTranslation = !showingTranslation
-
     }
 
     override fun translating() {
-
     }
-
 
     fun updateSource(source: String) {
         this.source = source
         showingTranslation = true
         notifyUpdate(phraseTranslation)
-
     }
 
     private fun buildWithoutTranslation() {
@@ -81,7 +75,6 @@ open class PhraseSpannableStringBuilder constructor(
                 length,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-
         }
     }
 
@@ -148,7 +141,6 @@ open class PhraseSpannableStringBuilder constructor(
             super.updateDrawState(ds)
             ds.isUnderlineText = false
         }
-
     }
 
     internal class CustomTypefaceSpan(private val typeface: Typeface) : MetricAffectingSpan() {
@@ -165,6 +157,5 @@ open class PhraseSpannableStringBuilder constructor(
                 paint.typeface = tf
             }
         }
-
     }
 }

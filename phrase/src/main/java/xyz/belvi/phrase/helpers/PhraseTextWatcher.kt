@@ -28,7 +28,6 @@ open class PhraseTextWatcher(
         }
     }
 
-
     override fun afterTextChanged(s: Editable?) {
         editable = s
         if (s.toString() == phraseSpannableStringBuilder.toString() || s.isNullOrBlank())
@@ -37,7 +36,6 @@ open class PhraseTextWatcher(
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -45,7 +43,6 @@ open class PhraseTextWatcher(
             return
         if (s.toString() != phraseSpannableStringBuilder.toString())
             phraseSpannableStringBuilder.updateSource(s.toString())
-
     }
 
     private fun updateEditable() {
@@ -54,5 +51,4 @@ open class PhraseTextWatcher(
             append(phraseSpannableStringBuilder)
         }
     }
-
 }

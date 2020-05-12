@@ -40,5 +40,4 @@ open class PhraseTextView(context: Context, attrs: AttributeSet) :
         if (::phraseSpannableStringBuilder.isInitialized)
             phraseSpannableStringBuilder.updateSource(sourceText)
     }
-
 }

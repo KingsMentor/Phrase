@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import androidx.annotation.AnimRes
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
 import xyz.belvi.phrase.BehaviourOptionsUseCase
 import xyz.belvi.phrase.PhraseImpl
 

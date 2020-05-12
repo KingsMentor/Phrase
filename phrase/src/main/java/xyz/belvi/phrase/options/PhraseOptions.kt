@@ -1,10 +1,10 @@
 package xyz.belvi.phrase.options
 
+import java.util.Locale
 import xyz.belvi.phrase.PhraseImpl
 import xyz.belvi.phrase.PhraseOptionsUseCase
 import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
 import xyz.belvi.phrase.translateMedium.TranslationMedium
-import java.util.*
 
 data class PhraseOptions internal constructor(
     val behavioursOptions: BehaviourOptions = BehaviourOptions(),

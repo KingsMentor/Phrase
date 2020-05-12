@@ -1,21 +1,22 @@
 package xyz.belvi.phrase.translateMedium.medium
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import androidx.annotation.RawRes
-import androidx.core.content.ContextCompat
 import com.google.auth.oauth2.GoogleCredentials
-import com.google.cloud.translate.Detection
 import com.google.cloud.translate.Translate
 import com.google.cloud.translate.TranslateOptions
-import kotlinx.coroutines.*
-import xyz.belvi.phrase.R
+import java.io.InputStream
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import xyz.belvi.phrase.options.PhraseDetected
 import xyz.belvi.phrase.translateMedium.TranslationMedium
-import java.io.InputStream
 
 class GoogleTranslate(
-    context: Context, @RawRes authCredentials: Int
+    context: Context,
+    @RawRes authCredentials: Int
 ) : TranslationMedium() {
 
     val translate by lazy {
@@ -56,5 +57,4 @@ class GoogleTranslate(
             }
         }
     }
-
 }

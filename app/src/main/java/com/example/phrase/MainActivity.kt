@@ -10,13 +10,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
-import xyz.belvi.phrase.helpers.PhraseSpannableStringBuilder
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
 import xyz.belvi.phrase.options.BehaviourOptions
 import xyz.belvi.phrase.options.PhraseOptions
-import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,14 +37,10 @@ class MainActivity : AppCompatActivity() {
             )
             .setUp()
 
-
         translated_txt.movementMethod = LinkMovementMethod.getInstance()
         translated_txt.highlightColor = Color.TRANSPARENT
 
-
         translated_txt.addTextChangedListener(PhraseTextWatcher())
-
-
 
         update_source_btn.setOnClickListener {
             translated_txt.text = source_edit.text.toString()
@@ -60,7 +53,5 @@ class MainActivity : AppCompatActivity() {
         FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 
         source_edit.text.clear()
-
     }
-
 }
