@@ -22,16 +22,14 @@ class Behaviour {
         @BehaviorInt val BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY: Int = 2
         @BehaviorInt val BEHAVIOR_SKIP_DETECTION: Int = 3
         @BehaviorInt val BEHAVIOR_HIDE_CREDIT_SIGNATURE: Int = 4
+        @BehaviorInt val BEHAVIOR_HIDE_TRANSLATE_PROMPT: Int = 5
+        @BehaviorInt val BEHAVIOR_TRANSLATE_IGNORING_DETECTION: Int = 6
     }
 
     private val behaviorSet = mutableSetOf<Int>()
 
     internal fun includeBehavior(behavior: Int) {
         behaviorSet.add(behavior)
-    }
-
-    internal fun hasBehavior(behavior: Int): Boolean {
-        return behaviorSet.contains(behavior)
     }
 
     internal fun replaceSourceText() = behaviorSet.contains(BEHAVIOR_REPLACE_SOURCE_TEXT)
@@ -41,6 +39,10 @@ class Behaviour {
     internal fun translatePreferredSourceOnly() = behaviorSet.contains(BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY)
 
     internal fun hideSignature() = behaviorSet.contains(BEHAVIOR_HIDE_CREDIT_SIGNATURE)
+
+    internal fun hideTranslatePrompt() = behaviorSet.contains(BEHAVIOR_HIDE_TRANSLATE_PROMPT)
+
+    internal fun ignoreSkipDetection() = behaviorSet.contains(BEHAVIOR_TRANSLATE_IGNORING_DETECTION)
 }
 
 @MustBeDocumented

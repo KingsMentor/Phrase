@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
+import xyz.belvi.phrase.helpers.PhraseTranslateListener
 import xyz.belvi.phrase.options.BehaviorInt
 import xyz.belvi.phrase.options.Behaviour
 import xyz.belvi.phrase.options.BehaviourOptions
@@ -141,10 +142,19 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
         }
     }
 
-    override fun bindTextView(textView: TextView, options: PhraseOptions?) {
+    override fun bindTextView(
+        textView: TextView,
+        options: PhraseOptions?,
+        phraseTranslateListener: PhraseTranslateListener?
+    ) {
         textView.movementMethod = LinkMovementMethod.getInstance()
         textView.highlightColor = Color.TRANSPARENT
-        textView.addTextChangedListener(PhraseTextWatcher(options ?: phraseOptions))
+        textView.addTextChangedListener(
+            PhraseTextWatcher(
+                options ?: phraseOptions,
+                phraseTranslateListener
+            )
+        )
     }
 
     override fun detect(text: String, options: PhraseOptions?): PhraseDetected? {

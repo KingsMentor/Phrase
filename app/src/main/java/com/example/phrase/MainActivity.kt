@@ -37,10 +37,7 @@ class MainActivity : AppCompatActivity() {
             )
             .setUp()
 
-        translated_txt.movementMethod = LinkMovementMethod.getInstance()
-        translated_txt.highlightColor = Color.TRANSPARENT
-
-        translated_txt.addTextChangedListener(PhraseTextWatcher())
+        Phrase.instance().bindTextView(translated_txt)
 
         update_source_btn.setOnClickListener {
             translated_txt.text = source_edit.text.toString()

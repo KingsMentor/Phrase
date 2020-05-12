@@ -1,5 +1,7 @@
 package xyz.belvi.phrase
 
+import android.widget.TextView
+import xyz.belvi.phrase.helpers.PhraseTranslateListener
 import xyz.belvi.phrase.options.PhraseDetected
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
@@ -18,6 +20,14 @@ class Phrase internal constructor() {
         fun instance(): Phrase {
             return phrase
         }
+    }
+
+    fun bindTextView(
+        textView: TextView,
+        options: PhraseOptions? = null,
+        phraseTranslateListener: PhraseTranslateListener? = null
+    ) {
+        return phraseImpl.bindTextView(textView, options, phraseTranslateListener)
     }
 
     fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation {
