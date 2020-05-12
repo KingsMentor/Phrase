@@ -23,13 +23,13 @@ open class PhraseTextView(context: Context, attrs: AttributeSet) :
         highlightColor = Color.TRANSPARENT
         phraseSpannableStringBuilder =
             object : PhraseSpannableStringBuilder(source, phraseOptions) {
-                override fun translating() {
-                    super.translating()
+                override fun onPhraseTranslation() {
+                    super.onPhraseTranslation()
                     phraseTextViewListener?.onPhraseTranslating()
                 }
 
-                override fun notifyUpdate(phraseTranslation: PhraseTranslation?) {
-                    super.notifyUpdate(phraseTranslation)
+                override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
+                    super.onPhraseTranslated(phraseTranslation)
                     text = phraseSpannableStringBuilder
                     phraseTextViewListener?.onPhraseTranslated(phraseTranslation)
                 }

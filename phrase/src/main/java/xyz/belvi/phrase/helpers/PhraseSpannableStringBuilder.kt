@@ -15,40 +15,39 @@ import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 
-open class PhraseSpannableStringBuilder constructor(
+abstract class PhraseSpannableStringBuilder constructor(
     private var source: String,
     private val phraseOptions: PhraseOptions? = null
 ) :
     SpannableStringBuilder(source),
-    SpannablePhraseInterface {
+    PhraseTranslateListener {
 
     private val options = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
     private var showingTranslation = false
     private var phraseTranslation: PhraseTranslation? = null
 
     init {
-        buildWithoutTranslation()
+        buildSpanForTranslation()
     }
 
-    override fun notifyUpdate(phraseTranslation: PhraseTranslation?) {
+    abstract override fun onPhraseTranslating()
+
+    override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
         if (showingTranslation) {
-            buildWithoutTranslation()
+            buildSpanForTranslation()
         } else {
-            buildShowingTranslation()
+            buildTranslatedPhraseSpan()
         }
         showingTranslation = !showingTranslation
-    }
-
-    override fun translating() {
     }
 
     fun updateSource(source: String) {
         this.source = source
         showingTranslation = true
-        notifyUpdate(phraseTranslation)
+        onPhraseTranslated(phraseTranslation)
     }
 
-    private fun buildWithoutTranslation() {
+    private fun buildSpanForTranslation() {
         init()
         requireNotNull(options)
         val behaviors = options.behavioursOptions.behaviours
@@ -83,7 +82,7 @@ open class PhraseSpannableStringBuilder constructor(
         }
     }
 
-    private fun buildShowingTranslation() {
+    private fun buildTranslatedPhraseSpan() {
         requireNotNull(options)
         val optionBehavior = options.behavioursOptions.behaviours
         phraseTranslation?.let { phraseTranslation ->
@@ -140,10 +139,10 @@ open class PhraseSpannableStringBuilder constructor(
     inner class SpannablePhraseClickableSpan : ClickableSpan() {
         override fun onClick(widget: View) {
             if (phraseTranslation == null || phraseTranslation?.source?.text != source) {
-                translating()
+                onPhraseTranslating()
                 phraseTranslation = Phrase.instance().translate(source, phraseOptions)
             }
-            notifyUpdate(phraseTranslation)
+            onPhraseTranslated(phraseTranslation)
             widget.invalidate()
         }
 

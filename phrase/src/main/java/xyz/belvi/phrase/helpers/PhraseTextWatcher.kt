@@ -2,7 +2,6 @@ package xyz.belvi.phrase.helpers
 
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.core.text.set
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 
@@ -15,13 +14,12 @@ open class PhraseTextWatcher(
 
     init {
         phraseSpannableStringBuilder = object : PhraseSpannableStringBuilder("", phraseOptions) {
-            override fun translating() {
-                super.translating()
+            override fun onPhraseTranslating() {
                 phraseTranslateListener?.onPhraseTranslating()
             }
 
-            override fun notifyUpdate(phraseTranslation: PhraseTranslation?) {
-                super.notifyUpdate(phraseTranslation)
+            override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
+                super.onPhraseTranslated(phraseTranslation)
                 phraseTranslateListener?.onPhraseTranslated(phraseTranslation)
                 updateEditable()
             }
