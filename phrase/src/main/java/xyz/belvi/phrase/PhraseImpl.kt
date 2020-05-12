@@ -1,6 +1,8 @@
 package xyz.belvi.phrase
 
+import android.graphics.Color
 import android.graphics.Typeface
+import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
 import xyz.belvi.phrase.options.*
@@ -142,6 +144,8 @@ internal class PhraseImpl internal constructor() : PhraseUseCase {
     }
 
     override fun bindTextView(textView: TextView, options: PhraseOptions?) {
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        textView.highlightColor = Color.TRANSPARENT
         textView.addTextChangedListener(PhraseTextWatcher(options ?: phraseOptions))
     }
 

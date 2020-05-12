@@ -17,7 +17,7 @@ open class PhraseTextView(context: Context, attrs: AttributeSet) :
     fun prepare(
         source: String = text.toString(),
         phraseOptions: PhraseOptions? = null,
-        phraseTextViewListener: PhraseTranslateListener?
+        phraseTextViewListener: PhraseTranslateListener? = null
     ) {
         movementMethod = LinkMovementMethod.getInstance()
         highlightColor = Color.TRANSPARENT

@@ -57,7 +57,7 @@ open class PhraseSpannableStringBuilder constructor(
     private fun buildWithoutTranslation() {
         init()
         requireNotNull(options)
-        if (options.behavioursOptions.behaviours.skipDetection())
+        if (options.behavioursOptions.behaviours.skipDetection() || source.isEmpty())
             return
         Phrase.instance().detectLanguage(source)?.let { phraseDetected ->
             if (options.behavioursOptions.behaviours.translatePreferredSourceOnly()) {
@@ -88,9 +88,10 @@ open class PhraseSpannableStringBuilder constructor(
     private fun buildShowingTranslation() {
         requireNotNull(options)
         phraseTranslation?.let { phraseTranslation ->
+            init()
+            appendln("\n")
             if (options.behavioursOptions.behaviours.replaceSourceText()) {
-                init()
-                appendln("\n")
+                clear()
             }
             var start = length
             append(options.translateFrom.invoke(phraseTranslation))

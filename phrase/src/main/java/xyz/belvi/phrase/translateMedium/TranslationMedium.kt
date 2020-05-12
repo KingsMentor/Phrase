@@ -6,7 +6,7 @@ import xyz.belvi.phrase.options.PhraseDetected
 import java.util.*
 
 
-abstract class TranslationMedium() {
+abstract class TranslationMedium {
 
     abstract fun detect(text: String): PhraseDetected
     abstract fun translate(text: String, targeting: String): String

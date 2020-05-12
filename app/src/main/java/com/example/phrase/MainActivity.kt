@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.helpers.PhraseSpannableStringBuilder
-import xyz.belvi.phrase.helpers.PhraseTranslateListener
+import xyz.belvi.phrase.helpers.PhraseTextWatcher
 import xyz.belvi.phrase.options.BehaviourOptions
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
@@ -19,15 +19,16 @@ import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
+
         Phrase.with(GoogleTranslate(this, R.raw.credential))
             .options(
                 PhraseOptions.options("fr")
-                    .excludeSources(listOf("es"))
                     .behaviourOptions(
                         BehaviourOptions.options()
                             .signatureColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
@@ -40,17 +41,16 @@ class MainActivity : AppCompatActivity() {
             .setUp()
 
 
-        translated_txt.prepare(source_edit.text.toString(), null, object : PhraseTranslateListener {
-            override fun onPhraseTranslating() {
-            }
+        translated_txt.movementMethod = LinkMovementMethod.getInstance()
+        translated_txt.highlightColor = Color.TRANSPARENT
 
-            override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
-                detected_language.text =
-                    ("${phraseTranslation?.source?.name} (${phraseTranslation?.source?.code})")
-            }
-        })
+
+        translated_txt.addTextChangedListener(PhraseTextWatcher())
+
+
+
         update_source_btn.setOnClickListener {
-            translated_txt.updateSource(source_edit.text.toString())
+            translated_txt.text = source_edit.text.toString()
         }
 
         textView.setOnClickListener {

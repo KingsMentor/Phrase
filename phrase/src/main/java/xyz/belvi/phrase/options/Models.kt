@@ -17,7 +17,7 @@ data class PhraseTranslation(
 class Behaviour {
 
     companion object{
-        @BehaviorInt val REPLACE_SOURCE_TEXT: Int = 1
+        @BehaviorInt val BEHAVIOR_REPLACE_SOURCE_TEXT: Int = 1
         @BehaviorInt val BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY: Int = 2
         @BehaviorInt val BEHAVIOR_SKIP_DETECTION: Int = 3
         @BehaviorInt val BEHAVIOR_HIDE_CREDIT_SIGNATURE: Int = 4
@@ -34,7 +34,7 @@ class Behaviour {
         return behaviorSet.contains(behavior)
     }
 
-    internal fun replaceSourceText() =  behaviorSet.contains(REPLACE_SOURCE_TEXT)
+    internal fun replaceSourceText() =  behaviorSet.contains(BEHAVIOR_REPLACE_SOURCE_TEXT)
 
     internal fun skipDetection() =  behaviorSet.contains(BEHAVIOR_SKIP_DETECTION)
 
