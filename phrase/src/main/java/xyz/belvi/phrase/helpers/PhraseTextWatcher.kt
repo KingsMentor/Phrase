@@ -10,10 +10,10 @@ open class PhraseTextWatcher(
     phraseTranslateListener: PhraseTranslateListener? = null
 ) : TextWatcher {
     private var editable: Editable? = null
-    private val phraseSpannableStringBuilder: PhraseSpannableStringBuilder
+    private val phraseSpannableBuilder: PhraseSpannableBuilder
 
     init {
-        phraseSpannableStringBuilder = object : PhraseSpannableStringBuilder("", phraseOptions) {
+        phraseSpannableBuilder = object : PhraseSpannableBuilder("", phraseOptions) {
             override fun onPhraseTranslating() {
                 phraseTranslateListener?.onPhraseTranslating()
             }
@@ -28,7 +28,7 @@ open class PhraseTextWatcher(
 
     override fun afterTextChanged(s: Editable?) {
         editable = s
-        if (s.toString() == phraseSpannableStringBuilder.toString() || s.isNullOrBlank())
+        if (s.toString() == phraseSpannableBuilder.toString() || s.isNullOrBlank())
             return
         updateEditable()
     }
@@ -39,14 +39,14 @@ open class PhraseTextWatcher(
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         if (s.isNullOrBlank())
             return
-        if (s.toString() != phraseSpannableStringBuilder.toString())
-            phraseSpannableStringBuilder.updateSource(s.toString())
+        if (s.toString() != phraseSpannableBuilder.toString())
+            phraseSpannableBuilder.updateSource(s.toString())
     }
 
     private fun updateEditable() {
         editable?.apply {
             clear()
-            append(phraseSpannableStringBuilder)
+            append(phraseSpannableBuilder)
         }
     }
 }

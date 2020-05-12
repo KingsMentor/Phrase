@@ -15,7 +15,7 @@ import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 
-abstract class PhraseSpannableStringBuilder constructor(
+abstract class PhraseSpannableBuilder constructor(
     private var source: String,
     private val phraseOptions: PhraseOptions? = null
 ) :

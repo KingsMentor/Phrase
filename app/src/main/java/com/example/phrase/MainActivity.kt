@@ -1,16 +1,13 @@
 package com.example.phrase
 
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentStatePagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
-import xyz.belvi.phrase.helpers.PhraseTextWatcher
 import xyz.belvi.phrase.options.BehaviourOptions
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
