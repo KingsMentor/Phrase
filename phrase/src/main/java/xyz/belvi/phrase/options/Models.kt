@@ -1,5 +1,12 @@
 package xyz.belvi.phrase.options
 
+import androidx.annotation.IntDef
+import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_HIDE_CREDIT_SIGNATURE
+import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_HIDE_TRANSLATE_PROMPT
+import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_REPLACE_SOURCE_TEXT
+import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_SKIP_DETECTION
+import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_TRANSLATE_IGNORING_DETECTION
+import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 data class PhraseDetected(
@@ -15,28 +22,30 @@ data class PhraseTranslation(
     val translationMedium: TranslationMedium?
 )
 
-class Behaviour {
+class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
+
 
     companion object {
-        @BehaviorInt val BEHAVIOR_REPLACE_SOURCE_TEXT: Int = 1
-        @BehaviorInt val BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY: Int = 2
-        @BehaviorInt val BEHAVIOR_SKIP_DETECTION: Int = 3
-        @BehaviorInt val BEHAVIOR_HIDE_CREDIT_SIGNATURE: Int = 4
-        @BehaviorInt val BEHAVIOR_HIDE_TRANSLATE_PROMPT: Int = 5
-        @BehaviorInt val BEHAVIOR_TRANSLATE_IGNORING_DETECTION: Int = 6
+        const val BEHAVIOR_REPLACE_SOURCE_TEXT: Int = 1
+
+        const val BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY: Int = 2
+
+        const val BEHAVIOR_SKIP_DETECTION: Int = 3
+
+        const val BEHAVIOR_HIDE_CREDIT_SIGNATURE: Int = 4
+
+        const val BEHAVIOR_HIDE_TRANSLATE_PROMPT: Int = 5
+
+        const val BEHAVIOR_TRANSLATE_IGNORING_DETECTION: Int = 6
     }
 
-    private val behaviorSet = mutableSetOf<Int>()
-
-    internal fun includeBehavior(behavior: Int) {
-        behaviorSet.add(behavior)
-    }
 
     internal fun replaceSourceText() = behaviorSet.contains(BEHAVIOR_REPLACE_SOURCE_TEXT)
 
     internal fun skipDetection() = behaviorSet.contains(BEHAVIOR_SKIP_DETECTION)
 
-    internal fun translatePreferredSourceOnly() = behaviorSet.contains(BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY)
+    internal fun translatePreferredSourceOnly() =
+        behaviorSet.contains(BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY)
 
     internal fun hideSignature() = behaviorSet.contains(BEHAVIOR_HIDE_CREDIT_SIGNATURE)
 
@@ -45,13 +54,18 @@ class Behaviour {
     internal fun ignoreSkipDetection() = behaviorSet.contains(BEHAVIOR_TRANSLATE_IGNORING_DETECTION)
 }
 
-@MustBeDocumented
-@kotlin.annotation.Retention(AnnotationRetention.BINARY)
-@Target(
-    AnnotationTarget.PROPERTY_GETTER,
-    AnnotationTarget.PROPERTY_SETTER,
-    AnnotationTarget.VALUE_PARAMETER,
-    AnnotationTarget.FIELD,
-    AnnotationTarget.LOCAL_VARIABLE
+
+@Target(AnnotationTarget.TYPE)
+@IntDef(
+    flag = true,
+    value = [
+        BEHAVIOR_REPLACE_SOURCE_TEXT,
+        BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY,
+        BEHAVIOR_SKIP_DETECTION,
+        BEHAVIOR_HIDE_CREDIT_SIGNATURE,
+        BEHAVIOR_HIDE_TRANSLATE_PROMPT,
+        BEHAVIOR_TRANSLATE_IGNORING_DETECTION
+    ]
 )
-annotation class BehaviorInt
+@kotlin.annotation.Retention(AnnotationRetention.SOURCE)
+annotation class BehaviorFlags

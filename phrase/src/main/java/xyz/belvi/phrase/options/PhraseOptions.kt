@@ -1,10 +1,11 @@
 package xyz.belvi.phrase.options
 
-import java.util.Locale
-import xyz.belvi.phrase.PhraseImpl
-import xyz.belvi.phrase.PhraseOptionsUseCase
-import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
+import android.graphics.Color
+import android.graphics.Typeface
+import androidx.annotation.AnimRes
+import androidx.annotation.ColorInt
 import xyz.belvi.phrase.translateMedium.TranslationMedium
+import java.util.*
 
 data class PhraseOptions internal constructor(
     val behavioursOptions: BehaviourOptions = BehaviourOptions(),
@@ -14,10 +15,22 @@ data class PhraseOptions internal constructor(
     val targetLanguageCode: String = Locale.getDefault().language,
     val translateText: String,
     val translateFrom: ((translation: PhraseTranslation) -> String)
-) {
-    companion object {
-        fun options(targetLanguageCode: String = Locale.getDefault().language): PhraseOptionsUseCase {
-            return PhraseImpl.Companion.OptionsBuilder(targetLanguageCode)
-        }
-    }
-}
+)
+
+
+data class BehaviourOptions internal constructor(
+    val behaviours: Behaviour = Behaviour(),
+    val signatureTypeFace: Typeface? = null,
+    @ColorInt val signatureColor: Int = Color.BLACK,
+    @AnimRes val switchAnim: Int = 0
+)
+
+data class SourceTranslationOption(
+    val source: String,
+    val translate: TranslationMedium
+)
+
+
+data class SourceTranslationPreference internal constructor(
+    internal val sourceTranslateOption: List<SourceTranslationOption> = emptyList()
+)

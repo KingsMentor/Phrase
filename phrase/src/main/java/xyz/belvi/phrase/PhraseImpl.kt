@@ -6,141 +6,86 @@ import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
 import xyz.belvi.phrase.helpers.PhraseTranslateListener
-import xyz.belvi.phrase.options.BehaviorInt
-import xyz.belvi.phrase.options.Behaviour
-import xyz.belvi.phrase.options.BehaviourOptions
-import xyz.belvi.phrase.options.PhraseDetected
-import xyz.belvi.phrase.options.PhraseOptions
-import xyz.belvi.phrase.options.PhraseTranslation
-import xyz.belvi.phrase.translateMedium.SourceTranslationOption
-import xyz.belvi.phrase.translateMedium.SourceTranslationPreference
+import xyz.belvi.phrase.options.*
 import xyz.belvi.phrase.translateMedium.TranslationMedium
+import java.util.*
 
-internal class PhraseImpl internal constructor() : PhraseUseCase {
+class PhraseImpl internal constructor() : PhraseUseCase {
 
     internal var phraseOptions: PhraseOptions? = null
     internal lateinit var translationMedium: List<TranslationMedium>
 
-    companion object {
-        class Builder(medium: TranslationMedium, val phrase: Phrase) : PhraseBuilderUseCase {
-            private var translationMedium = mutableListOf(medium)
-            override fun options(phraseOptions: PhraseOptions): PhraseBuilderUseCase {
-                phrase.phraseImpl.phraseOptions = phraseOptions
-                return this
-            }
 
-            override fun includeFallback(medium: TranslationMedium): PhraseBuilderUseCase {
-                translationMedium.find { it == medium }?.let {
-                    translationMedium.remove(medium)
-                }
-                translationMedium.add(medium)
-                return this
-            }
+    class OptionsBuilder {
+        private var behaviourOptions = BehaviourOptions()
+        var sourcesToExclude: List<String> = emptyList()
+        private var sourceTranslation = SourceTranslationPreference()
+        var preferredDetectionMedium: TranslationMedium? = null
+        var targetting: String = Locale.getDefault().language
+        var actionLabel: String = ""
+        var resultActionLabel: ((translation: PhraseTranslation) -> String) = { "" }
 
-            override fun setUp() {
-                phrase.phraseImpl.translationMedium = translationMedium
+        fun sourceTranslations(preferred: SourceOptionsBuilder.() -> Unit) {
+            SourceOptionsBuilder().apply(preferred).run {
+                this@OptionsBuilder.sourceTranslation = this.build()
             }
         }
 
-        class OptionsBuilder(private val targetLanguageCode: String) :
-            PhraseOptionsUseCase {
-            private var behaviourOptions = BehaviourOptions()
-            private var sourcesToExclude: List<String> = emptyList()
-            private var sourceTranslation = SourceTranslationPreference()
-            private var preferredDetectionMedium: TranslationMedium? = null
-
-            override fun excludeSources(code: List<String>): PhraseOptionsUseCase {
-                this.sourcesToExclude = code
-                return this
-            }
-
-            override fun preferredDetectionMedium(medium: TranslationMedium): PhraseOptionsUseCase {
-                preferredDetectionMedium = medium
-                return this
-            }
-
-            override fun specifySourceTranslation(preferred: SourceTranslationPreference): PhraseOptionsUseCase {
-                sourceTranslation = preferred
-                return this
-            }
-
-            override fun behaviourOptions(behaviourOptions: BehaviourOptions): PhraseOptionsUseCase {
-                this.behaviourOptions = behaviourOptions
-                return this
-            }
-
-            override fun build(
-                translateText: String,
-                translateFrom: ((translation: PhraseTranslation) -> String)
-            ): PhraseOptions {
-                return PhraseOptions(
-                    behaviourOptions,
-                    sourceTranslation,
-                    preferredDetectionMedium,
-                    sourcesToExclude,
-                    targetLanguageCode,
-                    translateText,
-                    translateFrom
-                )
+        fun behaviourFlags(behaviourOptions: BehaviourOptionsBuilder.() -> Unit) {
+            BehaviourOptionsBuilder().apply(behaviourOptions).run {
+                this@OptionsBuilder.behaviourOptions = this.build()
             }
         }
 
-        class BehaviourOptionsBuilder :
-            BehaviourOptionsUseCase {
-            private var switchAnim: Int = 0
-            private var signatureColor: Int = 0
-            private var signatureTypeface: Typeface? = null
-            private var behaviour = Behaviour()
-
-            override fun includeBehaviours(@BehaviorInt vararg behaviour: Int): BehaviourOptionsUseCase {
-                behaviour.forEach {
-                    this.behaviour.includeBehavior(it)
-                }
-                return this
-            }
-
-            override fun switchAnim(switchAnim: Int): BehaviourOptionsUseCase {
-                this.switchAnim = switchAnim
-                return this
-            }
-
-            override fun signatureTypeFace(typeFace: Typeface): BehaviourOptionsUseCase {
-                this.signatureTypeface = typeFace
-                return this
-            }
-
-            override fun signatureColor(color: Int): BehaviourOptionsUseCase {
-                signatureColor = color
-                return this
-            }
-
-            override fun build(): BehaviourOptions {
-                return BehaviourOptions(behaviour, signatureTypeface, signatureColor, switchAnim)
-            }
-        }
-
-        class SourceOptionsBuilder :
-            PhraseSourceTranslationUseCase {
-            private var sourceTranslationOptions = mutableListOf<SourceTranslationOption>()
-            override fun specifyTranslateOption(
-                source: String,
-                translate: TranslationMedium
-            ): PhraseSourceTranslationUseCase {
-                val index = sourceTranslationOptions.indexOfFirst { it.source == source }
-                if (index >= 0)
-                    sourceTranslationOptions[index] =
-                        SourceTranslationOption(source, translate)
-                else
-                    sourceTranslationOptions.add(SourceTranslationOption(source, translate))
-
-                return this
-            }
-
-            override fun makeOptions(): SourceTranslationPreference {
-                return SourceTranslationPreference(sourceTranslationOptions)
-            }
+        fun build(): PhraseOptions {
+            return PhraseOptions(
+                behaviourOptions,
+                sourceTranslation,
+                preferredDetectionMedium,
+                sourcesToExclude,
+                targetting,
+                actionLabel,
+                resultActionLabel
+            )
         }
     }
+
+    class BehaviourOptionsBuilder {
+        var switchAnim: Int = 0
+        var signatureColor: Int = 0
+        var signatureTypeface: Typeface? = null
+        private var behaviourFlags = setOf<@BehaviorFlags Int>()
+
+        fun flags(flags: Set<@BehaviorFlags Int>.() -> Unit) {
+            setOf<@BehaviorFlags Int>().apply(flags).run {
+                behaviourFlags = this
+            }
+        }
+
+        fun build(): BehaviourOptions {
+            return BehaviourOptions(
+                Behaviour(behaviourFlags),
+                signatureTypeface,
+                signatureColor,
+                switchAnim
+            )
+        }
+    }
+
+    class SourceOptionsBuilder {
+        private var sourceTranslationOptions = listOf<SourceTranslationOption>()
+
+        fun specifyTranslateOption(option: List<SourceTranslationOption>.() -> Unit) {
+            listOf<SourceTranslationOption>().apply(option).run {
+                sourceTranslationOptions = this
+            }
+        }
+
+        fun build(): SourceTranslationPreference {
+            return SourceTranslationPreference(sourceTranslationOptions)
+        }
+    }
+
 
     override fun bindTextView(
         textView: TextView,

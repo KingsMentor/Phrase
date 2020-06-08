@@ -7,16 +7,18 @@ import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
+
+fun phrase(phraseBuilder: Phrase.Builder.() -> Unit): Phrase =
+    Phrase.Builder().apply(phraseBuilder).build()
+
+
 class Phrase internal constructor() {
+
 
     internal val phraseImpl = PhraseImpl()
 
     companion object {
-        private val phrase = Phrase()
-        fun with(translationMedium: TranslationMedium): PhraseBuilderUseCase {
-            return PhraseImpl.Companion.Builder(translationMedium, phrase)
-        }
-
+        val phrase = Phrase()
         fun instance(): Phrase {
             return phrase
         }
@@ -37,4 +39,25 @@ class Phrase internal constructor() {
     fun detectLanguage(text: String, options: PhraseOptions? = null): PhraseDetected? {
         return phraseImpl.detect(text, options)
     }
+
+
+    class Builder {
+        private var mediums = listOf<TranslationMedium>()
+        fun with(with: () -> List<TranslationMedium>) {
+            mediums = with()
+        }
+
+        fun options(phraseOptions: PhraseImpl.OptionsBuilder.() -> Unit) {
+            PhraseImpl.OptionsBuilder().apply(phraseOptions).run {
+                phrase.phraseImpl.phraseOptions = this.build()
+            }
+        }
+
+        fun build(): Phrase {
+            phrase.phraseImpl.translationMedium = mediums
+            return phrase
+        }
+    }
+
+
 }
