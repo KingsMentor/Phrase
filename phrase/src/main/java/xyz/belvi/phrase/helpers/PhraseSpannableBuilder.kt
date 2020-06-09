@@ -57,7 +57,7 @@ abstract class PhraseSpannableBuilder constructor(
             phraseDetected?.let {
                 if (behaviors.translatePreferredSourceOnly()) {
                     val sourceIndex =
-                        options.sourcePreferredTranslation.sourceTranslateOption.indexOfFirst { it.source == phraseDetected.code }
+                        options.sourcePreferredTranslation.sourceTranslateOption.indexOfFirst { it.sourceLanguageCode == phraseDetected.code }
                     if (sourceIndex < 0)
                         return
                 }

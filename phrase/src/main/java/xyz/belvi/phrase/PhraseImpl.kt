@@ -19,17 +19,12 @@ class PhraseImpl internal constructor() : PhraseUseCase {
     class OptionsBuilder {
         private var behaviourOptions = BehaviourOptions()
         var sourcesToExclude: List<String> = emptyList()
-        private var sourceTranslation = SourceTranslationPreference()
+        var sourceTranslation = listOf<SourceTranslationOption>()
         var preferredDetectionMedium: TranslationMedium? = null
         var targetting: String = Locale.getDefault().language
         var actionLabel: String = ""
         var resultActionLabel: ((translation: PhraseTranslation) -> String) = { "" }
 
-        fun sourceTranslations(preferred: SourceOptionsBuilder.() -> Unit) {
-            SourceOptionsBuilder().apply(preferred).run {
-                this@OptionsBuilder.sourceTranslation = this.build()
-            }
-        }
 
         fun behaviourFlags(behaviourOptions: BehaviourOptionsBuilder.() -> Unit) {
             BehaviourOptionsBuilder().apply(behaviourOptions).run {
@@ -40,7 +35,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         fun build(): PhraseOptions {
             return PhraseOptions(
                 behaviourOptions,
-                sourceTranslation,
+                SourceTranslationPreference(sourceTranslation),
                 preferredDetectionMedium,
                 sourcesToExclude,
                 targetting,
@@ -54,38 +49,17 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         var switchAnim: Int = 0
         var signatureColor: Int = 0
         var signatureTypeface: Typeface? = null
-        private var behaviourFlags = setOf<@BehaviorFlags Int>()
-
-        fun flags(flags: Set<@BehaviorFlags Int>.() -> Unit) {
-            setOf<@BehaviorFlags Int>().apply(flags).run {
-                behaviourFlags = this
-            }
-        }
+        var flags = setOf<@BehaviorFlags Int>()
 
         fun build(): BehaviourOptions {
             return BehaviourOptions(
-                Behaviour(behaviourFlags),
+                Behaviour(flags),
                 signatureTypeface,
                 signatureColor,
                 switchAnim
             )
         }
     }
-
-    class SourceOptionsBuilder {
-        private var sourceTranslationOptions = listOf<SourceTranslationOption>()
-
-        fun specifyTranslateOption(option: List<SourceTranslationOption>.() -> Unit) {
-            listOf<SourceTranslationOption>().apply(option).run {
-                sourceTranslationOptions = this
-            }
-        }
-
-        fun build(): SourceTranslationPreference {
-            return SourceTranslationPreference(sourceTranslationOptions)
-        }
-    }
-
 
     override fun bindTextView(
         textView: TextView,
@@ -122,13 +96,13 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         val translationMedium = if (detected != null) {
             if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly()) {
                 phraseOption.sourcePreferredTranslation.sourceTranslateOption.find {
-                    detected.code == it.source
+                    detected.code == it.sourceLanguageCode
                 }?.let {
                     it.translate
                 }
             } else {
                 phraseOption.sourcePreferredTranslation.sourceTranslateOption.find {
-                    detected.code == it.source
+                    detected.code == it.sourceLanguageCode
                 }?.let {
                     it.translate
                 } ?: translationMedium.first()

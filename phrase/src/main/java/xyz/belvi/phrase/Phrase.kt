@@ -42,10 +42,7 @@ class Phrase internal constructor() {
 
 
     class Builder {
-        private var mediums = listOf<TranslationMedium>()
-        fun with(with: () -> List<TranslationMedium>) {
-            mediums = with()
-        }
+        var mediums = listOf<TranslationMedium>()
 
         fun options(phraseOptions: PhraseImpl.OptionsBuilder.() -> Unit) {
             PhraseImpl.OptionsBuilder().apply(phraseOptions).run {

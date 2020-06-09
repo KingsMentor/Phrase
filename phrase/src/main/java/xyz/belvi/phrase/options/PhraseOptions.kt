@@ -26,7 +26,7 @@ data class BehaviourOptions internal constructor(
 )
 
 data class SourceTranslationOption(
-    val source: String,
+    val sourceLanguageCode: String,
     val translate: TranslationMedium
 )
 

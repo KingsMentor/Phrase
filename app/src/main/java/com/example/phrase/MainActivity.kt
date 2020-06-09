@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.phrase
+import xyz.belvi.phrase.translateMedium.TranslationMedium
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
 class MainActivity : AppCompatActivity() {
@@ -19,13 +20,13 @@ class MainActivity : AppCompatActivity() {
 
         phrase {
             with {
-                listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
+                GoogleTranslate(this,0)
             }
             options {
                 targetting = "fr"
                 behaviourFlags {
-                    behaviourFlags {
-                    }
+                    flags = setOf()
+                    signatureTypeface = font
                 }
                 actionLabel = "Translate With"
                 resultActionLabel = { "Trams" }
