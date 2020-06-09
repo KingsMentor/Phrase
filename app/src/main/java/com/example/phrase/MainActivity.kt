@@ -19,9 +19,7 @@ class MainActivity : AppCompatActivity() {
         val font = Typeface.createFromAsset(assets, "rb.ttf")
 
         phrase {
-            with {
-                GoogleTranslate(this,0)
-            }
+            mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
             options {
                 targetting = "fr"
                 behaviourFlags {
