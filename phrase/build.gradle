@@ -48,3 +48,32 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'phrase'
+
+    publishedGroupId = 'xyz.belvi.translate'
+    libraryName = 'phrase'
+    artifact = 'phrase'
+
+    libraryDescription = 'Language Translation wrapper on Smartling , Google Translate, DeepL and other custom translation engine on Android\n'
+
+    siteUrl = 'https://kingsmentor.github.io/Phrase'
+    gitUrl = 'https://github.com/KingsMentor/Phrase'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'kingsmentor'
+    developerName = 'Nosakhare Belvi'
+    developerEmail = 'nosakharebelvi@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
