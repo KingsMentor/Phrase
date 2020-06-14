@@ -1,6 +1,6 @@
 ## Introducing Phrase
 
-Phrase provides a way to translate user generated content to desired language using different translation engine of your choice. 
+Phrase provides a way to translate user generated content to desired target language using different translation engine or options of your choice. I built phrase to remove the constraint of having to use one translation engine in your application. It gives helps developers levels on the strength of different translation engine while giving the best experience to Users. 
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
