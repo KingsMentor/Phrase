@@ -1,6 +1,6 @@
-## Welcome to GitHub Pages
+## Introducing phrase
 
-You can use the [editor on GitHub](https://github.com/KingsMentor/Phrase/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+Phrase provides a way to translate user generated content to desired language using different translation engine of your choice. 
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
