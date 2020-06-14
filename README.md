@@ -1,4 +1,4 @@
-## Introducing phrase
+## Introducing Phrase
 
 Phrase provides a way to translate user generated content to desired language using different translation engine of your choice. 
 
