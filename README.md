@@ -9,18 +9,35 @@ I built phrase to remove the constraint of having to use one translation engine 
 
 ![Lib Sample](https://github.com/KingsMentor/phrase/blob/master/phrase.gif)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7c99717049bcfc70193d01bea77f6fb77b91a080
 ### Getting Started 
 
-Include this on `build.gradle`
+Add this to dependency in apps `build.gradle`
 
 ```
 implementation 'xyz.belvi.translate:phrase:1.0.0'
 
 ```
 
+#### Setting Up Phrase
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+A single instance of phrase is instantiated for the lifetime of the application. This instance can be created in the application call , activity or any implementation that best suite you. Here's an example of setting up the library with some basic options. 
+
+```
+        phrase {
+            mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
+            options {
+                targeting = "fr"
+                actionLabel = "Translate"
+                resultActionLabel = {
+                    "Translated with "
+                }
+            }
+        }
+```
 
 ### Markdown
 

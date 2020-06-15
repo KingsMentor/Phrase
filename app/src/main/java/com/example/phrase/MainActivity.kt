@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val font = Typeface.createFromAsset(assets, "rb.ttf")
 
         // setting up phrase
-        phrase {
+        val phrase = phrase {
             mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
             options {
                 targeting = target.text.toString()
