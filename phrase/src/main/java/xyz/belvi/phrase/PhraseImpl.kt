@@ -22,7 +22,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         var sourcesToExclude: List<String> = emptyList()
         var sourceTranslation = listOf<SourceTranslationOption>()
         var preferredDetectionMedium: TranslationMedium? = null
-        var targetting: String = Locale.getDefault().language
+        var targeting: String = Locale.getDefault().language
         var actionLabel: String = ""
         var resultActionLabel: ((translation: PhraseTranslation) -> String) = { "" }
 
@@ -39,7 +39,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                 SourceTranslationPreference(sourceTranslation),
                 preferredDetectionMedium,
                 sourcesToExclude,
-                targetting,
+                targeting,
                 actionLabel,
                 resultActionLabel
             )

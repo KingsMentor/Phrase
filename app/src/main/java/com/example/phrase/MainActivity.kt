@@ -24,10 +24,10 @@ class MainActivity : AppCompatActivity() {
         val font = Typeface.createFromAsset(assets, "rb.ttf")
 
         // setting up phrase
-        val phrase = phrase {
+        phrase {
             mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
             options {
-                targetting = target.text.toString()
+                targeting = target.text.toString()
                 behaviourFlags {
                     flags = setOf()
                     signatureTypeface = font
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
         update_source.setOnClickListener {
             phrase.updateOptions(options {
-                targetting = target.text.toString()
+                targeting = target.text.toString()
                 behaviourFlags {
                     flags = setOf()
                     signatureTypeface = font

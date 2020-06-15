@@ -6,6 +6,10 @@ I built phrase to remove the constraint of having to use one translation engine 
 
 [ ![Download](https://api.bintray.com/packages/kingsmentor/maven/phrase/images/download.svg) ](https://bintray.com/kingsmentor/maven/phrase/_latestVersion)
 
+
+![Lib Sample](https://github.com/KingsMentor/phrase/blob/master/phrase.gif)
+
+
 ### Getting Started 
 
 Include this on `build.gradle`
