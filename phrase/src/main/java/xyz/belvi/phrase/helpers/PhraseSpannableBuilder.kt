@@ -22,7 +22,6 @@ abstract class PhraseSpannableBuilder constructor(
     SpannableStringBuilder(source),
     PhraseTranslateListener {
 
-    private val options = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
     private var showingTranslateAction = false
     private var phraseTranslation: PhraseTranslation? = null
 
@@ -47,8 +46,11 @@ abstract class PhraseSpannableBuilder constructor(
         showingTranslateAction = !showingTranslateAction
     }
 
+    private fun options() = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
+
     private fun buildTranslateActionSpan() {
         init()
+        val options = options()
         requireNotNull(options)
         val behaviors = options.behavioursOptions.behaviours
         val detectedMedium =
@@ -85,6 +87,7 @@ abstract class PhraseSpannableBuilder constructor(
     }
 
     private fun buildTranslatedPhraseSpan() {
+        val options = options()
         requireNotNull(options)
         val optionBehavior = options.behavioursOptions.behaviours
         phraseTranslation?.let { phraseTranslation ->
@@ -140,10 +143,9 @@ abstract class PhraseSpannableBuilder constructor(
 
     inner class SpannablePhraseClickableSpan : ClickableSpan() {
         override fun onClick(widget: View) {
-            if (phraseTranslation == null || phraseTranslation?.detectedSource?.text != source) {
-                onPhraseTranslating()
-                phraseTranslation = Phrase.instance().translate(source, phraseOptions)
-            }
+            onPhraseTranslating()
+            val options = options()
+            phraseTranslation = Phrase.instance().translate(source, options)
             buildSpannableString(phraseTranslation)
             widget.invalidate()
         }

@@ -48,6 +48,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
 
     class BehaviourOptionsBuilder {
         var switchAnim: Int = 0
+
         @ColorInt
         var signatureColor: Int = 0
         var signatureTypeface: Typeface? = null
@@ -72,7 +73,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         textView.highlightColor = Color.TRANSPARENT
         textView.addTextChangedListener(
             PhraseTextWatcher(
-                options ?: phraseOptions,
+                options,
                 phraseTranslateListener
             )
         )

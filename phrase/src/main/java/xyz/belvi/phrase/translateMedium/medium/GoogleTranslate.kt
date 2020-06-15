@@ -30,17 +30,18 @@ class GoogleTranslate(
     }
 
     override fun translate(text: String, targeting: String): String {
-        if (cacheTranslation.containsKey(text))
-            return cacheTranslation[text]!!
+        val key = "$targeting:$text"
+        if (cacheTranslation.containsKey(key))
+            return cacheTranslation[key]!!
         return runBlocking {
             withContext(Dispatchers.IO) {
                 val result = translate.await().translate(
                     text,
-                    Translate.TranslateOption.targetLanguage(targeting),
+                    Translate.TranslateOption.targetLanguage(targeting.toLowerCase()),
                     Translate.TranslateOption.format("text")
 
                 ).translatedText
-                cacheTranslation[text] = result
+                cacheTranslation[key] = result
                 result
             }
         }
