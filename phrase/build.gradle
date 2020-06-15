@@ -33,7 +33,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.core:core-ktx:1.3.0'
 
     implementation('com.google.cloud:google-cloud-translate:1.12.0') {
         exclude group: 'org.apache.httpcomponents'
@@ -41,10 +41,10 @@ dependencies {
     }
     annotationProcessor 'com.google.cloud:google-cloud-translate:1.12.0'
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0"
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
@@ -62,7 +62,7 @@ ext {
     siteUrl = 'https://kingsmentor.github.io/Phrase'
     gitUrl = 'https://github.com/KingsMentor/Phrase'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.0.1'
 
     developerId = 'kingsmentor'
     developerName = 'Nosakhare Belvi'
