@@ -1,7 +1,9 @@
 package com.example.phrase
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
@@ -58,6 +60,11 @@ class MainActivity : AppCompatActivity() {
         yoruba.setText(R.string.yoruba)
 
         spanish_text.prepare(getString(R.string.spanish))
+
+
+        translated.movementMethod = LinkMovementMethod.getInstance()
+        translated.highlightColor = Color.TRANSPARENT
+
 
         update_source.setOnClickListener {
             phrase.updateOptions(options {
