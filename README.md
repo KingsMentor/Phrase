@@ -2,7 +2,20 @@
 
 Phrase provides a way to translate user generated content to desired target language using different translation engine or options of your choice.
 
-I built phrase to remove the constraint of having to use one translation engine in your application. It helps developers leverage on the strength of different translation engine while giving the best experience to Users. 
+I built phrase to remove the constraint of having to use one translation engine in your application. It helps android developers leverage on the strength of different translation engine while giving the best experience to Users. 
+
+[ ![Download](https://api.bintray.com/packages/kingsmentor/maven/Phrase/images/download.svg) ](https://bintray.com/kingsmentor/maven/Phrase/_latestVersion)
+
+### Getting Started 
+
+Include this on `build.gradle`
+
+```
+implementation 'xyz.belvi.translate:phrase:1.0.0'
+
+```
+
+implementation 'xyz.belvi.translate:phrase:1.0.0'
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
