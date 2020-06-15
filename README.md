@@ -15,7 +15,6 @@ implementation 'xyz.belvi.translate:phrase:1.0.0'
 
 ```
 
-implementation 'xyz.belvi.translate:phrase:1.0.0'
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
