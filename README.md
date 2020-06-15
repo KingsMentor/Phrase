@@ -4,7 +4,7 @@ Phrase provides a way to translate user generated content to desired target lang
 
 I built phrase to remove the constraint of having to use one translation engine in your application. It helps android developers leverage on the strength of different translation engine while giving the best experience to Users. 
 
-[ ![Download](https://api.bintray.com/packages/kingsmentor/maven/Phrase/images/download.svg) ](https://bintray.com/kingsmentor/maven/Phrase/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/kingsmentor/maven/phrase/images/download.svg) ](https://bintray.com/kingsmentor/maven/phrase/_latestVersion)
 
 ### Getting Started 
 
