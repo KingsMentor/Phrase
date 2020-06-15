@@ -81,7 +81,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
     override fun detect(text: String, options: PhraseOptions?): PhraseDetected? {
         val phraseOption = options ?: this.phraseOptions
         requireNotNull(phraseOption)
-        if (phraseOption.behavioursOptions.behaviours.skipDetection())
+        if (phraseOption.behavioursOptions.behaviours.ignoreDetection())
             return null
         val detectionMedium = phraseOption.preferredDetection ?: run {
             translationMedium.first()

@@ -18,9 +18,9 @@ open class PhraseTextWatcher(
                 phraseTranslateListener?.onPhraseTranslating()
             }
 
-            override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
-                super.onPhraseTranslated(phraseTranslation)
-                phraseTranslateListener?.onPhraseTranslated(phraseTranslation)
+            override fun buildSpannableString(phraseTranslation: PhraseTranslation?) {
+                super.buildSpannableString(phraseTranslation)
+                phraseTranslateListener?.buildSpannableString(phraseTranslation)
                 updateEditable()
             }
         }

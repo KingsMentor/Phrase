@@ -34,7 +34,9 @@ class GoogleTranslate(
             withContext(Dispatchers.IO) {
                 translate.await().translate(
                     text,
-                    Translate.TranslateOption.targetLanguage(targeting)
+                    Translate.TranslateOption.targetLanguage(targeting),
+                    Translate.TranslateOption.format("text")
+
                 ).translatedText
             }
         }

@@ -23,62 +23,64 @@ abstract class PhraseSpannableBuilder constructor(
     PhraseTranslateListener {
 
     private val options = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
-    private var showingTranslation = false
+    private var showingTranslateAction = false
     private var phraseTranslation: PhraseTranslation? = null
 
     init {
-        buildSpanForTranslation()
+        buildTranslateActionSpan()
     }
 
     abstract override fun onPhraseTranslating()
 
-    override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
-        if (showingTranslation) {
-            buildSpanForTranslation()
+    fun updateSource(source: String) {
+        this.source = source
+        showingTranslateAction = true
+        buildSpannableString(phraseTranslation)
+    }
+
+    override fun buildSpannableString(phraseTranslation: PhraseTranslation?) {
+        if (showingTranslateAction) {
+            buildTranslateActionSpan()
         } else {
             buildTranslatedPhraseSpan()
         }
-        showingTranslation = !showingTranslation
+        showingTranslateAction = !showingTranslateAction
     }
 
-    fun updateSource(source: String) {
-        this.source = source
-        showingTranslation = true
-        onPhraseTranslated(phraseTranslation)
-    }
-
-    private fun buildSpanForTranslation() {
+    private fun buildTranslateActionSpan() {
         init()
         requireNotNull(options)
         val behaviors = options.behavioursOptions.behaviours
-        if ((behaviors.skipDetection() && !behaviors.ignoreSkipDetection()) || source.isEmpty())
-            return
-        Phrase.instance().detectLanguage(source).let { phraseDetected ->
-            phraseDetected?.let {
-                if (behaviors.translatePreferredSourceOnly()) {
-                    val sourceIndex =
-                        options.sourcePreferredTranslation.sourceTranslateOption.indexOfFirst { it.sourceLanguageCode == phraseDetected.languageCode }
-                    if (sourceIndex < 0)
-                        return
-                }
-                if (phraseDetected.languageCode == options.targetLanguageCode || options.excludeSources.contains(
-                        phraseDetected.languageCode
-                    )
-                ) {
+        val detectedMedium =
+            if (behaviors.ignoreDetection() || source.isEmpty())
+                null
+            else Phrase.instance().detectLanguage(source)
+
+        detectedMedium?.let { phraseDetected ->
+            if (behaviors.translatePreferredSourceOnly()) {
+                val sourceIndex =
+                    options.sourcePreferredTranslation.sourceTranslateOption.indexOfFirst { it.sourceLanguageCode == phraseDetected.languageCode }
+                if (sourceIndex < 0)
                     return
-                }
             }
-            if (!behaviors.hideTranslatePrompt()) {
-                appendln("\n")
-                val start = length
-                append(options.translateText)
-                setSpan(
-                    SpannablePhraseClickableSpan(),
-                    start,
-                    length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            if (phraseDetected.languageCode == options.targetLanguageCode || options.excludeSources.contains(
+                    phraseDetected.languageCode
                 )
+            ) {
+                return
             }
+        }
+
+        if (!source.isNullOrBlank() && !behaviors.hideTranslatePrompt()) {
+            appendln("\n")
+            val start = length
+            append(options.translateText)
+            setSpan(
+                SpannablePhraseClickableSpan(),
+                start,
+                length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
     }
 
@@ -142,7 +144,7 @@ abstract class PhraseSpannableBuilder constructor(
                 onPhraseTranslating()
                 phraseTranslation = Phrase.instance().translate(source, phraseOptions)
             }
-            onPhraseTranslated(phraseTranslation)
+            buildSpannableString(phraseTranslation)
             widget.invalidate()
         }
 

@@ -27,12 +27,13 @@ open class PhraseTextView(context: Context, attrs: AttributeSet) :
                     phraseTextViewListener?.onPhraseTranslating()
                 }
 
-                override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
-                    super.onPhraseTranslated(phraseTranslation)
+                override fun buildSpannableString(phraseTranslation: PhraseTranslation?) {
+                    super.buildSpannableString(phraseTranslation)
                     text = phraseSpannableBuilder
-                    phraseTextViewListener?.onPhraseTranslated(phraseTranslation)
+                    phraseTextViewListener?.buildSpannableString(phraseTranslation)
                 }
             }
+        text = phraseSpannableBuilder
     }
 
     fun updateSource(sourceText: String) {

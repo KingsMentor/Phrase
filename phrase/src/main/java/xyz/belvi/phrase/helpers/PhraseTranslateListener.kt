@@ -4,5 +4,5 @@ import xyz.belvi.phrase.options.PhraseTranslation
 
 interface PhraseTranslateListener {
         fun onPhraseTranslating()
-        fun onPhraseTranslated(phraseTranslation: PhraseTranslation?)
+        fun buildSpannableString(phraseTranslation: PhraseTranslation?)
     }

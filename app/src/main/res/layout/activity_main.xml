@@ -78,6 +78,7 @@
 
         <TextView
             android:id="@+id/translated"
+            android:layout_marginTop="2sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
@@ -99,11 +100,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-        <TextView
-            android:id="@+id/textView2"
+        <xyz.belvi.phrase.view.PhraseTextView
+            android:id="@+id/spanish_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/spanish"
             android:textColor="@android:color/white"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -127,7 +127,6 @@
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="@string/french"
             android:textColor="@android:color/white"
             android:textSize="14sp"
@@ -151,7 +150,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="@string/japanese"
             android:textColor="@android:color/white"
             android:textSize="14sp"
@@ -178,7 +176,6 @@
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="@string/yoruba"
             android:textColor="@android:color/white"
             android:textSize="14sp"
@@ -189,12 +186,12 @@
             app:layout_constraintVertical_bias="0.0" />
 
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/update_source"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="#1ca1f3"
+            android:backgroundTint="@color/colorAccent"
             android:text="@string/update_source"
             android:textAllCaps="false"
             android:textColor="@android:color/white"

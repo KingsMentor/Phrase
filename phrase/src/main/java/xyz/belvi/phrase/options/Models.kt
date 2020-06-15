@@ -4,8 +4,7 @@ import androidx.annotation.IntDef
 import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_HIDE_CREDIT_SIGNATURE
 import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_HIDE_TRANSLATE_PROMPT
 import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_REPLACE_SOURCE_TEXT
-import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_SKIP_DETECTION
-import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_TRANSLATE_IGNORING_DETECTION
+import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_IGNORE_DETECTION
 import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
@@ -30,19 +29,18 @@ class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
 
         const val BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY: Int = 2
 
-        const val BEHAVIOR_SKIP_DETECTION: Int = 3
+        const val BEHAVIOR_IGNORE_DETECTION: Int = 3
 
         const val BEHAVIOR_HIDE_CREDIT_SIGNATURE: Int = 4
 
         const val BEHAVIOR_HIDE_TRANSLATE_PROMPT: Int = 5
 
-        const val BEHAVIOR_TRANSLATE_IGNORING_DETECTION: Int = 6
     }
 
 
     internal fun replaceSourceText() = behaviorSet.contains(BEHAVIOR_REPLACE_SOURCE_TEXT)
 
-    internal fun skipDetection() = behaviorSet.contains(BEHAVIOR_SKIP_DETECTION)
+    internal fun ignoreDetection() = behaviorSet.contains(BEHAVIOR_IGNORE_DETECTION)
 
     internal fun translatePreferredSourceOnly() =
         behaviorSet.contains(BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY)
@@ -51,7 +49,6 @@ class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
 
     internal fun hideTranslatePrompt() = behaviorSet.contains(BEHAVIOR_HIDE_TRANSLATE_PROMPT)
 
-    internal fun ignoreSkipDetection() = behaviorSet.contains(BEHAVIOR_TRANSLATE_IGNORING_DETECTION)
 }
 
 
@@ -61,10 +58,9 @@ class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
     value = [
         BEHAVIOR_REPLACE_SOURCE_TEXT,
         BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY,
-        BEHAVIOR_SKIP_DETECTION,
+        BEHAVIOR_IGNORE_DETECTION,
         BEHAVIOR_HIDE_CREDIT_SIGNATURE,
-        BEHAVIOR_HIDE_TRANSLATE_PROMPT,
-        BEHAVIOR_TRANSLATE_IGNORING_DETECTION
+        BEHAVIOR_HIDE_TRANSLATE_PROMPT
     ]
 )
 @kotlin.annotation.Retention(AnnotationRetention.SOURCE)

@@ -16,18 +16,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val font = Typeface.createFromAsset(assets, "test.ttf")
+        val font = Typeface.createFromAsset(assets, "rb.ttf")
 
 
         phrase {
             mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
             options {
-                targetting = "fr"
+                targetting = "en"
                 behaviourFlags {
                     flags = setOf()
                     signatureTypeface = font
                     signatureColor =
-                        ContextCompat.getColor(this@MainActivity, R.color.colorPrimaryDark)
+                        ContextCompat.getColor(this@MainActivity, R.color.white)
                 }
                 actionLabel = "Translate"
                 resultActionLabel = {
@@ -39,10 +39,14 @@ class MainActivity : AppCompatActivity() {
 
         Phrase.instance().bindTextView(translated)
 
+        spanish_text.prepare(getString(R.string.spanish))
+
         update_source.setOnClickListener {
             Log.e("text", "translated_txt.text.toString()")
             translated.text = source_edit.text.toString()
+            spanish_text.updateSource(getString(R.string.spanish))
         }
 
     }
 }
+//N&#39;abandonnez jamais un rêve pour le temps qu&#39;il faut pour le réaliser. Le temps passera de toute façon.
