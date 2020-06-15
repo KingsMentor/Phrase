@@ -78,9 +78,9 @@
 
         <TextView
             android:id="@+id/translated"
-            android:layout_marginTop="2sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2sp"
             android:textColor="@android:color/white"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:paddingTop="8dp"
-            android:text="Spanish"
+            android:text="@string/spanish_title"
             android:textColor="@android:color/white"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -110,12 +110,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:paddingTop="8dp"
-            android:text="French"
+            android:text="@string/yoruba_title"
             android:textColor="@android:color/white"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -124,59 +125,9 @@
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/yoruba"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/french"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingTop="8dp"
-            android:text="Japanese"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/japanese"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/update_source"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingTop="8dp"
-            android:text="Yoruba"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/yoruba"
             android:textColor="@android:color/white"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/update_source"

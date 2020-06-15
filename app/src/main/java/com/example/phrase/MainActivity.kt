@@ -2,23 +2,25 @@ package com.example.phrase
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
+import xyz.belvi.phrase.helpers.PhraseSpannableBuilder
+import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.phrase
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var phraseSpannableBuilder: PhraseSpannableBuilder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
 
-
+        // setting up phrase
         phrase {
             mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
             options {
@@ -31,22 +33,34 @@ class MainActivity : AppCompatActivity() {
                 }
                 actionLabel = "Translate"
                 resultActionLabel = {
-                    detected.text = "Detected Language Source: " + it.detectedSource?.languageName?:""
+                    detected.text =
+                        "Detected Language Source: " + it.detectedSource?.languageName ?: ""
                     "Translated with "
                 }
             }
         }
 
-        Phrase.instance().bindTextView(translated)
+        phraseSpannableBuilder =
+            object : PhraseSpannableBuilder("") {
+                override fun onPhraseTranslating() {
+                }
+
+                override fun buildSpannableString(phraseTranslation: PhraseTranslation?) {
+                    super.buildSpannableString(phraseTranslation)
+                    translated.text = phraseSpannableBuilder
+                }
+            }
+
+
+
+        Phrase.instance().bindTextView(yoruba)
+        yoruba.setText(R.string.yoruba)
 
         spanish_text.prepare(getString(R.string.spanish))
 
         update_source.setOnClickListener {
-            Log.e("text", "translated_txt.text.toString()")
-            translated.text = source_edit.text.toString()
-            spanish_text.updateSource(getString(R.string.spanish))
+            phraseSpannableBuilder.updateSource(source_edit.text.toString())
         }
 
     }
 }
-//N&#39;abandonnez jamais un rêve pour le temps qu&#39;il faut pour le réaliser. Le temps passera de toute façon.
