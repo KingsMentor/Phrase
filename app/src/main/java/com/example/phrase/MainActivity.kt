@@ -1,6 +1,5 @@
 package com.example.phrase
 
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
@@ -8,9 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
-import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.phrase
-import xyz.belvi.phrase.translateMedium.TranslationMedium
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
 class MainActivity : AppCompatActivity() {
@@ -29,24 +26,23 @@ class MainActivity : AppCompatActivity() {
                 behaviourFlags {
                     flags = setOf()
                     signatureTypeface = font
-                    signatureColor = ContextCompat.getColor(this@MainActivity,R.color.colorPrimaryDark)
+                    signatureColor =
+                        ContextCompat.getColor(this@MainActivity, R.color.colorPrimaryDark)
                 }
                 actionLabel = "Translate"
                 resultActionLabel = {
+                    detected.text = "Detected Language Source: " + it.detectedSource?.languageName?:""
                     "Translated with "
                 }
             }
         }
 
-        Phrase.instance().bindTextView(translated_txt)
+        Phrase.instance().bindTextView(translated)
 
         update_source.setOnClickListener {
             Log.e("text", "translated_txt.text.toString()")
-            translated_txt.text = source_edit.text.toString()
+            translated.text = source_edit.text.toString()
         }
 
-        textView.setOnClickListener {
-            Log.e("text", "translated_txt.text.toString()")
-        }
     }
 }

@@ -48,7 +48,8 @@ class PhraseImpl internal constructor() : PhraseUseCase {
 
     class BehaviourOptionsBuilder {
         var switchAnim: Int = 0
-        @ColorInt var signatureColor: Int = 0
+        @ColorInt
+        var signatureColor: Int = 0
         var signatureTypeface: Typeface? = null
         var flags = setOf<@BehaviorFlags Int>()
 
@@ -97,13 +98,13 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         val translationMedium = if (detected != null) {
             if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly()) {
                 phraseOption.sourcePreferredTranslation.sourceTranslateOption.find {
-                    detected.code == it.sourceLanguageCode
+                    detected.languageCode == it.sourceLanguageCode
                 }?.let {
                     it.translate
                 }
             } else {
                 phraseOption.sourcePreferredTranslation.sourceTranslateOption.find {
-                    detected.code == it.sourceLanguageCode
+                    detected.languageCode == it.sourceLanguageCode
                 }?.let {
                     it.translate
                 } ?: translationMedium.first()
@@ -114,7 +115,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
             translationMedium?.translate(
                 text,
                 phraseOption.targetLanguageCode
-            ) ?: text, detected, translationMedium
+            ) ?: text, translationMedium?.name(), detected
         )
     }
 

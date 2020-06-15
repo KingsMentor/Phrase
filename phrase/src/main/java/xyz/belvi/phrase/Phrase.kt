@@ -36,6 +36,10 @@ class Phrase internal constructor() {
         return phraseImpl.bindTextView(textView, options, phraseTranslateListener)
     }
 
+    fun updateOptions(options: PhraseOptions) {
+        phraseImpl.updateOptions(options)
+    }
+
     fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation {
         return phraseImpl.translate(text, options)
     }

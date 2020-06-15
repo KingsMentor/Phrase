@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">Phrase</string>
-    <string name="detected_language">Detected Language:</string>
+    <string name="detected_language">The text below is in different languages that is translated using Phrase. Paste a text on the EditText field to translate to the target language of your choice. See https://cloud.google.com/translate/docs/languages for list of targeted language code</string>
     <string name="update_source">Update Source</string>
+    <string name="yoruba">“O to akoko fun awọn obi lati kọ awọn ọdọ ni ibẹrẹ lori pe ni oniruuru ẹwa wa ati agbara wa.” - Maya Angelou</string>
+    <string name="french">J\'ai été tenté de nommer cette bibliothèque polygot</string>
+    <string name="spanish">Nunca renuncies a un sueño por el tiempo que se requiere para lograrlo. El tiempo pasará de todas formas.</string>
+    <string name="targeted_language">Targeted Language</string>
+    <string name="enter_source_text">Enter Source Text</string>
+    <string name="japanese">Tsukideta kugi wa tsuchi de utareru</string>
 </resources>

@@ -11,15 +11,15 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 data class PhraseDetected(
     val text: String,
-    val code: String,
-    val name: String,
-    val detectMedium: TranslationMedium
+    val languageCode: String,
+    val languageName: String,
+    val detectionMediumName: String
 )
 
 data class PhraseTranslation(
     val translation: String,
-    val source: PhraseDetected?,
-    val translationMedium: TranslationMedium?
+    val translationMediumName: String?,
+    val detectedSource: PhraseDetected?
 )
 
 class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {

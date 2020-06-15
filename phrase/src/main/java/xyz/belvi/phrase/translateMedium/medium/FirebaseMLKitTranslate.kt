@@ -51,7 +51,7 @@ class FirebaseMLKitTranslate(
                     val detect = it.detect(text).language
                     val languageName =
                         it.listSupportedLanguages().find { it.code == detect }?.name ?: detect
-                    PhraseDetected(text, detect, languageName, this@FirebaseMLKitTranslate)
+                    PhraseDetected(text, detect, languageName, name())
                 }
             }
         }

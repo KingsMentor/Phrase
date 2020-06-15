@@ -52,7 +52,7 @@ class GoogleTranslate(
                     val detect = it.detect(text).language
                     val languageName =
                         it.listSupportedLanguages().find { it.code == detect }?.name ?: detect
-                    PhraseDetected(text, detect, languageName, this@GoogleTranslate)
+                    PhraseDetected(text, detect, languageName, name())
                 }
             }
         }

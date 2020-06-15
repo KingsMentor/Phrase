@@ -57,12 +57,12 @@ abstract class PhraseSpannableBuilder constructor(
             phraseDetected?.let {
                 if (behaviors.translatePreferredSourceOnly()) {
                     val sourceIndex =
-                        options.sourcePreferredTranslation.sourceTranslateOption.indexOfFirst { it.sourceLanguageCode == phraseDetected.code }
+                        options.sourcePreferredTranslation.sourceTranslateOption.indexOfFirst { it.sourceLanguageCode == phraseDetected.languageCode }
                     if (sourceIndex < 0)
                         return
                 }
-                if (phraseDetected.code == options.targetLanguageCode || options.excludeSources.contains(
-                        phraseDetected.code
+                if (phraseDetected.languageCode == options.targetLanguageCode || options.excludeSources.contains(
+                        phraseDetected.languageCode
                     )
                 ) {
                     return
@@ -103,7 +103,7 @@ abstract class PhraseSpannableBuilder constructor(
                 if (!optionBehavior.hideSignature()) {
                     options.behavioursOptions.signatureTypeFace?.let { typeFace ->
                         start = length
-                        append("${phraseTranslation.translationMedium?.name()}")
+                        append("${phraseTranslation.translationMediumName}")
                         setSpan(
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) TypefaceSpan(
                                 typeFace
@@ -138,10 +138,9 @@ abstract class PhraseSpannableBuilder constructor(
 
     inner class SpannablePhraseClickableSpan : ClickableSpan() {
         override fun onClick(widget: View) {
-            if (phraseTranslation == null || phraseTranslation?.source?.text != source) {
+            if (phraseTranslation == null || phraseTranslation?.detectedSource?.text != source) {
                 onPhraseTranslating()
                 phraseTranslation = Phrase.instance().translate(source, phraseOptions)
-                throw Exception("sonething went wrong")
             }
             onPhraseTranslated(phraseTranslation)
             widget.invalidate()
