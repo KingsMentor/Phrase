@@ -11,6 +11,10 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
 fun phrase(phraseBuilder: Phrase.Builder.() -> Unit): Phrase =
     Phrase.Builder().apply(phraseBuilder).build()
 
+fun options(phraseOptions: PhraseImpl.OptionsBuilder.() -> Unit): PhraseOptions {
+    return PhraseImpl.OptionsBuilder().apply(phraseOptions).build()
+}
+
 
 class Phrase internal constructor() {
 

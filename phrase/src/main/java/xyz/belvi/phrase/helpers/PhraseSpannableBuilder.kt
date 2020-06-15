@@ -103,7 +103,7 @@ abstract class PhraseSpannableBuilder constructor(
                 if (!optionBehavior.hideSignature()) {
                     options.behavioursOptions.signatureTypeFace?.let { typeFace ->
                         start = length
-                        append(" ${phraseTranslation.translationMedium?.name()}")
+                        append("${phraseTranslation.translationMedium?.name()}")
                         setSpan(
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) TypefaceSpan(
                                 typeFace
@@ -141,6 +141,7 @@ abstract class PhraseSpannableBuilder constructor(
             if (phraseTranslation == null || phraseTranslation?.source?.text != source) {
                 onPhraseTranslating()
                 phraseTranslation = Phrase.instance().translate(source, phraseOptions)
+                throw Exception("sonething went wrong")
             }
             onPhraseTranslated(phraseTranslation)
             widget.invalidate()

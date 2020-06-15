@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
 import xyz.belvi.phrase.helpers.PhraseTranslateListener
 import xyz.belvi.phrase.options.*
@@ -47,7 +48,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
 
     class BehaviourOptionsBuilder {
         var switchAnim: Int = 0
-        var signatureColor: Int = 0
+        @ColorInt var signatureColor: Int = 0
         var signatureTypeface: Typeface? = null
         var flags = setOf<@BehaviorFlags Int>()
 
