@@ -30,14 +30,18 @@ class GoogleTranslate(
     }
 
     override fun translate(text: String, targeting: String): String {
+        if (cacheTranslation.containsKey(text))
+            return cacheTranslation[text]!!
         return runBlocking {
             withContext(Dispatchers.IO) {
-                translate.await().translate(
+                val result = translate.await().translate(
                     text,
                     Translate.TranslateOption.targetLanguage(targeting),
                     Translate.TranslateOption.format("text")
 
                 ).translatedText
+                cacheTranslation[text] = result
+                result
             }
         }
     }
@@ -47,6 +51,8 @@ class GoogleTranslate(
     }
 
     override fun detect(text: String): PhraseDetected {
+        if (cacheDetected.containsKey(text))
+            return cacheDetected[text]!!
         return runBlocking {
             withContext(Dispatchers.IO) {
                 translate.await().let {
@@ -54,7 +60,9 @@ class GoogleTranslate(
                     val detect = it.detect(text).language
                     val languageName =
                         it.listSupportedLanguages().find { it.code == detect }?.name ?: detect
-                    PhraseDetected(text, detect, languageName, name())
+                    val result = PhraseDetected(text, detect, languageName, name())
+                    cacheDetected[text] = result
+                    result
                 }
             }
         }
