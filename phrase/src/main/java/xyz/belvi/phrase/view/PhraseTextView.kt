@@ -27,10 +27,16 @@ open class PhraseTextView(context: Context, attrs: AttributeSet) :
                     phraseTextViewListener?.onPhraseTranslating()
                 }
 
-                override fun buildSpannableString(phraseTranslation: PhraseTranslation?) {
-                    super.buildSpannableString(phraseTranslation)
-                    text = phraseSpannableBuilder
-                    phraseTextViewListener?.buildSpannableString(phraseTranslation)
+                override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
+                    phraseTextViewListener?.onPhraseTranslated(phraseTranslation)
+                }
+
+                override fun onActionClick(showingTranslation: Boolean) {
+                    phraseTextViewListener?.onActionClick(showingTranslation)
+                }
+
+                override fun onContentChanged(content: PhraseSpannableBuilder) {
+                    text = content
                 }
             }
         text = phraseSpannableBuilder

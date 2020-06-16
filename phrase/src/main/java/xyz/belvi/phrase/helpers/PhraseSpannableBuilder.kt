@@ -29,21 +29,10 @@ abstract class PhraseSpannableBuilder constructor(
         buildTranslateActionSpan()
     }
 
-    abstract override fun onPhraseTranslating()
-
     fun updateSource(source: String) {
         this.source = source
-        showingTranslateAction = true
-        buildSpannableString(phraseTranslation)
-    }
-
-    override fun buildSpannableString(phraseTranslation: PhraseTranslation?) {
-        if (showingTranslateAction) {
-            buildTranslateActionSpan()
-        } else {
-            buildTranslatedPhraseSpan()
-        }
-        showingTranslateAction = !showingTranslateAction
+        buildTranslateActionSpan()
+        onContentChanged(this)
     }
 
     private fun options() = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
@@ -65,7 +54,9 @@ abstract class PhraseSpannableBuilder constructor(
                 if (sourceIndex < 0)
                     return
             }
-            if (phraseDetected.languageCode == options.targetLanguageCode || options.excludeSources.contains(phraseDetected.languageCode)
+            if (phraseDetected.languageCode == options.targetLanguageCode || options.excludeSources.contains(
+                    phraseDetected.languageCode
+                )
             ) {
                 return
             }
@@ -82,6 +73,7 @@ abstract class PhraseSpannableBuilder constructor(
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
+        showingTranslateAction = true
     }
 
     private fun buildTranslatedPhraseSpan() {
@@ -132,6 +124,7 @@ abstract class PhraseSpannableBuilder constructor(
             }
             append(phraseTranslation.translation)
         }
+        showingTranslateAction = false
     }
 
     private fun init() {
@@ -141,10 +134,17 @@ abstract class PhraseSpannableBuilder constructor(
 
     inner class SpannablePhraseClickableSpan : ClickableSpan() {
         override fun onClick(widget: View) {
-            onPhraseTranslating()
-            val options = options()
-            phraseTranslation = Phrase.instance().translate(source, options)
-            buildSpannableString(phraseTranslation)
+            onActionClick(showingTranslateAction)
+            if (showingTranslateAction) {
+                onPhraseTranslating()
+                val options = options()
+                phraseTranslation = Phrase.instance().translate(source, options)
+                buildTranslatedPhraseSpan()
+                onPhraseTranslated(phraseTranslation)
+            } else {
+                buildTranslateActionSpan()
+            }
+            onContentChanged(this@PhraseSpannableBuilder)
             widget.invalidate()
         }
 
