@@ -93,4 +93,4 @@ options {
 }
 ```
 
-##### Understanding an Building Phrase Options.
+##### Understanding and Building Phrase Options.
