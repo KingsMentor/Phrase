@@ -1,19 +1,17 @@
-## Introducing Phrase
+# Introducing Phrase
 
 Phrase provides a way to translate user generated content to desired target language using different translation engine or options of your choice.
 
 I built phrase to remove the constraint of having to use one translation engine in your application. It helps android developers leverage on the strength of different translation engine while giving the best experience to Users. 
+
+This library was inspired by how twitter handles in-app content translation. 
 
 [ ![Download](https://api.bintray.com/packages/kingsmentor/maven/phrase/images/download.svg) ](https://bintray.com/kingsmentor/maven/phrase/_latestVersion)
 
 
 ![Lib Sample](https://github.com/KingsMentor/phrase/blob/master/phrase.gif)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 7c99717049bcfc70193d01bea77f6fb77b91a080
-### Getting Started 
+## Getting Started 
 
 Add this to dependency in apps `build.gradle`
 
@@ -22,51 +20,104 @@ implementation 'xyz.belvi.translate:phrase:1.0.0'
 
 ```
 
-#### Setting Up Phrase
+### Setting Up Phrase
 
 A single instance of phrase is instantiated for the lifetime of the application. This instance can be created in the application call , activity or any implementation that best suite you. Here's an example of setting up the library with some basic options. 
 
-```
-        phrase {
-            mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
-            options {
-                targeting = "fr"
-                actionLabel = "Translate"
-                resultActionLabel = {
-                    "Translated with "
-                }
-            }
+```kotlin
+phrase {
+    mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
+    options {
+        targeting = "fr"
+        actionLabel = "Translate"
+        resultActionLabel = {
+            "Translated with "
         }
+    }
+}
+
 ```
 
-### Markdown
+Let's talk about the parameters required in setting up phrase : 
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+#### `mediums`
 
-```markdown
-Syntax highlighted code block
+With mediums, you specify a list of `TranslationMedium` to use in order of fallbacks. Phrase currently supports: 
 
-# Header 1
-## Header 2
-### Header 3
+* `GoogleTranslate` -  Translation medium using Google Translate Engine
+* `FirebaseMLKitTranslate` - Translation Medium Using Googke Translate Engine through FirebaseML Kit.
+* `DeepL` - Translation medium using DeepL Translation Engine
 
-- Bulleted
-- List
+Phrase also allows implementation of custom translation medium of any of the inbuilt translation medium doesn't meet the requirements you have in mind. 
 
-1. Numbered
-2. List
+##### Building Custom TranslationMedium
 
-**Bold** and _Italic_ and `Code` text
+Adding a Custom TranslationMedium involves extending `TranslationMedium` and implementing the required members. Here's an example.
 
-[Link](url) and ![Image](src)
+```kotlin
+final class DeepL(val apiKey: String) : TranslationMedium() {
+    override fun translate(text: String, targeting: String): String {
+        TODO("handle text translation here") 
+    }
+
+    override fun name(): String {
+        TODO("preferred name of translation engine")
+    }
+
+    override fun detect(text: String): PhraseDetected {
+        TODO("handle language detection here")
+    }
+}
+```
+see [GoogleTranslate.kt](https://github.com/KingsMentor/Phrase/blob/master/phrase/src/main/java/xyz/belvi/phrase/translateMedium/medium/GoogleTranslate.kt) for a working example.
+
+
+#### `options`
+
+Options provide a way to define translation preference and library behaivour. 
+Here's an example of how an option is built: 
+
+```kotlin
+options {
+    targeting = target.text.toString()
+    behaviourFlags {
+        flags = setOf()
+        signatureTypeface = font
+        signatureColor =
+            ContextCompat.getColor(this@MainActivity, R.color.white)
+    }
+    actionLabel = "Translate"
+    resultActionLabel = {
+        detected.text =
+            "Detected Language Source: " + it.detectedSource?.languageName ?: ""
+        "Translated with "
+    }
+}
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+##### Understanding and Building Phrase Options.
 
-### Jekyll Themes
+* `targeting` - Set a target language for translation. When not provided, Phrase uses `Locale.getDefault().language` to get device default language.  For Language code,  you can find [this list](https://cloud.google.com/translate/docs/languages) helpful. Phrase also provides:
+```kotlin
+    enum class Languages(val code: String)
+```
+You can use this in selecting a Target Language.  
+```kotlin
+options {
+    targeting = Languages.French.code
+}
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/KingsMentor/Phrase/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+Phrase uses target language in a couple of ways.
+1. Know which language to translate content to. 
+2. Know when to show user an option to translate. Translation action only shows when the detected language of the source is not same language with the targetted language. This also means that there's no translation query executed when  source and target language is the same. 
 
-### Support or Contact
+* `actionLabel` - action label defines the text users sees that prompts for translation. This only visible when the source text is in another language that is not the targeted language. This can be hidden passing `BEHAVIOR_HIDE_TRANSLATE_PROMPT` in `behaviorFlags`.
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+```kotlin
+options {
+    actionlabel = "Translate"
+}
+```
+
+* `resultActionLabel` - 
