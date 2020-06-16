@@ -95,9 +95,7 @@ options {
 
 ##### Understanding and Building Phrase Options.
 
-* `targeting`
-
-Set a target language for translation. When not provided, Phrase uses `Locale.getDefault().language` to get device default language.  For Language code,  you can find [this list](https://cloud.google.com/translate/docs/languages) helpful. Phrase also provides:
+* `targeting` - Set a target language for translation. When not provided, Phrase uses `Locale.getDefault().language` to get device default language.  For Language code,  you can find [this list](https://cloud.google.com/translate/docs/languages) helpful. Phrase also provides:
 ```kotlin
     enum class Languages(val code: String)
 ```
@@ -110,3 +108,5 @@ options {
 Phrase uses target language in a couple of ways.
 1. Know which language to translate content to. 
 2. Know when to show user an option to translate. Translation action only shows when the detected language of the source is not same language with the targetted language. This also means that there's no translation query executed when  source and target language is the same. 
+
+* `actionLabel` - 
