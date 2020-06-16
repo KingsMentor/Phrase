@@ -13,8 +13,9 @@ import java.util.*
 
 class PhraseImpl internal constructor() : PhraseUseCase {
 
-    internal var phraseOptions: PhraseOptions? = null
-    internal lateinit var translationMedium: List<TranslationMedium>
+
+    var phraseOptions: PhraseOptions? = null
+    internal lateinit var translationMediums: List<TranslationMedium>
 
 
     class OptionsBuilder {
@@ -85,7 +86,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         if (phraseOption.behavioursOptions.behaviours.ignoreDetection())
             return null
         val detectionMedium = phraseOption.preferredDetection ?: run {
-            translationMedium.first()
+            translationMediums.first()
         }
         return detectionMedium.detect(text)
     }
@@ -108,16 +109,25 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                     detected.languageCode == it.sourceLanguageCode
                 }?.let {
                     it.translate
-                } ?: translationMedium.first()
+                } ?: translationMediums.first()
             }
-        } else translationMedium.first()
+        } else translationMediums.first()
 
-        return PhraseTranslation(
-            translationMedium?.translate(
+        var translate = translationMedium?.translate(
+            text,
+            phraseOption.targetLanguageCode
+        )
+        val translationIterator = translationMediums.iterator()
+        while (translate == null && translationIterator.hasNext()) {
+            val medium = translationIterator.next()
+            if (medium == translationMedium)
+                continue
+            translate = medium.translate(
                 text,
                 phraseOption.targetLanguageCode
-            ) ?: text, translationMedium?.name(), detected
-        )
+            )
+        }
+        return PhraseTranslation(translate ?: text, translationMedium?.name(), detected)
     }
 
     override fun updateOptions(options: PhraseOptions) {

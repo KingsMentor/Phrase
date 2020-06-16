@@ -65,9 +65,7 @@ abstract class PhraseSpannableBuilder constructor(
                 if (sourceIndex < 0)
                     return
             }
-            if (phraseDetected.languageCode == options.targetLanguageCode || options.excludeSources.contains(
-                    phraseDetected.languageCode
-                )
+            if (phraseDetected.languageCode == options.targetLanguageCode || options.excludeSources.contains(phraseDetected.languageCode)
             ) {
                 return
             }
