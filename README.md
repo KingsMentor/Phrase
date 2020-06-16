@@ -49,3 +49,48 @@ With mediums, you specify a list of `TranslationMedium` to use in order of fallb
 Phrase also allows implementation of custom translation medium of any of the inbuilt translation medium doesn't meet the requirements you have in mind. 
 
 ##### Building Custom TranslationMedium
+
+Adding a Custom TranslationMedium involves extending `TranslationMedium` and implementing the required members. Here's an example.
+
+```kotlin
+final class DeepL(val apiKey: String) : TranslationMedium() {
+    override fun translate(text: String, targeting: String): String {
+        TODO("handle text translation here") 
+    }
+
+    override fun name(): String {
+        TODO("preferred name of translation engine")
+    }
+
+    override fun detect(text: String): PhraseDetected {
+        TODO("handle language detection here")
+    }
+}
+```
+see [GoogleTranslate.kt](https://github.com/KingsMentor/Phrase/blob/master/phrase/src/main/java/xyz/belvi/phrase/translateMedium/medium/GoogleTranslate.kt) for a working example.
+
+
+#### `options`
+
+Options provide a way to define translation preference and library behaivour. 
+Here's an example of how an option is built: 
+
+```kotlin
+options {
+    targeting = target.text.toString()
+    behaviourFlags {
+        flags = setOf()
+        signatureTypeface = font
+        signatureColor =
+            ContextCompat.getColor(this@MainActivity, R.color.white)
+    }
+    actionLabel = "Translate"
+    resultActionLabel = {
+        detected.text =
+            "Detected Language Source: " + it.detectedSource?.languageName ?: ""
+        "Translated with "
+    }
+}
+```
+
+##### Understanding an Building Phrase Options.
