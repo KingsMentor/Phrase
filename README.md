@@ -95,7 +95,9 @@ options {
 
 ##### Understanding and Building Phrase Options.
 
-* `targeting` - Set a target language for translation. When not provided, Phrase uses `Locale.getDefault().language` to get device default language.  For Language code,  you can find [this list](https://cloud.google.com/translate/docs/languages) helpful. Phrase also provides:
+* `targeting`
+
+Set a target language for translation. When not provided, Phrase uses `Locale.getDefault().language` to get device default language.  For Language code,  you can find [this list](https://cloud.google.com/translate/docs/languages) helpful. Phrase also provides:
 ```kotlin
     enum class Languages(val code: String)
 ```
