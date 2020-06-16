@@ -59,7 +59,7 @@ class Phrase internal constructor() {
         }
 
         fun build(): Phrase {
-            phrase.phraseImpl.translationMedium = mediums
+            phrase.phraseImpl.translationMediums = mediums
             return phrase
         }
     }

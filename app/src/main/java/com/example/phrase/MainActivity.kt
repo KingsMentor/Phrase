@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
 
+
         // setting up phrase
         val phrase = phrase {
             mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
