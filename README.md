@@ -112,4 +112,12 @@ Phrase uses target language in a couple of ways.
 1. Know which language to translate content to. 
 2. Know when to show user an option to translate. Translation action only shows when the detected language of the source is not same language with the targetted language. This also means that there's no translation query executed when  source and target language is the same. 
 
-* `actionLabel` - action label defines the text users sees that prompts for translation. This only visible when the source text is in another language that is not the targeted language. This can be hidden passing `BEHAVIOR_HIDE_TRANSLATE_PROMPT` in `behaviorFlags`. Using this flag is helpful if you prompt users to translate text in another way. 
+* `actionLabel` - action label defines the text users sees that prompts for translation. This only visible when the source text is in another language that is not the targeted language. This can be hidden passing `BEHAVIOR_HIDE_TRANSLATE_PROMPT` in `behaviorFlags`.
+
+```kotlin
+options {
+    actionlabel = "Translate"
+}
+```
+
+* `resultActionLabel` - 
