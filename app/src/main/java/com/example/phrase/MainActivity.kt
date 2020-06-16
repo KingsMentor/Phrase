@@ -14,6 +14,7 @@ import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.phrase
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var phraseSpannableBuilder: PhraseSpannableBuilder
@@ -22,7 +23,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
-
 
         // setting up phrase
         val phrase = phrase {

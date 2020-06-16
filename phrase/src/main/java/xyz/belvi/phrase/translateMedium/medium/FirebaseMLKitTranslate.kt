@@ -18,42 +18,15 @@ class FirebaseMLKitTranslate(
     context: Context,
     @RawRes authCredentials: Int
 ) : TranslationMedium() {
-    val translate by lazy {
-        GlobalScope.async(Dispatchers.IO) {
-            val stream: InputStream = context.resources.openRawResource(authCredentials)
-            val myCredentials = GoogleCredentials.fromStream(stream)
-            val translateOptions: TranslateOptions =
-                TranslateOptions.newBuilder().setCredentials(myCredentials).build()
-            translateOptions.service
-        }
-    }
-
     override fun translate(text: String, targeting: String): String {
-        return runBlocking {
-            withContext(Dispatchers.IO) {
-                translate.await().translate(
-                    text,
-                    Translate.TranslateOption.targetLanguage(targeting)
-                ).translatedText
-            }
-        }
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
     override fun name(): String {
-        return "Google"
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
     override fun detect(text: String): PhraseDetected {
-        return runBlocking {
-            withContext(Dispatchers.IO) {
-                translate.await().let {
-
-                    val detect = it.detect(text).language
-                    val languageName =
-                        it.listSupportedLanguages().find { it.code == detect }?.name ?: detect
-                    PhraseDetected(text, detect, languageName, name())
-                }
-            }
-        }
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 }
