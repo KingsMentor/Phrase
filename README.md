@@ -45,3 +45,7 @@ With mediums, you specify a list of `TranslationMedium` to use in order of fallb
 * `GoogleTranslate` -  Translation medium using Google Translate Engine
 * `FirebaseMLKitTranslate` - Translation Medium Using Googke Translate Engine through FirebaseML Kit.
 * `DeepL` - Translation medium using DeepL Translation Engine
+
+Phrase also allows implementation of custom translation medium of any of the inbuilt translation medium doesn't meet the requirements you have in mind. 
+
+##### Building Custom TranslationMedium
