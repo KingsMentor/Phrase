@@ -1,4 +1,4 @@
-## Introducing Phrase
+# Introducing Phrase
 
 Phrase provides a way to translate user generated content to desired target language using different translation engine or options of your choice.
 
@@ -9,7 +9,7 @@ I built phrase to remove the constraint of having to use one translation engine 
 
 ![Lib Sample](https://github.com/KingsMentor/phrase/blob/master/phrase.gif)
 
-### Getting Started 
+## Getting Started 
 
 Add this to dependency in apps `build.gradle`
 
@@ -18,7 +18,7 @@ implementation 'xyz.belvi.translate:phrase:1.0.0'
 
 ```
 
-#### Setting Up Phrase
+### Setting Up Phrase
 
 A single instance of phrase is instantiated for the lifetime of the application. This instance can be created in the application call , activity or any implementation that best suite you. Here's an example of setting up the library with some basic options. 
 
@@ -35,6 +35,16 @@ phrase {
 }
 
 ```
+
+Let's talk about the parameters required in setting up phrase : 
+
+#### `mediums`
+
+With mediums, you specify a list of `TranslationMedium` to use in order of fallbacks. Phrase currently supports: 
+
+* `GoogleTranslate` -  Translation medium using Google Translate Engine
+* `FirebaseMLKitTranslate` - Translation Medium Using Googke Translate Engine through FirebaseML Kit.
+* `DeepL` - Translation medium using DeepL Translation Engine
 
 ### Markdown
 
