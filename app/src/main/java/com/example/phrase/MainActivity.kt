@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
@@ -49,9 +50,15 @@ class MainActivity : AppCompatActivity() {
                 override fun onPhraseTranslating() {
                 }
 
-                override fun buildSpannableString(phraseTranslation: PhraseTranslation?) {
-                    super.buildSpannableString(phraseTranslation)
-                    translated.text = phraseSpannableBuilder
+                override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
+                }
+
+                override fun onActionClick(showingTranslation: Boolean) {
+                    Log.i(MainActivity::class.java.name, showingTranslation.toString())
+                }
+
+                override fun onContentChanged(content: PhraseSpannableBuilder) {
+                    translated.text = content
                 }
             }
 
