@@ -42,7 +42,7 @@ Let's talk about the parameters required in setting up phrase :
 
 #### `mediums`
 
-With mediums, you specify a list of `TranslationMedium` to use in order of fallbacks. Phrase currently supports: 
+With mediums, you specify a list of `TranslationMedium` to use in order of fallbacks. When translation fails for the first medium, it fallsback to the next medium on the list.  Phrase currently supports: 
 
 * `GoogleTranslate` -  Translation medium using Google Translate Engine
 * `FirebaseMLKitTranslate` - Translation Medium Using Googke Translate Engine through FirebaseML Kit.
@@ -135,6 +135,13 @@ options{
 ![actionlabel sample](https://github.com/KingsMentor/Phrase/blob/master/imgs/resultActionLabelImg.png)
 
 * `preferredDetectionMedium` - Phrase alllows you define a preferred medium to use in language detection. You might want to run language detection with another translation engine different from the engine you want to use for translation. This also accept an instance of `TranslationMedium`. If you are using a custom implementation for this, ensure `detect` returns `PhraseDetected`. See [Building Custom TranslationMedium](#building-custom-translationmedium) for further explanation.
+```kotlin
+options {
+    preferredDetectionMedium = GoogleTranslate(this@MainActivity, R.raw.credential)
+}
+```
+
+* `sourceTranslation` - this option allows you specify a TranslationMedium for a specific source language. This means you can Specify to use `DeepL` to translate any chinese content while you Phrase continue to use whatever medium defined via `mediums` to translate other source content. 
 
 ### Understanding Phrase Models and Listener 
 
