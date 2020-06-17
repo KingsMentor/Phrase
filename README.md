@@ -172,6 +172,15 @@ options {
         )
 }
 ```
+`sourceTranslationOption.sourceLanguageCode` is the languagecode you want to specify translation medium for
+`sourceTranslationOption.targetLanguageCode` is a list of target language to be considered before using this rule. From the example above, DeepL will only be used as a translation medium if the source language is Chinese and the targetted language is either  French or Spanish. 
+
+What then happens when a target language is english in this case ? 
+The default translation medium specified in `mediums` will be used. 
+
+Also, From the above example, DeepL will be used as a translation medium if the source language is German and the targetted language is either French or Spanish. The difference between the first and second rule of  `SourceTranslationOption` is that there's `*` included. This means that if Phrase should use DEEPL to for translation as long as the detected source language is German. 
+
+`sourceTranslationOption.translate` - here, you define translation engine preference for the SourceTranslationOption. Order this list based on fallback preferences. 
 
 ### Understanding Phrase Models and Listener 
 
