@@ -49,9 +49,12 @@ abstract class PhraseSpannableBuilder constructor(
 
         detectedMedium?.let { phraseDetected ->
             if (behaviors.translatePreferredSourceOnly()) {
-                val sourceIndex =
-                    options.sourcePreferredTranslation.sourceTranslateOption.indexOfFirst { it.sourceLanguageCode == phraseDetected.languageCode }
-                if (sourceIndex < 0)
+                val allowTranslation =
+                    options.sourcePreferredTranslation.sourceTranslateOption.filter { it.sourceLanguageCode != phraseDetected.languageCode }
+                        .let { sourceOptions ->
+                            sourceOptions.find { it.targetLanguageCode.contains(options.targetLanguageCode) || it.targetLanguageCode.contains("*") }?.let { true } ?: false
+                        }
+                if (!allowTranslation)
                     return
             }
             if (phraseDetected.languageCode == options.targetLanguageCode || options.excludeSources.contains(

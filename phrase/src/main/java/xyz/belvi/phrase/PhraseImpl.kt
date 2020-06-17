@@ -97,37 +97,41 @@ class PhraseImpl internal constructor() : PhraseUseCase {
 
         val detected = detect(text, options)
 
-        val translationMedium = if (detected != null) {
-            if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly()) {
-                phraseOption.sourcePreferredTranslation.sourceTranslateOption.find {
-                    detected.languageCode == it.sourceLanguageCode
-                }?.let {
-                    it.translate
-                }
-            } else {
-                phraseOption.sourcePreferredTranslation.sourceTranslateOption.find {
-                    detected.languageCode == it.sourceLanguageCode
-                }?.let {
-                    it.translate
-                } ?: translationMediums.first()
-            }
-        } else translationMediums.first()
+        val translationMediums = if (detected != null) {
+            phraseOption.sourcePreferredTranslation.sourceTranslateOption.filter { detected.languageCode != it.sourceLanguageCode }
+                .let { sourceOptions ->
+                    sourceOptions.find { it.targetLanguageCode.contains(phraseOption.targetLanguageCode) }
+                        ?.let {
+                            it.translate
+                        } ?: sourceOptions.find { it.targetLanguageCode.contains("*") }
+                        ?.let { it.translate }
+                    ?: if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly()) null else translationMediums
 
-        var translate = translationMedium?.translate(
-            text,
-            phraseOption.targetLanguageCode
-        )
-        val translationIterator = translationMediums.iterator()
-        while (translate == null && translationIterator.hasNext()) {
-            val medium = translationIterator.next()
-            if (medium == translationMedium)
-                continue
-            translate = medium.translate(
+                }
+
+        } else translationMediums
+
+        translationMediums?.let {
+            var translationMedium = translationMediums?.first()
+            var translate = translationMedium.translate(
                 text,
                 phraseOption.targetLanguageCode
             )
+
+            val translationIterator = translationMediums.iterator()
+            while (translate.isNullOrBlank() && translationIterator.hasNext()) {
+                val medium = translationIterator.next()
+                if (medium == translationMedium)
+                    continue
+                translate = medium.translate(
+                    text,
+                    phraseOption.targetLanguageCode
+                )
+                translationMedium = medium
+            }
+            return PhraseTranslation(translate, translationMedium.name(), detected)
         }
-        return PhraseTranslation(translate ?: text, translationMedium?.name(), detected)
+        return PhraseTranslation(text, null, null)
     }
 
     override fun updateOptions(options: PhraseOptions) {
