@@ -64,7 +64,7 @@ final class DeepL(val apiKey: String) : TranslationMedium() {
         TODO("preferred name of translation engine")
     }
 
-    override fun detect(text: String): PhraseDetected {
+    override fun detect(text: String): PhraseDetected? {
         TODO("handle language detection here")
     }
 }
