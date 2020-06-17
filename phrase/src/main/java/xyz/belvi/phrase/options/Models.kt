@@ -3,10 +3,9 @@ package xyz.belvi.phrase.options
 import androidx.annotation.IntDef
 import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_HIDE_CREDIT_SIGNATURE
 import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_HIDE_TRANSLATE_PROMPT
-import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_REPLACE_SOURCE_TEXT
 import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_IGNORE_DETECTION
+import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_REPLACE_SOURCE_TEXT
 import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY
-import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 data class PhraseDetected(
     val text: String,
