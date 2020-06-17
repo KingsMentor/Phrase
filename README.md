@@ -72,6 +72,7 @@ final class DeepL(val apiKey: String) : TranslationMedium() {
 see [GoogleTranslate.kt](https://github.com/KingsMentor/Phrase/blob/master/phrase/src/main/java/xyz/belvi/phrase/translateMedium/medium/GoogleTranslate.kt) for a working example.
 
 
+
 #### `options`
 
 Options provide a way to define translation preference and library behaivour. 
@@ -132,3 +133,11 @@ options{
 ```
 
 ![actionlabel sample](https://github.com/KingsMentor/Phrase/blob/master/imgs/resultActionLabel.png)
+
+### Understanding Phrase Models and Listener 
+
+##### PhraseDection
+
+##### PhraseTranslation
+
+##### PhraseTranslateListener
