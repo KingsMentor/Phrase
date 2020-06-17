@@ -134,6 +134,8 @@ options{
 
 ![actionlabel sample](https://github.com/KingsMentor/Phrase/blob/master/imgs/resultActionLabelImg.png)
 
+* `preferredDetectionMedium` - Phrase alllows you define a preferred medium to use in language detection. You might want to run language detection with another translation engine different from the engine you want to use for translation. This also accept an instance of `TranslationMedium`. If you are using a custom implementation for this, ensure `detect` returns `PhraseDetected`. See [Building Custom TranslationMedium](#building-custom-translationmedium) for further explanation.
+
 ### Understanding Phrase Models and Listener 
 
 ##### PhraseDection
