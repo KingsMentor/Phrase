@@ -141,7 +141,37 @@ options {
 }
 ```
 
-* `sourceTranslation` - this option allows you specify a TranslationMedium for a specific source language. This means you can Specify to use `DeepL` to translate any chinese content while you Phrase continue to use whatever medium defined via `mediums` to translate other source content. 
+* `sourceTranslation` - this option allows you specify a TranslationMedium for a specific source language. This means you can Specify to use `DeepL` to translate any chinese content while Phrase continue to use whatever medium defined via `mediums` to translate other source content. 
+
+Let us dive deeper into what can be acheive using `SourceTranslation`
+
+
+```kotlin
+
+// MODEL    
+data class SourceTranslationOption(
+    val sourceLanguageCode: String,
+    val targetLanguageCode: List<String> = emptyList(),
+    val translate: List<TranslationMedium> = emptyList()
+)
+
+//  USAGE
+options {
+    sourceTranslation =
+        listOf(
+            SourceTranslationOption(
+                Languages.Chinese.code, 
+                listOf("fr", "es"),
+                listOf(DeepL(""))
+            ),
+            SourceTranslationOption(
+                Languages.German.code,
+                listOf("fr", "es", "*"),
+                listOf(DeepL(""))
+            )
+        )
+}
+```
 
 ### Understanding Phrase Models and Listener 
 
