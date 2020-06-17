@@ -132,7 +132,7 @@ options{
 }
 ```
 
-![actionlabel sample](https://github.com/KingsMentor/Phrase/blob/master/imgs/resultActionLabel.png)
+![actionlabel sample](https://github.com/KingsMentor/Phrase/blob/master/imgs/resultActionLabelImg.png)
 
 ### Understanding Phrase Models and Listener 
 
