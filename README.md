@@ -119,5 +119,16 @@ options {
     actionlabel = "Translate"
 }
 ```
+![actionlabel sample](https://github.com/KingsMentor/Phrase/blob/master/imgs/actionlabel.png)
 
-* `resultActionLabel` - 
+* `resultActionLabel` - this defines the actiontext the user sees when a content has been translated. In the sample application, It gives credit to the translation engine used but this can also be customised. Credit can be hidden by passing `BEHAVIOR_HIDE_CREDIT_SIGNATURE` in `behaviorFlags`.
+```kotlin
+options{
+    resultActionLabel = { phraseTranslation ->
+        //
+        "Translated with "
+    }
+}
+```
+
+![actionlabel sample](https://github.com/KingsMentor/Phrase/blob/master/imgs/resultActionLabel.png)
