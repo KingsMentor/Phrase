@@ -424,5 +424,5 @@ To update source when using `PhraseTextWatcher`, set text of the textView to the
 2. Phrase is best used for runtime translation for user generated content and not for translating static strings or localizing your appliation string resource. 
 
 
-### Closing Thought. 
-Phrase is still actively under development. Pull Request, contributions, thoughts and constructive criticism are welcomed. Please ensure you understand the context before contributing. 
+### Closing Remark. 
+Phrase is still actively under development. Pull Request, contributions, thoughts and constructive criticism are welcomed. Please ensure you understand the context before contributing. [Submit issues here](https://github.com/KingsMentor/Phrase/issues).
