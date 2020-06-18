@@ -9,7 +9,7 @@ This library was inspired by how twitter handles in-app content translation.
 [ ![Download](https://api.bintray.com/packages/kingsmentor/maven/phrase/images/download.svg) ](https://bintray.com/kingsmentor/maven/phrase/_latestVersion)
 
 
-![Lib Sample](https://github.com/KingsMentor/phrase/blob/master/phrase.gif)
+![Phrase Sample](https://github.com/KingsMentor/phrase/blob/master/documentation/imgs/phrase.gif)
 
 # Getting Started 
 
@@ -120,7 +120,7 @@ options {
     actionlabel = "Translate"
 }
 ```
-![actionlabel sample](https://github.com/KingsMentor/Phrase/blob/master/imgs/actionlabel.png)
+![actionLabel sample](https://github.com/KingsMentor/Phrase/blob/master/documentation/imgs/actionlabel.png)
 
 3)`resultActionLabel` - this defines the actiontext users see when content has been translated. In the sample application, it gives credit to the translation engine used but this can also be customised. Credit can be hidden by passing `BEHAVIOR_HIDE_CREDIT_SIGNATURE` in `behaviorFlags`.
 ```kotlin
@@ -132,7 +132,7 @@ options{
 }
 ```
 
-![actionlabel sample](https://github.com/KingsMentor/Phrase/blob/master/imgs/resultActionLabelImg.png)
+![resultActionLabel sample](https://github.com/KingsMentor/Phrase/blob/master/documentation/imgs/resultActionLabelImg.png)
 
 4)`preferredDetectionMedium` - Phrase allows you to define a preferred medium to use in language detection. You might want to run language detection with a translation engine different from the engine you want to use for translation. This also accepts an instance of `TranslationMedium`. If you are using a custom implementation for this, ensure `detect` returns `PhraseDetected`. See [Building Custom TranslationMedium](#building-custom-translationmedium) for further explanation.
 ```kotlin
@@ -337,8 +337,8 @@ spanish_text.prepare(getString(R.string.spanish),options,object : PhraseTranslat
         // called when there's a content changed due to Phrase translation
     }
 })
- ``` 
- Calling `prepare` updates the content of the TextView with Phrase Configuration. Passing in `options` in `prepare` is optional and is only relevant if you want to use custom Options for this PhraseTextView. `phraseTranslateListener` is also an optional callback that provides updates.
+``` 
+Calling `prepare` updates the content of the TextView with Phrase Configuration. Passing in `options` in `prepare` is optional and is only relevant if you want to use custom Options for this PhraseTextView. `phraseTranslateListener` is also an optional callback that provides updates.
  
 
 To update the content of PhraseTextView, use `updateSource(text)`. This ensures, the content is updated and prepared for translation.
