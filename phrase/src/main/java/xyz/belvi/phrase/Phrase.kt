@@ -22,7 +22,7 @@ class Phrase internal constructor() {
     internal val phraseImpl = PhraseImpl()
 
     companion object {
-        val phrase = Phrase()
+        private val phrase = Phrase()
         fun instance(): Phrase {
             return phrase
         }
@@ -34,6 +34,10 @@ class Phrase internal constructor() {
         phraseTranslateListener: PhraseTranslateListener? = null
     ) {
         return phraseImpl.bindTextView(textView, options, phraseTranslateListener)
+    }
+
+    fun setTranslationMedium(translationMedium: List<TranslationMedium>) {
+        phraseImpl.setTranslationMediums(translationMedium)
     }
 
     fun updateOptions(options: PhraseOptions) {

@@ -51,7 +51,7 @@ class GoogleTranslate(
         return "Google"
     }
 
-    override fun detect(text: String): PhraseDetected {
+    override fun detect(text: String): PhraseDetected? {
         if (cacheDetected.containsKey(text))
             return cacheDetected[text]!!
         return runBlocking {
