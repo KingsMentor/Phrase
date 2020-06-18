@@ -211,6 +211,23 @@ options {
 These behavior can be controlled with flags. In the next phase, I will address flags available in Phrase and how it works. 
 
 ### Phrase Behavior Flags
+Flags helps define certain behaviour in Phrase to suit your needs. Here's an example of setting flags. 
+```kotlin
+options {
+    behaviourFlags {
+        flags = setOf(BEHAVIOR_HIDE_CREDIT_SIGNATURE,BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY)
+    }
+}
+```
+`BEHAVIOR_REPLACE_SOURCE_TEXT` - When this flag is set, the source text is replace with translated text after translation
+
+`BEHAVIOR_TRANSLATE_SOURCE_OPTION_ONLY`-  When this flag is set, Phrase only translate sources included in `SourceTranslationOption` only.
+
+`BEHAVIOR_IGNORE_DETECTION`- setting this flag means you always want to run translation without detection first. For this case, Phrase will always show the actionLabel to the user. 
+
+`BEHAVIOR_HIDE_CREDIT_SIGNATURE` - when this flag is set, Phrase doesn't append credit to resultActionLabel. 
+
+`BEHAVIOR_HIDE_TRANSLATE_PROMPT`- Phrase doesn'y show translate action text when this flag is enabled. 
 
 ### Understanding Phrase Models and Listener 
 
