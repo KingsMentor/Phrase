@@ -367,9 +367,58 @@ Using a custom implementation of textView doesn't stop you from using Phrase . P
                 translated.text = content
             }
         })
+        textView.setText(text) // update the text after binding
 ```
 A TextView can be bind with custom Options which would be only applied to translation on this textView. Similar to the behavior in `PhraseTextView`, `PhraseTranslateListener` is a callback to get updates on Phrase Translation in this textView. 
 
 #### 4. Using PhraseSpannableBuilder
+Phrase also provides a SpannableStringBuiler implementation called `PhraseSpannableBuilder`. This provides a SpannableString that the user can interacts with. 
+```kotlin
+        phraseSpannableBuilder =
+            object : PhraseSpannableBuilder("",options) {
+                override fun onPhraseTranslating() {
+                }
+
+                override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
+                }
+
+                override fun onActionClick(showingTranslation: Boolean) {
+                    Log.i(MainActivity::class.java.name, showingTranslation.toString())
+                }
+
+                override fun onContentChanged(content: PhraseSpannableBuilder) {
+                // set text of textView 
+                    translated.text = content
+                }
+            }
+```
+Custom `Options` can also be pass to `PhraseSpannableBuilder`. This option will be used or Phrase instance default options will be used when no `Options` is provided when setting up `PhraseSpannableBuilder`. PhraseSpannableBuilder Options can also be updated by:
+
+`phraseSpannableBuilder.updateOptions(options)`
+
+To change the source of `PhraseSpannableBuilder` call `phraseSpannableBuilder.updateSource(text)`. This update the source text of that should be translated
 
 #### 5. Using PhraseTextWatcher
+PhraseTextWatcher is a custom TextWatcher implementation that listens to changes in a textView to update translation source for that textView using Phrase. This is another way of adding Phrase Capability to textView without using any of the approached that has been discussed. 
+
+```kotlin
+        textView.addTextChangedListener(
+            PhraseTextWatcher(
+                options,
+                phraseTranslateListener
+            )
+        )
+  ```
+  To ensure this works, don't add these 2 lines:
+  
+```kotlin
+    textView.movementMethod = LinkMovementMethod.getInstance()
+    textView.highlightColor = Color.TRANSPARENT
+ ```
+To update source when using `PhraseTextWatcher`, set text of the textView to the new text. Options provided when adding `PhraseTextWatcher` will be used for translating text when `onTextChanged` is called. If nom `Options` was provided, Phrase will use the default Options provided when Phrase was initialised. 
+
+### Extra Information to Keep in mind. 
+
+1. `actionLabel` and `resultActionLabel` color uses `colorAccent` . To change this,  set `android:textColorLink` in the textView that Phrase will be running translation on. 
+
+2. Phrase is best used for runtime translation for user generated content and not for translating static strings or localizing your appliation string resource. 
