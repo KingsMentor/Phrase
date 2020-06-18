@@ -13,7 +13,7 @@ final class DeepL(val apiKey: String) : TranslationMedium() {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun detect(text: String): PhraseDetected {
+    override fun detect(text: String): PhraseDetected? {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 }

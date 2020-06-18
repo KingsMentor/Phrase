@@ -5,7 +5,7 @@ import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_HIDE_CREDIT_SIGNATU
 import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_HIDE_TRANSLATE_PROMPT
 import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_IGNORE_DETECTION
 import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_REPLACE_SOURCE_TEXT
-import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY
+import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_TRANSLATE_SOURCE_OPTION_ONLY
 
 data class PhraseDetected(
     val text: String,
@@ -26,7 +26,7 @@ class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
     companion object {
         const val BEHAVIOR_REPLACE_SOURCE_TEXT: Int = 1
 
-        const val BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY: Int = 2
+        const val BEHAVIOR_TRANSLATE_SOURCE_OPTION_ONLY: Int = 2
 
         const val BEHAVIOR_IGNORE_DETECTION: Int = 3
 
@@ -42,7 +42,7 @@ class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
     internal fun ignoreDetection() = behaviorSet.contains(BEHAVIOR_IGNORE_DETECTION)
 
     internal fun translatePreferredSourceOnly() =
-        behaviorSet.contains(BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY)
+        behaviorSet.contains(BEHAVIOR_TRANSLATE_SOURCE_OPTION_ONLY)
 
     internal fun hideSignature() = behaviorSet.contains(BEHAVIOR_HIDE_CREDIT_SIGNATURE)
 
@@ -56,7 +56,7 @@ class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
     flag = true,
     value = [
         BEHAVIOR_REPLACE_SOURCE_TEXT,
-        BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY,
+        BEHAVIOR_TRANSLATE_SOURCE_OPTION_ONLY,
         BEHAVIOR_IGNORE_DETECTION,
         BEHAVIOR_HIDE_CREDIT_SIGNATURE,
         BEHAVIOR_HIDE_TRANSLATE_PROMPT

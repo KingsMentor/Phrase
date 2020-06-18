@@ -12,8 +12,12 @@ import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.helpers.PhraseSpannableBuilder
 import xyz.belvi.phrase.options
 import xyz.belvi.phrase.options.PhraseTranslation
+import xyz.belvi.phrase.options.SourceTranslationOption
 import xyz.belvi.phrase.phrase
+import xyz.belvi.phrase.translateMedium.Languages
+import xyz.belvi.phrase.translateMedium.medium.DeepL
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,12 +29,27 @@ class MainActivity : AppCompatActivity() {
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
 
+
         // setting up phrase
         val phrase = phrase {
             mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
             options {
+                sourceTranslation =
+                    listOf(
+                        SourceTranslationOption(
+                            Languages.Chinese.code,
+                            listOf("fr", "es"),
+                            listOf(DeepL(""))
+                        ),
+                        SourceTranslationOption(
+                            Languages.German.code,
+                            listOf("fr", "es", "*"),
+                            listOf(DeepL(""))
+                        )
+                    )
                 targeting = target.text.toString()
                 behaviourFlags {
+                    switchAnim
                     flags = setOf()
                     signatureTypeface = font
                     signatureColor =
@@ -46,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         phraseSpannableBuilder =
-            object : PhraseSpannableBuilder("") {
+            object : PhraseSpannableBuilder("",null) {
                 override fun onPhraseTranslating() {
                 }
 
@@ -68,10 +87,6 @@ class MainActivity : AppCompatActivity() {
         yoruba.setText(R.string.yoruba)
 
         spanish_text.prepare(getString(R.string.spanish))
-
-
-        translated.movementMethod = LinkMovementMethod.getInstance()
-        translated.highlightColor = Color.TRANSPARENT
 
 
         update_source.setOnClickListener {

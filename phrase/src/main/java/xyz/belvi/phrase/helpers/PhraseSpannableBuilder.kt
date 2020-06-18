@@ -16,17 +16,23 @@ import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 
 abstract class PhraseSpannableBuilder constructor(
-    private var source: String,
-    private val phraseOptions: PhraseOptions? = null
+    protected var source: String,
+    protected var phraseOptions: PhraseOptions? = null
 ) :
     SpannableStringBuilder(source),
     PhraseTranslateListener {
 
-    private var showingTranslateAction = false
-    private var phraseTranslation: PhraseTranslation? = null
+    protected var showingTranslateAction = false
+    protected var phraseTranslation: PhraseTranslation? = null
 
     init {
         buildTranslateActionSpan()
+    }
+
+    fun updateOptions(options: PhraseOptions) {
+        this.phraseOptions = options
+        buildTranslateActionSpan()
+        onContentChanged(this)
     }
 
     fun updateSource(source: String) {
@@ -52,7 +58,11 @@ abstract class PhraseSpannableBuilder constructor(
                 val allowTranslation =
                     options.sourcePreferredTranslation.sourceTranslateOption.filter { it.sourceLanguageCode != phraseDetected.languageCode }
                         .let { sourceOptions ->
-                            sourceOptions.find { it.targetLanguageCode.contains(options.targetLanguageCode) || it.targetLanguageCode.contains("*") }?.let { true } ?: false
+                            sourceOptions.find {
+                                it.targetLanguageCode.contains(options.targetLanguageCode) || it.targetLanguageCode.contains(
+                                    "*"
+                                )
+                            }?.let { true } ?: false
                         }
                 if (!allowTranslation)
                     return
