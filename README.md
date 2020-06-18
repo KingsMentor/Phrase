@@ -352,7 +352,7 @@ To update the content of PhraseTextView, used `updateSource(text)`. This ensure,
 Using a custom implementation of textView doesn't stop you from using Phrase . Phrase provide `bindTextView` to help bind a textView for Translation and having Phrase capabilities. 
 
 ```kotlin
-        Phrase.instance().bindTextView(yoruba,null,object : PhraseSpannableBuilder("") {
+        Phrase.instance().bindTextView(textView,options,object : PhraseTranslateListener("") {
             override fun onPhraseTranslating() {
             }
 
@@ -368,3 +368,8 @@ Using a custom implementation of textView doesn't stop you from using Phrase . P
             }
         })
 ```
+A TextView can be bind with custom Options which would be only applied to translation on this textView. Similar to the behavior in `PhraseTextView`, `PhraseTranslateListener` is a callback to get updates on Phrase Translation in this textView. 
+
+#### 4. Using PhraseSpannableBuilder
+
+#### 5. Using PhraseTextWatcher
