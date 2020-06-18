@@ -64,7 +64,7 @@ final class DeepL(val apiKey: String) : TranslationMedium() {
         TODO("preferred name of translation engine")
     }
 
-    override fun detect(text: String): PhraseDetected? {
+    override fun detect(text: String): PhraseDetected {
         TODO("handle language detection here")
     }
 }
@@ -181,6 +181,36 @@ The default translation medium specified in `mediums` will be used.
 Also, From the above example, DeepL will be used as a translation medium if the source language is German and the targetted language is either French or Spanish. The difference between the first and second rule of  `SourceTranslationOption` is that there's `*` included. This means that if Phrase should use DEEPL to for translation as long as the detected source language is German. 
 
 `sourceTranslationOption.translate` - here, you define translation engine preference for the SourceTranslationOption. Order this list based on fallback preferences. 
+
+
+* `sourcesToExclude` - this option allows you to ignore language of certain sources for translation. This means that of the detected language source is in this list, users wouldn't be shown the translate action. 
+```kotlin
+options {
+    sourcesToExclude = listOf("fr","es","zh")
+}
+```
+This example implies that Phrase wouldn't handle translation for the language sources detected to be in the list provided. 
+
+
+* `behaviourOptions` - this helps define how Phrase handles UI behaviour. 
+```kotlin
+options {
+    behaviourFlags {
+        switchAnim = R.anim.slide_up
+        flags = setOf(BEHAVIOR_HIDE_CREDIT_SIGNATURE,BEHAVIOR_TRANSLATE_PREFERRED_SOURCE_ONLY)
+        signatureTypeface = typeFace
+        signatureColor =
+            ContextCompat.getColor(this@MainActivity, R.color.white)
+    }
+}
+```
+`switchAnim` -  set anim for text change. If you do not want any text change anomation, do not set this value. 
+`signatureTypeface` - Phrase appends Translation engine name to `resultActionLabel`. This is so credit is given to the Translation Engine. `signatureTypeface` defines the typeface for rendering this text. 
+`signatureColor` - setting text color for Translation engine credit. 
+
+These behavior can be controlled with flags. In the next phase, I will address flags available in Phrase and how it works. 
+
+### Phrase Behavior Flags
 
 ### Understanding Phrase Models and Listener 
 
