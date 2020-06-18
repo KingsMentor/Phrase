@@ -289,9 +289,52 @@ returned by Translation Medium when `detect` is called. It contains:
 `detectionMediumName` - engine name running the detection
 
 ##### PhraseTranslation
+returned by Phrase Medium when `translate` is called. It contains: 
 
+`translation` - the translated text
+
+`translationMediumName` - engine name that translated this text
+
+`detectedSource` - an instance of PhraseDection containing information about language detection before the text was translated. This can be null when `BEHAVIOR_IGNORE_DETECTION` flag is enabled. 
+
+Finally, TranslationMediums can be updated after a Phrase instance is created. There are few usecases for this that comes to mind as at the time of this writting but this provide a way to always change order of translation medium during runtime.
+
+```kotlin
+Phrase.instance().setTranslationMedium(listOf(GoogleTranslate(this@MainActivity, R.raw.credential)));
+```
+
+#### 2. PhraseTextView
+PhraseTextView is a custom implementation of `androidx.appcompat.widget.AppCompatTextView` with support for Phrase Translation. PhraseTextView handles language translation and detection based on the options defined when setting up Phrase or when `prepare()` is called. 
+
+##### Using PhraseTextView
+
+1. Add to xml
+
+```xml
+        <xyz.belvi.phrase.view.PhraseTextView
+            android:id="@+id/spanish_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"/>
+```
+
+2. Reference in kotlin or Java by calling `prepare()`
+
+```kotlin
+    spanish_text.prepare(getString(R.string.spanish),options,phraseTextViewListener)
+ ``` 
+ Calling `prepare` updates the content of the TextView with Phrase Configuration. Passing in `options` in `prepare` is optional which is only relevant if you want to run a custom Options for this PhraseTextView. `phraseTextViewListener` is also an optional params.
+ 
+##### PhraseTranslateListener
+ ```kotlin
+ interface PhraseTranslateListener {
+    fun onPhraseTranslating() // called when a text is about to be translated
+    fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) // called when a text has been translated
+    fun onActionClick(showingTranslation: Boolean) // called when user clicks on Phrase actionLabel.
+    fun onContentChanged(content: PhraseSpannableBuilder) // called when there's a content changed due of Phrase translation
+}
+```
 ### Understanding Phrase Models and Listener 
 
 
-
-##### PhraseTranslateListener
