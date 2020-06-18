@@ -426,3 +426,6 @@ To update source when using `PhraseTextWatcher`, set text of the textView to the
 
 ### Closing Remark. 
 Phrase is still actively under development. Pull Request, contributions, thoughts and constructive criticism are welcomed. Please ensure you understand the context before contributing. [Submit issues here](https://github.com/KingsMentor/Phrase/issues).
+This library is not a product of or in anyway affiliated to [Phrase.com](https://phrase.com)
+
+To support this work and other of my [Open Source Project](https://github.com/KingsMentor), you can [buy me a coffee or support](https://www.buymeacoffee.com/kingsmentor) 
