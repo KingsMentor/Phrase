@@ -229,10 +229,69 @@ options {
 
 `BEHAVIOR_HIDE_TRANSLATE_PROMPT`- Phrase doesn'y show translate action text when this flag is enabled. 
 
-### Understanding Phrase Models and Listener 
+
+### Using Phrase
+#### 1. Phrase Instance
+Here's a basic set-up without so much complexity or consideration:
+```kotlin
+phrase {
+    mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
+    options {
+        targeting = Languages.English.code
+    }
+}
+```
+This is a simple set up without many options. This instance can be assigned to a variable like so :
+
+```kotlin
+val phrase = phrase {
+    mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
+    options {
+        targeting = Languages.English.code
+    }
+}
+
+// so something with phrase
+phrase.translate("text")
+
+//Phrase instance can also be referenced without assigning to variable like this:
+Phrase.instance().translate("text");
+```
+
+##### Updating Phrase Options : 
+Though phrase runs a single instance, options can be updated after a phrase instance has been created. 
+a new option can be created like this :
+```kotlin
+val options = options {
+    targeting = Languages.English.code
+}
+// this will replace options defined when Phrase was being initialized to the new option provided.
+phrase.updateOptions(options)
+```
+Using Phrase Instance also allows direct translation and detection using preferred options.
+
+```kotlin
+    fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation
+
+    fun detectLanguage(text: String, options: PhraseOptions? = null): PhraseDetected?
+```
+
+Notice that calling `translate` or `detectLanguage` takes in `PhraseOptions` that is optional. When a PhraseOption is not provided, Phrase uses the default available in the instance. This means, you can translate with a custom option without overriding the default option provided when setting-up Phrase. 
 
 ##### PhraseDection
+returned by Translation Medium when `detect` is called. It contains: 
+`text` - the text passed to the engine for detection
+
+`languageCode` - languageCode of the detected language
+
+`languageName` - languageName of the detected language
+
+`detectionMediumName` - engine name running the detection
 
 ##### PhraseTranslation
+
+### Understanding Phrase Models and Listener 
+
+
 
 ##### PhraseTranslateListener
