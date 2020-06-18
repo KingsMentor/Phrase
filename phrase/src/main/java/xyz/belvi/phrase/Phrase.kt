@@ -7,7 +7,6 @@ import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
-
 fun phrase(phraseBuilder: Phrase.Builder.() -> Unit): Phrase =
     Phrase.Builder().apply(phraseBuilder).build()
 
@@ -15,9 +14,7 @@ fun options(phraseOptions: PhraseImpl.OptionsBuilder.() -> Unit): PhraseOptions 
     return PhraseImpl.OptionsBuilder().apply(phraseOptions).build()
 }
 
-
 class Phrase internal constructor() {
-
 
     internal val phraseImpl = PhraseImpl()
 
@@ -52,7 +49,6 @@ class Phrase internal constructor() {
         return phraseImpl.detect(text, options)
     }
 
-
     class Builder {
         var mediums = listOf<TranslationMedium>()
 
@@ -67,6 +63,4 @@ class Phrase internal constructor() {
             return phrase
         }
     }
-
-
 }

@@ -22,7 +22,6 @@ data class PhraseTranslation(
 
 class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
 
-
     companion object {
         const val BEHAVIOR_REPLACE_SOURCE_TEXT: Int = 1
 
@@ -33,9 +32,7 @@ class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
         const val BEHAVIOR_HIDE_CREDIT_SIGNATURE: Int = 4
 
         const val BEHAVIOR_HIDE_TRANSLATE_PROMPT: Int = 5
-
     }
-
 
     internal fun replaceSourceText() = behaviorSet.contains(BEHAVIOR_REPLACE_SOURCE_TEXT)
 
@@ -47,9 +44,7 @@ class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
     internal fun hideSignature() = behaviorSet.contains(BEHAVIOR_HIDE_CREDIT_SIGNATURE)
 
     internal fun hideTranslatePrompt() = behaviorSet.contains(BEHAVIOR_HIDE_TRANSLATE_PROMPT)
-
 }
-
 
 @Target(AnnotationTarget.TYPE)
 @IntDef(
