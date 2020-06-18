@@ -9,7 +9,7 @@ This library was inspired by how twitter handles in-app content translation.
 [ ![Download](https://api.bintray.com/packages/kingsmentor/maven/phrase/images/download.svg) ](https://bintray.com/kingsmentor/maven/phrase/_latestVersion)
 
 
-![Lib Sample](https://github.com/KingsMentor/phrase/blob/master/phrase.gif)
+![Lib Sample](https://github.com/KingsMentor/phrase/blob/master/documentation/phrase.gif)
 
 # Getting Started 
 
