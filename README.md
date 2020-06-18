@@ -348,5 +348,23 @@ To update the content of PhraseTextView, used `updateSource(text)`. This ensure,
     spanish_text.updateSource(text)
 ```
 
-#### 2. Binding a TextView
+#### 3. Binding a TextView
+Using a custom implementation of textView doesn't stop you from using Phrase . Phrase provide `bindTextView` to help bind a textView for Translation and having Phrase capabilities. 
 
+```kotlin
+        Phrase.instance().bindTextView(yoruba,null,object : PhraseSpannableBuilder("") {
+            override fun onPhraseTranslating() {
+            }
+
+            override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
+            }
+
+            override fun onActionClick(showingTranslation: Boolean) {
+                Log.i(MainActivity::class.java.name, showingTranslation.toString())
+            }
+
+            override fun onContentChanged(content: PhraseSpannableBuilder) {
+                translated.text = content
+            }
+        })
+```
