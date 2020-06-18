@@ -72,7 +72,6 @@ final class DeepL(val apiKey: String) : TranslationMedium() {
 see [GoogleTranslate.kt](https://github.com/KingsMentor/Phrase/blob/master/phrase/src/main/java/xyz/belvi/phrase/translateMedium/medium/GoogleTranslate.kt) for a working example.
 
 
-
 #### `options`
 
 Options provide a way to define translation preference and library behaivour. 
@@ -120,24 +119,5 @@ options {
     actionlabel = "Translate"
 }
 ```
-![actionlabel sample](https://github.com/KingsMentor/Phrase/blob/master/imgs/actionlabel.png)
 
-* `resultActionLabel` - this defines the actiontext the user sees when a content has been translated. In the sample application, It gives credit to the translation engine used but this can also be customised. Credit can be hidden by passing `BEHAVIOR_HIDE_CREDIT_SIGNATURE` in `behaviorFlags`.
-```kotlin
-options{
-    resultActionLabel = { phraseTranslation ->
-        //
-        "Translated with "
-    }
-}
-```
-
-![actionlabel sample](https://github.com/KingsMentor/Phrase/blob/master/imgs/resultActionLabelImg.png)
-
-### Understanding Phrase Models and Listener 
-
-##### PhraseDection
-
-##### PhraseTranslation
-
-##### PhraseTranslateListener
+* `resultActionLabel` - 
