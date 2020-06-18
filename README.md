@@ -100,7 +100,7 @@ options {
 
 1)`targeting` - Set a target language for translation. When this is not provided, Phrase uses `Locale.getDefault().language` to get the default language of the device. For Language code, you can find [this list](https://cloud.google.com/translate/docs/languages) helpful. Phrase also provides:
 ```kotlin
-    enum class Languages(val code: String)
+enum class Languages(val code: String)
 ```  
 You can use this to select a Target Language.  
 ```kotlin
@@ -146,7 +146,6 @@ options {
 Let us dive deeper into what can be acheived using `SourceTranslation`
 
 ```kotlin
-
 // MODEL    
 data class SourceTranslationOption(
     val sourceLanguageCode: String,
@@ -270,9 +269,9 @@ phrase.updateOptions(options)
 Using Phrase Instance also allows direct translation and detection using preferred options.
 
 ```kotlin
-    fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation
+fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation
 
-    fun detectLanguage(text: String, options: PhraseOptions? = null): PhraseDetected?
+fun detectLanguage(text: String, options: PhraseOptions? = null): PhraseDetected?
 ```
 
 Notice that calling `translate` or `detectLanguage` takes in `PhraseOptions` which is optional. When a PhraseOption is not provided, Phrase uses the default available in the instance. This means you can translate with a custom option without overriding the default option provided when setting-up Phrase. 
@@ -305,126 +304,128 @@ Phrase.instance().setTranslationMedium(listOf(GoogleTranslate(this@MainActivity,
 ### 2. PhraseTextView
 PhraseTextView is a custom implementation of `androidx.appcompat.widget.AppCompatTextView` with support for Phrase Translation. PhraseTextView handles language translation and detection based on the options defined when setting up Phrase or when `prepare()` is called. 
 
-##### Using PhraseTextView
+#### Using PhraseTextView
 
-1. Add to xml
+Step 1. Add to xml
 
 ```xml
-        <xyz.belvi.phrase.view.PhraseTextView
-            android:id="@+id/spanish_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
+<xyz.belvi.phrase.view.PhraseTextView
+    android:id="@+id/spanish_text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textColor="@android:color/white"
+    android:textSize="14sp"/>
 ```
 
-2. Reference in kotlin or Java by calling `prepare()`
+Step 2. Reference in kotlin or Java by calling `prepare()`
 
 ```kotlin
-        spanish_text.prepare(getString(R.string.spanish),options,object : PhraseTranslateListener{
-            override fun onPhraseTranslating() {
-                // called when a text is about to be translated. 
-            }
+spanish_text.prepare(getString(R.string.spanish),options,object : PhraseTranslateListener{
+    override fun onPhraseTranslating() {
+        // called when a text is about to be translated. 
+    }
 
-            override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
-                //called when a text has been translated. phraseTranslation contains the translation information
-            }
+    override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
+        //called when a text has been translated. phraseTranslation contains the translation information
+    }
 
-            override fun onActionClick(showingTranslation: Boolean) {
-                // called when user clicks on Phrase actionLabel.
-            }
+    override fun onActionClick(showingTranslation: Boolean) {
+        // called when user clicks on Phrase actionLabel.
+    }
 
-            override fun onContentChanged(content: PhraseSpannableBuilder) {
-                // // called when there's a content changed due of Phrase translation
-            }
-        })
+    override fun onContentChanged(content: PhraseSpannableBuilder) {
+        // called when there's a content changed due to Phrase translation
+    }
+})
  ``` 
- Calling `prepare` updates the content of the TextView with Phrase Configuration. Passing in `options` in `prepare` is optional which is only relevant if you want to run a custom Options for this PhraseTextView. `phraseTextViewListener` is also an optional params.
+ Calling `prepare` updates the content of the TextView with Phrase Configuration. Passing in `options` in `prepare` is optional and is only relevant if you want to use custom Options for this PhraseTextView. `phraseTranslateListener` is also an optional callback that provides updates.
  
 
-To update the content of PhraseTextView, used `updateSource(text)`. This ensure, the content is updated and prepared for translation.
+To update the content of PhraseTextView, use `updateSource(text)`. This ensures, the content is updated and prepared for translation.
 ```kotlin
-    spanish_text.updateSource(text)
+spanish_text.updateSource(text)
 ```
 
-#### 3. Binding a TextView
-Using a custom implementation of textView doesn't stop you from using Phrase . Phrase provide `bindTextView` to help bind a textView for Translation and having Phrase capabilities. 
+### 3. Binding a TextView to Phrase
+Using a custom implementation of textView doesn't stop you from using Phrase. Phrase provides `bindTextView` which binds a textView for Translation and adds Phrase capabilities. 
 
 ```kotlin
-        Phrase.instance().bindTextView(textView,options,object : PhraseTranslateListener("") {
-            override fun onPhraseTranslating() {
-            }
+Phrase.instance().bindTextView(textView,options,object : PhraseTranslateListener("") {
+    override fun onPhraseTranslating() {
+    }
 
-            override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
-            }
+    override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
+    }
 
-            override fun onActionClick(showingTranslation: Boolean) {
-                Log.i(MainActivity::class.java.name, showingTranslation.toString())
-            }
+    override fun onActionClick(showingTranslation: Boolean) {
+        Log.i(MainActivity::class.java.name, showingTranslation.toString())
+    }
 
-            override fun onContentChanged(content: PhraseSpannableBuilder) {
-                translated.text = content
-            }
-        })
-        textView.setText(text) // update the text after binding
+    override fun onContentChanged(content: PhraseSpannableBuilder) {
+        translated.text = content
+    }
+})
+textView.setText(text) // update the text after binding
 ```
-A TextView can be bind with custom Options which would be only applied to translation on this textView. Similar to the behavior in `PhraseTextView`, `PhraseTranslateListener` is a callback to get updates on Phrase Translation in this textView. 
+A TextView can be bound with custom Options which would only be applied to translation on this textView. Similar to the behavior in `PhraseTextView`, `PhraseTranslateListener` is a callback to get updates on Phrase Translation in this textView. 
 
-#### 4. Using PhraseSpannableBuilder
-Phrase also provides a SpannableStringBuiler implementation called `PhraseSpannableBuilder`. This provides a SpannableString that the user can interacts with. 
+### 4. Using PhraseSpannableBuilder
+Phrase provides a SpannableStringBuilder implementation called `PhraseSpannableBuilder`. This provides a SpannableString that the user can interact with. 
 ```kotlin
-        phraseSpannableBuilder =
-            object : PhraseSpannableBuilder("",options) {
-                override fun onPhraseTranslating() {
-                }
+phraseSpannableBuilder =
+    object : PhraseSpannableBuilder("",options) {
+        override fun onPhraseTranslating() {
+        }
 
-                override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
-                }
+        override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
+        }
 
-                override fun onActionClick(showingTranslation: Boolean) {
-                    Log.i(MainActivity::class.java.name, showingTranslation.toString())
-                }
+        override fun onActionClick(showingTranslation: Boolean) {
+            Log.i(MainActivity::class.java.name, showingTranslation.toString())
+        }
 
-                override fun onContentChanged(content: PhraseSpannableBuilder) {
-                // set text of textView 
-                    translated.text = content
-                }
-            }
+        override fun onContentChanged(content: PhraseSpannableBuilder) {
+        // set text of textView 
+            translated.text = content
+        }
+    }
 ```
-Custom `Options` can also be pass to `PhraseSpannableBuilder`. This option will be used or Phrase instance default options will be used when no `Options` is provided when setting up `PhraseSpannableBuilder`. PhraseSpannableBuilder Options can also be updated by:
+Custom `Options` can also be passed to `PhraseSpannableBuilder`. If custom Options are not provided, Phrase instance default options will be used when setting up `PhraseSpannableBuilder`. PhraseSpannableBuilder Options can also be updated by:
 
-`phraseSpannableBuilder.updateOptions(options)`
+```
+phraseSpannableBuilder.updateOptions(options)
+```
 
-To change the source of `PhraseSpannableBuilder` call `phraseSpannableBuilder.updateSource(text)`. This update the source text of that should be translated
+To change the source of `PhraseSpannableBuilder` call `phraseSpannableBuilder.updateSource(text)`. This updates the source text that should be translated
 
-#### 5. Using PhraseTextWatcher
-PhraseTextWatcher is a custom TextWatcher implementation that listens to changes in a textView to update translation source for that textView using Phrase. This is another way of adding Phrase Capability to textView without using any of the approached that has been discussed. 
+### 5. Using PhraseTextWatcher
+PhraseTextWatcher is a custom TextWatcher implementation that listens to changes in a textView to update the translation source for that textView. This is another way of adding Phrase capabilities to textView. 
 
 ```kotlin
-        textView.addTextChangedListener(
-            PhraseTextWatcher(
-                options,
-                phraseTranslateListener
-            )
-        )
-  ```
+textView.addTextChangedListener(
+    PhraseTextWatcher(
+        options,
+        phraseTranslateListener
+    )
+)
+```
   To ensure this works, don't add these 2 lines:
   
 ```kotlin
-    textView.movementMethod = LinkMovementMethod.getInstance()
-    textView.highlightColor = Color.TRANSPARENT
+textView.movementMethod = LinkMovementMethod.getInstance()
+textView.highlightColor = Color.TRANSPARENT
  ```
-To update source when using `PhraseTextWatcher`, set text of the textView to the new text. Options provided when adding `PhraseTextWatcher` will be used for translating text when `onTextChanged` is called. If nom `Options` was provided, Phrase will use the default Options provided when Phrase was initialised. 
+When the content of a textView changes, `PhraseTextWatcher` updates the translation source. Options provided when adding `PhraseTextWatcher` will be used for translating text when `onTextChanged` is called. If no `Options` were provided, Phrase will use the default Options provided when Phrase was initialised. 
 
 ### Extra Information to Keep in mind. 
 
-1. `actionLabel` and `resultActionLabel` color uses `colorAccent` . To change this,  set `android:textColorLink` in the textView that Phrase will be running translation on. 
+1. `actionLabel` and `resultActionLabel` color uses `colorAccent`. To change this,  set `android:textColorLink` in the textView that Phrase will be running translation on. 
 
-2. Phrase is best used for runtime translation for user generated content and not for translating static strings or localizing your appliation string resource. 
+2. Phrase is best used for runtime translation on user-generated content and not for translating static strings or localizing your application string resource. 
 
 
-### Closing Remark. 
-Phrase is still actively under development. Pull Request, contributions, thoughts and constructive criticism are welcomed. Please ensure you understand the context before contributing. [Submit issues here](https://github.com/KingsMentor/Phrase/issues).
-This library is not a product of or in anyway affiliated to [Phrase.com](https://phrase.com)
+## Closing Remarks 
+Phrase is still actively under development. Pull Requests, contributions, thoughts, and constructive criticism are welcome. Please ensure you understand the context before contributing. [Submit issues here](https://github.com/KingsMentor/Phrase/issues).
+This library is not a product of or in any way affiliated to [Phrase.com](https://phrase.com)
 
-To support this work and other of my [Open Source Project](https://github.com/KingsMentor), you can [buy me a coffee or support](https://www.buymeacoffee.com/kingsmentor) 
+To support this work and any of my other [Open Source Projects](https://github.com/KingsMentor), [buy me a coffee](https://www.buymeacoffee.com/kingsmentor) 
