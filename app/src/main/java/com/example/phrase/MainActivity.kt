@@ -1,13 +1,17 @@
 package com.example.phrase
 
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.detected
+import kotlinx.android.synthetic.main.activity_main.source_edit
+import kotlinx.android.synthetic.main.activity_main.spanish_text
+import kotlinx.android.synthetic.main.activity_main.target
+import kotlinx.android.synthetic.main.activity_main.translated
+import kotlinx.android.synthetic.main.activity_main.update_source
+import kotlinx.android.synthetic.main.activity_main.yoruba
 import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.helpers.PhraseSpannableBuilder
 import xyz.belvi.phrase.options
@@ -18,8 +22,6 @@ import xyz.belvi.phrase.translateMedium.Languages
 import xyz.belvi.phrase.translateMedium.medium.DeepL
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
-
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var phraseSpannableBuilder: PhraseSpannableBuilder
@@ -28,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
-
 
         // setting up phrase
         val phrase = phrase {
@@ -65,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         phraseSpannableBuilder =
-            object : PhraseSpannableBuilder("",null) {
+            object : PhraseSpannableBuilder("", null) {
                 override fun onPhraseTranslating() {
                 }
 
@@ -81,13 +82,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-
-
         Phrase.instance().bindTextView(yoruba)
         yoruba.setText(R.string.yoruba)
 
         spanish_text.prepare(getString(R.string.spanish))
-
 
         update_source.setOnClickListener {
             phrase.updateOptions(options {
@@ -107,6 +105,5 @@ class MainActivity : AppCompatActivity() {
             })
             phraseSpannableBuilder.updateSource(source_edit.text.toString())
         }
-
     }
 }

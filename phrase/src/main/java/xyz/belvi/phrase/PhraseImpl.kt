@@ -6,14 +6,20 @@ import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import androidx.annotation.AnimRes
 import androidx.annotation.ColorInt
+import java.util.Locale
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
 import xyz.belvi.phrase.helpers.PhraseTranslateListener
-import xyz.belvi.phrase.options.*
+import xyz.belvi.phrase.options.BehaviorFlags
+import xyz.belvi.phrase.options.Behaviour
+import xyz.belvi.phrase.options.BehaviourOptions
+import xyz.belvi.phrase.options.PhraseDetected
+import xyz.belvi.phrase.options.PhraseOptions
+import xyz.belvi.phrase.options.PhraseTranslation
+import xyz.belvi.phrase.options.SourceTranslationOption
+import xyz.belvi.phrase.options.SourceTranslationPreference
 import xyz.belvi.phrase.translateMedium.TranslationMedium
-import java.util.*
 
 class PhraseImpl internal constructor() : PhraseUseCase {
-
 
     internal var phraseOptions: PhraseOptions? = null
     internal lateinit var translationMediums: List<TranslationMedium>
@@ -59,9 +65,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                         } ?: sourceOptions.find { it.targetLanguageCode.contains("*") }
                         ?.let { it.translate }
                     ?: if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly()) null else translationMediums
-
                 }
-
         } else translationMediums
 
         if (detected?.languageCode == phraseOption.targetLanguageCode || phraseOption.excludeSources.contains(
@@ -101,7 +105,6 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         this.translationMediums = translationMediums
     }
 
-
     class OptionsBuilder {
         private var behaviourOptions = BehaviourOptions()
         var sourcesToExclude: List<String> = emptyList()
@@ -110,7 +113,6 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         var targeting: String = Locale.getDefault().language
         var actionLabel: String = ""
         var resultActionLabel: ((translation: PhraseTranslation) -> String) = { "" }
-
 
         fun behaviourFlags(behaviourOptions: BehaviourOptionsBuilder.() -> Unit) {
             BehaviourOptionsBuilder().apply(behaviourOptions).run {
@@ -149,5 +151,4 @@ class PhraseImpl internal constructor() : PhraseUseCase {
             )
         }
     }
-
 }
