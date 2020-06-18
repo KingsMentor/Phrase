@@ -322,19 +322,31 @@ PhraseTextView is a custom implementation of `androidx.appcompat.widget.AppCompa
 2. Reference in kotlin or Java by calling `prepare()`
 
 ```kotlin
-    spanish_text.prepare(getString(R.string.spanish),options,phraseTextViewListener)
+        spanish_text.prepare(getString(R.string.spanish),options,object : PhraseTranslateListener{
+            override fun onPhraseTranslating() {
+                // called when a text is about to be translated. 
+            }
+
+            override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
+                //called when a text has been translated. phraseTranslation contains the translation information
+            }
+
+            override fun onActionClick(showingTranslation: Boolean) {
+                // called when user clicks on Phrase actionLabel.
+            }
+
+            override fun onContentChanged(content: PhraseSpannableBuilder) {
+                // // called when there's a content changed due of Phrase translation
+            }
+        })
  ``` 
  Calling `prepare` updates the content of the TextView with Phrase Configuration. Passing in `options` in `prepare` is optional which is only relevant if you want to run a custom Options for this PhraseTextView. `phraseTextViewListener` is also an optional params.
  
-##### PhraseTranslateListener
- ```kotlin
- interface PhraseTranslateListener {
-    fun onPhraseTranslating() // called when a text is about to be translated
-    fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) // called when a text has been translated
-    fun onActionClick(showingTranslation: Boolean) // called when user clicks on Phrase actionLabel.
-    fun onContentChanged(content: PhraseSpannableBuilder) // called when there's a content changed due of Phrase translation
-}
-```
-### Understanding Phrase Models and Listener 
 
+To update the content of PhraseTextView, used `updateSource(text)`. This ensure, the content is updated and prepared for translation.
+```kotlin
+    spanish_text.updateSource(text)
+```
+
+#### 2. Binding a TextView
 
