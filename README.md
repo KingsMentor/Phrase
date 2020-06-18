@@ -1,8 +1,8 @@
 # Introducing Phrase
 
-Phrase provides a way to translate user generated content to desired target language using different translation engine or options of your choice.
+Phrase provides a way to translate user generated content to a desired target language using different translation engines or options of your choice.
 
-I built phrase to remove the constraint of having to use one translation engine in your application. It helps android developers leverage on the strength of different translation engine while giving the best experience to Users. 
+Phrase was built to remove the constraint of having to use one translation engine in your application. It helps android developers leverage the strength of different translation engines while giving the best experience to Users. 
 
 This library was inspired by how twitter handles in-app content translation. 
 
@@ -11,18 +11,18 @@ This library was inspired by how twitter handles in-app content translation.
 
 ![Lib Sample](https://github.com/KingsMentor/phrase/blob/master/phrase.gif)
 
-## Getting Started 
+# Getting Started 
 
-Add this to dependency in apps `build.gradle`
+Add this to dependencies in apps `build.gradle`
 
 ```
 implementation 'xyz.belvi.translate:phrase:1.0.0'
 
 ```
 
-### Setting Up Phrase
+## Setting Up Phrase
 
-A single instance of phrase is instantiated for the lifetime of the application. This instance can be created in the application call , activity or any implementation that best suite you. Here's an example of setting up the library with some basic options. 
+A single instance of phrase is instantiated for the lifetime of the application. This instance can be created in the application call, activity or any implementation that best suites you. Here's an example showing how to set up the library with some basic options. 
 
 ```kotlin
 phrase {
@@ -38,21 +38,21 @@ phrase {
 
 ```
 
-Let's talk about the parameters required in setting up phrase : 
+Let's talk about the parameters required in setting up phrase: 
 
-#### `mediums`
+### `mediums`
 
 With mediums, you specify a list of `TranslationMedium` to use in order of fallbacks. Phrase currently supports: 
 
 * `GoogleTranslate` -  Translation medium using Google Translate Engine
-* `FirebaseMLKitTranslate` - Translation Medium Using Googke Translate Engine through FirebaseML Kit.
+* `FirebaseMLKitTranslate` - Translation Medium Using Google Translate Engine through FirebaseML Kit.
 * `DeepL` - Translation medium using DeepL Translation Engine
 
-Phrase also allows implementation of custom translation medium of any of the inbuilt translation medium doesn't meet the requirements you have in mind. 
+Phrase also allows implementation of custom translation medium if any of the inbuilt translation mediums doesn't meet the requirements you have in mind. 
 
-##### Building Custom TranslationMedium
+#### Building Custom TranslationMedium
 
-Adding a Custom TranslationMedium involves extending `TranslationMedium` and implementing the required members. Here's an example.
+Adding a Custom TranslationMedium involves extending `TranslationMedium` and implementing the required members.
 
 ```kotlin
 final class DeepL(val apiKey: String) : TranslationMedium() {
@@ -73,9 +73,9 @@ see [GoogleTranslate.kt](https://github.com/KingsMentor/Phrase/blob/master/phras
 
 
 
-#### `options`
+### `options`
 
-Options provide a way to define translation preference and library behaivour. 
+Options provide a way to define translation preferences and library behaivour. 
 Here's an example of how an option is built: 
 
 ```kotlin
@@ -96,12 +96,12 @@ options {
 }
 ```
 
-##### Understanding and Building Phrase Options.
+#### Understanding and Building Phrase Options.
 
-* `targeting` - Set a target language for translation. When not provided, Phrase uses `Locale.getDefault().language` to get device default language.  For Language code,  you can find [this list](https://cloud.google.com/translate/docs/languages) helpful. Phrase also provides:
+1. `targeting` - Set a target language for translation. When not provided, Phrase uses `Locale.getDefault().language` to get device default language.  For Language code,  you can find [this list](https://cloud.google.com/translate/docs/languages) helpful. Phrase also provides:
 ```kotlin
     enum class Languages(val code: String)
-```
+```  
 You can use this in selecting a Target Language.  
 ```kotlin
 options {
@@ -109,11 +109,11 @@ options {
 }
 ```
 
-Phrase uses target language in a couple of ways.
-1. Know which language to translate content to. 
-2. Know when to show user an option to translate. Translation action only shows when the detected language of the source is not same language with the targetted language. This also means that there's no translation query executed when  source and target language is the same. 
+>Phrase uses the target language to:
+>- Know which language to translate content to. 
+>- Know when to show the `translate` option to the user. Translation action only shows when the detected language of the source is not the same as the targeted language. This also means that there's no translation query executed when source and target language is the same. 
 
-* `actionLabel` - action label defines the text users sees that prompts for translation. This only visible when the source text is in another language that is not the targeted language. This can be hidden passing `BEHAVIOR_HIDE_TRANSLATE_PROMPT` in `behaviorFlags`.
+2. `actionLabel` - action label defines the text users see which prompts for translation. This is only visible when the source text is in a language different from the targeted language. This can be hidden by passing `BEHAVIOR_HIDE_TRANSLATE_PROMPT` in `behaviorFlags`.
 
 ```kotlin
 options {
@@ -122,7 +122,7 @@ options {
 ```
 ![actionlabel sample](https://github.com/KingsMentor/Phrase/blob/master/imgs/actionlabel.png)
 
-* `resultActionLabel` - this defines the actiontext the user sees when a content has been translated. In the sample application, It gives credit to the translation engine used but this can also be customised. Credit can be hidden by passing `BEHAVIOR_HIDE_CREDIT_SIGNATURE` in `behaviorFlags`.
+3. `resultActionLabel` - this defines the actiontext users see when a content has been translated. In the sample application, it gives credit to the translation engine used but this can also be customised. Credit can be hidden by passing `BEHAVIOR_HIDE_CREDIT_SIGNATURE` in `behaviorFlags`.
 ```kotlin
 options{
     resultActionLabel = { phraseTranslation ->
