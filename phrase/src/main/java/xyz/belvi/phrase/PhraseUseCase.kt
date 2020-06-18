@@ -1,13 +1,11 @@
 package xyz.belvi.phrase
 
-import android.graphics.Typeface
 import android.widget.TextView
-import androidx.annotation.AnimRes
-import androidx.annotation.ColorInt
 import xyz.belvi.phrase.helpers.PhraseTranslateListener
-import xyz.belvi.phrase.options.*
+import xyz.belvi.phrase.options.PhraseDetected
+import xyz.belvi.phrase.options.PhraseOptions
+import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.translateMedium.TranslationMedium
-
 
 internal interface PhraseUseCase {
     fun bindTextView(
