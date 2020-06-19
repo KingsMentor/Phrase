@@ -190,8 +190,15 @@ options {
 ```
 This example implies that Phrase wouldn't handle translation for the language sources in the list provided. 
 
+7)`preferredSources` - this option sets the list of source languages to translate. This means that if the detected language source is not in this list, users wouldn't be shown the translate action.
+```kotlin
+options {
+    preferredSources = listOf("fr","es","zh")
+}
+```
+This example implies that Phrase wouldn't handle translation for the language sources in the list provided. 
 
-7)`behaviourOptions` - this defines how Phrase handles UI behaviour. 
+8)`behaviourOptions` - this defines how Phrase handles UI behaviour. 
 ```kotlin
 options {
     behaviourFlags {
@@ -220,7 +227,7 @@ options {
 ```
 - `BEHAVIOR_REPLACE_SOURCE_TEXT` - When this flag is set, the source text is replaced with translated text after translation
 
-- `BEHAVIOR_TRANSLATE_SOURCE_OPTION_ONLY`-  When this flag is set, Phrase only translate sources included in `SourceTranslationOption`.
+- `BEHAVIOR_TRANSLATE_SOURCE_OPTION_ONLY`-  When this flag is set, Phrase only translate sources included in `preferredSources`.
 
 - `BEHAVIOR_IGNORE_DETECTION`- setting this flag means you always want to run translation without detection first. For this case, Phrase will always show the actionLabel to the user. 
 
