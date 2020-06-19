@@ -59,7 +59,19 @@ abstract class PhraseSpannableBuilder constructor(
 
             detectedMedium?.let { phraseDetected ->
                 if (behaviors.translatePreferredSourceOnly()) {
-                    val allowTranslation =
+                    var allowTranslation =
+                        if (options.behavioursOptions.behaviours.translatePreferredSourceOnly()) {
+                            options.preferredSources.indexOfFirst {
+                                it.equals(phraseDetected.languageCode, true)
+                            } > 0
+                        } else {
+                            true
+                        }
+                    if (!allowTranslation) {
+                        onContentChanged(this@PhraseSpannableBuilder)
+                        return@launch
+                    }
+                    allowTranslation =
                         options.sourcePreferredTranslation.sourceTranslateOption.filter { it.sourceLanguageCode != phraseDetected.languageCode }
                             .let { sourceOptions ->
                                 sourceOptions.find {
@@ -76,7 +88,12 @@ abstract class PhraseSpannableBuilder constructor(
                 if (phraseDetected.languageCode.equals(
                         options.targetLanguageCode.toLowerCase(),
                         true
-                    ) || options.excludeSources.indexOfFirst { it.toLowerCase() == phraseDetected.languageCode.toLowerCase() } > 0
+                    ) || options.excludeSources.indexOfFirst {
+                        it.equals(
+                            phraseDetected.languageCode,
+                            true
+                        )
+                    } > 0
                 ) {
                     onContentChanged(this@PhraseSpannableBuilder)
                     return@launch

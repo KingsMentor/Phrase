@@ -56,25 +56,43 @@ class PhraseImpl internal constructor() : PhraseUseCase {
 
         val detected = detect(text, options)
 
-        val translationMediums = if (detected != null) {
-            phraseOption.sourcePreferredTranslation.sourceTranslateOption.filter { detected.languageCode != it.sourceLanguageCode }
+        var translationMediums: List<TranslationMedium>? = if (detected != null) {
+            phraseOption.sourcePreferredTranslation.sourceTranslateOption.filter { !detected.languageCode.equals(it.sourceLanguageCode,true) }
                 .let { sourceOptions ->
-                    sourceOptions.find { it.targetLanguageCode.contains(phraseOption.targetLanguageCode) }
+                    sourceOptions.find { sourceTranslationOption -> sourceTranslationOption.targetLanguageCode.indexOfFirst { it.equals(phraseOption.targetLanguageCode,true) }>=0 }
                         ?.let {
                             it.translate
                         } ?: sourceOptions.find { it.targetLanguageCode.contains("*") }
                         ?.let { it.translate }
-                    ?: if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly()) null else translationMediums
+                    ?: translationMediums
                 }
         } else translationMediums
 
-        if (detected?.languageCode == phraseOption.targetLanguageCode || phraseOption.excludeSources.contains(
-                detected?.languageCode
-            )
+        translationMediums =
+            if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly() && phraseOption.preferredSources.indexOfFirst {
+                    it.equals(
+                        detected?.languageCode,
+                        true
+                    )
+                } < 0) {
+                null
+            } else {
+                translationMediums
+            }
+
+        if ((detected?.languageCode ?: "").equals(
+                phraseOption.targetLanguageCode,
+                true
+            ) || phraseOption.excludeSources.indexOfFirst {
+                it.equals(
+                    (detected?.languageCode ?: ""),
+                    true
+                )
+            } > 0
         )
             return PhraseTranslation(text, null, null)
 
-        translationMediums?.let {
+        return translationMediums?.let {
             var translationMedium = translationMediums.first()
             var translate = translationMedium.translate(
                 text,
@@ -92,22 +110,22 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                 )
                 translationMedium = medium
             }
-            return PhraseTranslation(translate, translationMedium.name(), detected)
-        }
-        return PhraseTranslation(text, null, null)
+            PhraseTranslation(translate, translationMedium.name(), detected)
+        } ?: PhraseTranslation(text, null, null)
     }
 
     override fun updateOptions(options: PhraseOptions) {
         this.phraseOptions = options
     }
 
-    override fun setTranslationMediums(translationMedium: List<TranslationMedium>) {
+    override fun setTranslationMediums(translationMediums: List<TranslationMedium>) {
         this.translationMediums = translationMediums
     }
 
     class OptionsBuilder {
         private var behaviourOptions = BehaviourOptions()
         var sourcesToExclude: List<String> = emptyList()
+        var preferredSources: List<String> = emptyList()
         var sourceTranslation = listOf<SourceTranslationOption>()
         var preferredDetectionMedium: TranslationMedium? = null
         var targeting: String = Locale.getDefault().language
@@ -120,12 +138,13 @@ class PhraseImpl internal constructor() : PhraseUseCase {
             }
         }
 
-        fun build(): PhraseOptions {
+        internal fun build(): PhraseOptions {
             return PhraseOptions(
                 behaviourOptions,
                 SourceTranslationPreference(sourceTranslation),
                 preferredDetectionMedium,
                 sourcesToExclude,
+                preferredSources,
                 targeting,
                 actionLabel,
                 resultActionLabel
@@ -142,7 +161,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         var signatureTypeface: Typeface? = null
         var flags = setOf<@BehaviorFlags Int>()
 
-        fun build(): BehaviourOptions {
+        internal fun build(): BehaviourOptions {
             return BehaviourOptions(
                 Behaviour(flags),
                 signatureTypeface,

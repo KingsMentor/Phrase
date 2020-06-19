@@ -33,8 +33,8 @@ class Phrase internal constructor() {
         return phraseImpl.bindTextView(textView, options, phraseTranslateListener)
     }
 
-    fun setTranslationMedium(translationMedium: List<TranslationMedium>) {
-        phraseImpl.setTranslationMediums(translationMedium)
+    fun setTranslationMedium(translationMediums: List<TranslationMedium>) {
+        phraseImpl.setTranslationMediums(translationMediums)
     }
 
     fun updateOptions(options: PhraseOptions) {
@@ -58,7 +58,7 @@ class Phrase internal constructor() {
             }
         }
 
-        fun build(): Phrase {
+        internal fun build(): Phrase {
             phrase.phraseImpl.translationMediums = mediums
             return phrase
         }

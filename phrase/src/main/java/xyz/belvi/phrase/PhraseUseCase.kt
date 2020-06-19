@@ -17,5 +17,5 @@ internal interface PhraseUseCase {
     suspend fun detect(text: String, options: PhraseOptions? = null): PhraseDetected?
     suspend fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation
     fun updateOptions(options: PhraseOptions)
-    fun setTranslationMediums(translationMedium: List<TranslationMedium>)
+    fun setTranslationMediums(translationMediums: List<TranslationMedium>)
 }
