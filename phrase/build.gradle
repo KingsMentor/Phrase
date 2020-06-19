@@ -62,7 +62,7 @@ ext {
     siteUrl = 'https://kingsmentor.github.io/Phrase'
     gitUrl = 'https://github.com/KingsMentor/Phrase'
 
-    libraryVersion = '1.0.3'
+    libraryVersion = '1.0.4git'
 
     developerId = 'kingsmentor'
     developerName = 'Nosakhare Belvi'
