@@ -11,6 +11,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.MetricAffectingSpan
 import android.text.style.TypefaceSpan
 import android.view.View
+import kotlinx.coroutines.*
 import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
@@ -27,66 +28,76 @@ abstract class PhraseSpannableBuilder constructor(
 
     init {
         buildTranslateActionSpan()
+
+
     }
 
     fun updateOptions(options: PhraseOptions) {
-        this.phraseOptions = options
+        this@PhraseSpannableBuilder.phraseOptions = options
         buildTranslateActionSpan()
-        onContentChanged(this)
     }
 
     fun updateSource(source: String) {
-        this.source = source
+        this@PhraseSpannableBuilder.source = source
         buildTranslateActionSpan()
-        onContentChanged(this)
     }
 
     private fun options() = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
 
     private fun buildTranslateActionSpan() {
-        init()
-        val options = options()
-        requireNotNull(options)
-        val behaviors = options.behavioursOptions.behaviours
-        val detectedMedium =
-            if (behaviors.ignoreDetection() || source.isEmpty())
-                null
-            else Phrase.instance().detectLanguage(source)
+        GlobalScope.launch(Dispatchers.Main) {
+            init()
+            val options = options()
+            requireNotNull(options)
+            val behaviors = options.behavioursOptions.behaviours
+            val detectedMedium =
+                if (behaviors.ignoreDetection() || source.isEmpty())
+                    null
+                else {
+                    withContext(Dispatchers.IO) { Phrase.instance().detectLanguage(source) }
+                }
 
-        detectedMedium?.let { phraseDetected ->
-            if (behaviors.translatePreferredSourceOnly()) {
-                val allowTranslation =
-                    options.sourcePreferredTranslation.sourceTranslateOption.filter { it.sourceLanguageCode != phraseDetected.languageCode }
-                        .let { sourceOptions ->
-                            sourceOptions.find {
-                                it.targetLanguageCode.contains(options.targetLanguageCode) || it.targetLanguageCode.contains(
-                                    "*"
-                                )
-                            }?.let { true } ?: false
-                        }
-                if (!allowTranslation)
-                    return
+            detectedMedium?.let { phraseDetected ->
+                if (behaviors.translatePreferredSourceOnly()) {
+                    val allowTranslation =
+                        options.sourcePreferredTranslation.sourceTranslateOption.filter { it.sourceLanguageCode != phraseDetected.languageCode }
+                            .let { sourceOptions ->
+                                sourceOptions.find {
+                                    it.targetLanguageCode.contains(options.targetLanguageCode) || it.targetLanguageCode.contains(
+                                        "*"
+                                    )
+                                }?.let { true } ?: false
+                            }
+                    if (!allowTranslation) {
+                        onContentChanged(this@PhraseSpannableBuilder)
+                        return@launch
+                    }
+                }
+                if (phraseDetected.languageCode.equals(
+                        options.targetLanguageCode.toLowerCase(),
+                        true
+                    ) || options.excludeSources.indexOfFirst { it.toLowerCase() == phraseDetected.languageCode.toLowerCase() } > 0
+                ) {
+                    onContentChanged(this@PhraseSpannableBuilder)
+                    return@launch
+                }
             }
-            if (phraseDetected.languageCode == options.targetLanguageCode || options.excludeSources.contains(
-                    phraseDetected.languageCode
+
+            if (!source.isNullOrBlank() && !behaviors.hideTranslatePrompt() && (this@PhraseSpannableBuilder.toString() == source)) {
+                appendln("\n")
+                val start = length
+                append(options.translateText)
+                setSpan(
+                    SpannablePhraseClickableSpan(),
+                    start,
+                    length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
-            ) {
-                return
-            }
-        }
 
-        if (!source.isNullOrBlank() && !behaviors.hideTranslatePrompt()) {
-            appendln("\n")
-            val start = length
-            append(options.translateText)
-            setSpan(
-                SpannablePhraseClickableSpan(),
-                start,
-                length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            }
+            showingTranslateAction = true
+            onContentChanged(this@PhraseSpannableBuilder)
         }
-        showingTranslateAction = true
     }
 
     private fun buildTranslatedPhraseSpan() {
@@ -138,6 +149,7 @@ abstract class PhraseSpannableBuilder constructor(
             append(phraseTranslation.translation)
         }
         showingTranslateAction = false
+        onContentChanged(this@PhraseSpannableBuilder)
     }
 
     private fun init() {
@@ -149,16 +161,20 @@ abstract class PhraseSpannableBuilder constructor(
         override fun onClick(widget: View) {
             onActionClick(showingTranslateAction)
             if (showingTranslateAction) {
-                onPhraseTranslating()
-                val options = options()
-                phraseTranslation = Phrase.instance().translate(source, options)
-                buildTranslatedPhraseSpan()
-                onPhraseTranslated(phraseTranslation)
+                GlobalScope.launch(Dispatchers.Main) {
+                    onPhraseTranslating()
+                    val options = options()
+                    phraseTranslation =
+                        withContext(Dispatchers.IO) { Phrase.instance().translate(source, options) }
+                    buildTranslatedPhraseSpan()
+                    onPhraseTranslated(phraseTranslation)
+                }
+
             } else {
                 buildTranslateActionSpan()
             }
-            onContentChanged(this@PhraseSpannableBuilder)
             widget.invalidate()
+
         }
 
         override fun updateDrawState(ds: TextPaint) {

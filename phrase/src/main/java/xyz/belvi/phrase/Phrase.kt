@@ -41,11 +41,11 @@ class Phrase internal constructor() {
         phraseImpl.updateOptions(options)
     }
 
-    fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation {
+    suspend fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation {
         return phraseImpl.translate(text, options)
     }
 
-    fun detectLanguage(text: String, options: PhraseOptions? = null): PhraseDetected? {
+    suspend fun detectLanguage(text: String, options: PhraseOptions? = null): PhraseDetected? {
         return phraseImpl.detect(text, options)
     }
 

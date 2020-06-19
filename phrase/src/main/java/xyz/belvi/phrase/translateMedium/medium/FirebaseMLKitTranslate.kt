@@ -9,7 +9,7 @@ class FirebaseMLKitTranslate(
     context: Context,
     @RawRes authCredentials: Int
 ) : TranslationMedium() {
-    override fun translate(text: String, targeting: String): String {
+    override suspend fun translate(text: String, targeting: String): String {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
@@ -17,7 +17,7 @@ class FirebaseMLKitTranslate(
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun detect(text: String): PhraseDetected? {
+    override suspend fun detect(text: String): PhraseDetected? {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 }

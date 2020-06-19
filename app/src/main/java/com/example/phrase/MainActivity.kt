@@ -1,7 +1,9 @@
 package com.example.phrase
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -35,19 +37,6 @@ class MainActivity : AppCompatActivity() {
         val phrase = phrase {
             mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
             options {
-                sourceTranslation =
-                    listOf(
-                        SourceTranslationOption(
-                            Languages.Chinese.code,
-                            listOf("fr", "es"),
-                            listOf(DeepL(""))
-                        ),
-                        SourceTranslationOption(
-                            Languages.German.code,
-                            listOf("fr", "es", "*"),
-                            listOf(DeepL(""))
-                        )
-                    )
                 targeting = target.text.toString()
                 behaviourFlags {
                     switchAnim
@@ -86,6 +75,10 @@ class MainActivity : AppCompatActivity() {
         yoruba.setText(R.string.yoruba)
 
         spanish_text.prepare(getString(R.string.spanish))
+
+        translated.movementMethod = LinkMovementMethod.getInstance()
+        translated.highlightColor = Color.TRANSPARENT
+
 
         update_source.setOnClickListener {
             phrase.updateOptions(options {

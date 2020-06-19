@@ -39,7 +39,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         )
     }
 
-    override fun detect(text: String, options: PhraseOptions?): PhraseDetected? {
+    override suspend fun detect(text: String, options: PhraseOptions?): PhraseDetected? {
         val phraseOption = options ?: this.phraseOptions
         requireNotNull(phraseOption)
         if (phraseOption.behavioursOptions.behaviours.ignoreDetection())
@@ -50,7 +50,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         return detectionMedium.detect(text)
     }
 
-    override fun translate(text: String, options: PhraseOptions?): PhraseTranslation {
+    override suspend fun translate(text: String, options: PhraseOptions?): PhraseTranslation {
         val phraseOption = options ?: this.phraseOptions
         requireNotNull(phraseOption)
 
@@ -75,7 +75,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
             return PhraseTranslation(text, null, null)
 
         translationMediums?.let {
-            var translationMedium = translationMediums?.first()
+            var translationMedium = translationMediums.first()
             var translate = translationMedium.translate(
                 text,
                 phraseOption.targetLanguageCode
