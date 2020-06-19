@@ -33,19 +33,19 @@ class Phrase internal constructor() {
         return phraseImpl.bindTextView(textView, options, phraseTranslateListener)
     }
 
-    fun setTranslationMedium(translationMedium: List<TranslationMedium>) {
-        phraseImpl.setTranslationMediums(translationMedium)
+    fun setTranslationMedium(translationMediums: List<TranslationMedium>) {
+        phraseImpl.setTranslationMediums(translationMediums)
     }
 
     fun updateOptions(options: PhraseOptions) {
         phraseImpl.updateOptions(options)
     }
 
-    fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation {
+    suspend fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation {
         return phraseImpl.translate(text, options)
     }
 
-    fun detectLanguage(text: String, options: PhraseOptions? = null): PhraseDetected? {
+    suspend fun detectLanguage(text: String, options: PhraseOptions? = null): PhraseDetected? {
         return phraseImpl.detect(text, options)
     }
 
@@ -58,7 +58,7 @@ class Phrase internal constructor() {
             }
         }
 
-        fun build(): Phrase {
+        internal fun build(): Phrase {
             phrase.phraseImpl.translationMediums = mediums
             return phrase
         }

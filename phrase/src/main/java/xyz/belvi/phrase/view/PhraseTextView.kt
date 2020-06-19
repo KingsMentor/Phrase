@@ -2,13 +2,16 @@ package xyz.belvi.phrase.view
 
 import android.content.Context
 import android.graphics.Color
+import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import xyz.belvi.phrase.helpers.PhraseSpannableBuilder
+import xyz.belvi.phrase.helpers.PhraseTextWatcher
 import xyz.belvi.phrase.helpers.PhraseTranslateListener
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
+import java.lang.Exception
 
 open class PhraseTextView(context: Context, attrs: AttributeSet) :
     AppCompatTextView(context, attrs) {
@@ -45,5 +48,12 @@ open class PhraseTextView(context: Context, attrs: AttributeSet) :
     fun updateSource(sourceText: String) {
         if (::phraseSpannableBuilder.isInitialized)
             phraseSpannableBuilder.updateSource(sourceText)
+    }
+
+    override fun addTextChangedListener(watcher: TextWatcher?) {
+        if (watcher is PhraseTextWatcher)
+            throw Exception("a PhraseTextView doesn't require PhraseTextWatcher")
+        else
+            super.addTextChangedListener(watcher)
     }
 }
