@@ -50,7 +50,16 @@ With mediums, you specify a list of `TranslationMedium` to use in order of fallb
 
 Phrase also allows the implementation of custom translation mediums if any of the inbuilt translation mediums doesn't meet the requirements you have in mind. 
 
-#### Building Custom TranslationMedium
+
+#### Available TranslationMedium
+1. GoogleTranslate
+2. FirebaseMLKitTranslate - requires [firebaseSetUp](https://firebase.google.com/docs/android/setup)
+
+For both `FirebaseMLKitTranslate` and `GoogleTranslate`, remember to [enable Google Translate API](https://console.cloud.google.com/apis/): 
+
+[This resource](https://medium.com/@yeksancansu/how-to-use-google-translate-api-in-android-studio-projects-7f09cae320c7) proves helpful in getting your credentials needed if you want to use `GoogleTranslate` TranslationMedium
+
+#### Building Custom TranslationMedium 
 
 Adding a Custom TranslationMedium involves extending `TranslationMedium` and implementing the required members.
 
