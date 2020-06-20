@@ -51,7 +51,7 @@ class FirebaseMLKitTranslate(
         val language =
             FirebaseNaturalLanguage.getInstance().languageIdentification.identifyLanguage(text)
                 .await()
-        val languageName = Languages.values().find { it.code == language }?.name ?: language
+        val languageName = Languages.values().find { it.code == language.toLowerCase() }?.name ?: language
         val result = PhraseDetected(text, language, languageName, name())
         cacheDetected[text] = result
         return result

@@ -15,6 +15,7 @@ import xyz.belvi.phrase.helpers.PhraseSpannableBuilder
 import xyz.belvi.phrase.options
 import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.phrase
+import xyz.belvi.phrase.translateMedium.medium.DeepL
 import xyz.belvi.phrase.translateMedium.medium.FirebaseMLKitTranslate
 
 
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         val font = Typeface.createFromAsset(assets, "rb.ttf")
         // setting up phrase
         val phrase = phrase {
-            mediums = listOf(FirebaseMLKitTranslate())
+            mediums = listOf(DeepL(""))
             options {
                 targeting = target.text.toString()
                 behaviourFlags {

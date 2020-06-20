@@ -38,7 +38,7 @@ class DeepL(private val apiKey: String) : TranslationMedium() {
         val result = PhraseDetected(
             text,
             detect,
-            Languages.values().find { it.code == detect }?.name ?: detect,
+            Languages.values().find { it.code == detect.toLowerCase() }?.name ?: detect,
             name()
         )
         cacheDetected[text] = result
