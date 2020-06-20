@@ -2,6 +2,7 @@ package xyz.belvi.phrase.translateMedium.medium
 
 import android.content.Context
 import androidx.annotation.RawRes
+import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage
 import xyz.belvi.phrase.options.PhraseDetected
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
@@ -14,10 +15,13 @@ class FirebaseMLKitTranslate(
     }
 
     override fun name(): String {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        return "Google"
     }
 
     override suspend fun detect(text: String): PhraseDetected? {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        val language =
+            FirebaseNaturalLanguage.getInstance().languageIdentification.identifyLanguage(text).result
+                ?: ""
+        return PhraseDetected(text, language, language, name())
     }
 }
