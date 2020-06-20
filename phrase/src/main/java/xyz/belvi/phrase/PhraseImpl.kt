@@ -47,7 +47,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         val detectionMedium = phraseOption.preferredDetection ?: run {
             translationMediums.first()
         }
-        return detectionMedium.detect(text)
+        return detectionMedium.detect(text,phraseOption.targetLanguageCode)
     }
 
     override suspend fun translate(text: String, options: PhraseOptions?): PhraseTranslation {

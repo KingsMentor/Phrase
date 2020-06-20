@@ -52,10 +52,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-ml-natural-language-language-id-model'
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.6.0'
 
     api "com.squareup.retrofit2:retrofit:2.8.1"
     api "com.squareup.retrofit2:adapter-rxjava2:2.8.1"
     api "com.squareup.retrofit2:converter-gson:2.4.0"
+
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
