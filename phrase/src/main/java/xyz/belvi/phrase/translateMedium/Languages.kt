@@ -110,5 +110,5 @@ enum class Languages(val code: String) {
     Xhosa("xh"),
     Yiddish("yi"),
     Yoruba("yo"),
-    Zulu("zu"),
+    Zulu("zu")
 }

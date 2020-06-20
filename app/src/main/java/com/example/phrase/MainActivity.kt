@@ -7,35 +7,29 @@ import android.text.method.LinkMovementMethod
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_main.detected
-import kotlinx.android.synthetic.main.activity_main.source_edit
-import kotlinx.android.synthetic.main.activity_main.spanish_text
-import kotlinx.android.synthetic.main.activity_main.target
-import kotlinx.android.synthetic.main.activity_main.translated
-import kotlinx.android.synthetic.main.activity_main.update_source
-import kotlinx.android.synthetic.main.activity_main.yoruba
+import com.google.firebase.FirebaseApp
+import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions
+import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.helpers.PhraseSpannableBuilder
 import xyz.belvi.phrase.options
 import xyz.belvi.phrase.options.PhraseTranslation
-import xyz.belvi.phrase.options.SourceTranslationOption
 import xyz.belvi.phrase.phrase
-import xyz.belvi.phrase.translateMedium.Languages
-import xyz.belvi.phrase.translateMedium.medium.DeepL
-import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
+import xyz.belvi.phrase.translateMedium.medium.FirebaseMLKitTranslate
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var phraseSpannableBuilder: PhraseSpannableBuilder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         setContentView(R.layout.activity_main)
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
-
         // setting up phrase
         val phrase = phrase {
-            mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
+            mediums = listOf(FirebaseMLKitTranslate())
             options {
                 targeting = target.text.toString()
                 behaviourFlags {

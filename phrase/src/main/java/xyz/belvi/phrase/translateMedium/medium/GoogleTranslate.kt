@@ -27,7 +27,7 @@ class GoogleTranslate(
         }
     }
 
-    override suspend fun translate(text: String, targeting: String): String {
+    override suspend fun translate(text: String, sourceLanguage: String, targeting: String): String {
         val key = "$targeting:$text"
         if (cacheTranslation.containsKey(key))
             return cacheTranslation[key]!!
@@ -59,4 +59,5 @@ class GoogleTranslate(
             result
         }
     }
+
 }

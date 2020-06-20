@@ -8,6 +8,6 @@ abstract class TranslationMedium {
     val cacheTranslation = HashMap<String, String>()
 
     abstract suspend fun detect(text: String): PhraseDetected?
-    abstract suspend fun translate(text: String, targeting: String): String
+    abstract suspend fun translate(text: String, sourceLanguage: String, targeting: String): String
     abstract fun name(): String
 }
