@@ -7,6 +7,7 @@ import android.text.method.LinkMovementMethod
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.google.firebase.FirebaseApp
 import kotlinx.android.synthetic.main.activity_main.detected
 import kotlinx.android.synthetic.main.activity_main.source_edit
 import kotlinx.android.synthetic.main.activity_main.spanish_text
@@ -22,6 +23,7 @@ import xyz.belvi.phrase.options.SourceTranslationOption
 import xyz.belvi.phrase.phrase
 import xyz.belvi.phrase.translateMedium.Languages
 import xyz.belvi.phrase.translateMedium.medium.DeepL
+import xyz.belvi.phrase.translateMedium.medium.FirebaseMLKitTranslate
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
 class MainActivity : AppCompatActivity() {
@@ -29,13 +31,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var phraseSpannableBuilder: PhraseSpannableBuilder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         setContentView(R.layout.activity_main)
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
 
         // setting up phrase
         val phrase = phrase {
-            mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
+            mediums = listOf(FirebaseMLKitTranslate())
             options {
                 targeting = target.text.toString()
                 behaviourFlags {
