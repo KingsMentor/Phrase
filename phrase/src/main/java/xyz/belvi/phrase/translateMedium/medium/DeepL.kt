@@ -5,7 +5,7 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 final class DeepL(val apiKey: String) : TranslationMedium() {
 
-    override suspend fun translate(text: String, targeting: String): String {
+    override suspend fun translate(text: String, sourceLanguage: String, targeting: String): String {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 

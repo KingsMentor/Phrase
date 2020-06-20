@@ -8,23 +8,15 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.firebase.FirebaseApp
-import kotlinx.android.synthetic.main.activity_main.detected
-import kotlinx.android.synthetic.main.activity_main.source_edit
-import kotlinx.android.synthetic.main.activity_main.spanish_text
-import kotlinx.android.synthetic.main.activity_main.target
-import kotlinx.android.synthetic.main.activity_main.translated
-import kotlinx.android.synthetic.main.activity_main.update_source
-import kotlinx.android.synthetic.main.activity_main.yoruba
+import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions
+import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.helpers.PhraseSpannableBuilder
 import xyz.belvi.phrase.options
 import xyz.belvi.phrase.options.PhraseTranslation
-import xyz.belvi.phrase.options.SourceTranslationOption
 import xyz.belvi.phrase.phrase
-import xyz.belvi.phrase.translateMedium.Languages
-import xyz.belvi.phrase.translateMedium.medium.DeepL
 import xyz.belvi.phrase.translateMedium.medium.FirebaseMLKitTranslate
-import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
-
         // setting up phrase
         val phrase = phrase {
             mediums = listOf(FirebaseMLKitTranslate())

@@ -57,9 +57,21 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         val detected = detect(text, options)
 
         var translationMediums: List<TranslationMedium>? = if (detected != null) {
-            phraseOption.sourcePreferredTranslation.sourceTranslateOption.filter { !detected.languageCode.equals(it.sourceLanguageCode,true) }
+            phraseOption.sourcePreferredTranslation.sourceTranslateOption.filter {
+                !detected.languageCode.equals(
+                    it.sourceLanguageCode,
+                    true
+                )
+            }
                 .let { sourceOptions ->
-                    sourceOptions.find { sourceTranslationOption -> sourceTranslationOption.targetLanguageCode.indexOfFirst { it.equals(phraseOption.targetLanguageCode,true) }>=0 }
+                    sourceOptions.find { sourceTranslationOption ->
+                        sourceTranslationOption.targetLanguageCode.indexOfFirst {
+                            it.equals(
+                                phraseOption.targetLanguageCode,
+                                true
+                            )
+                        } >= 0
+                    }
                         ?.let {
                             it.translate
                         } ?: sourceOptions.find { it.targetLanguageCode.contains("*") }
@@ -96,6 +108,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
             var translationMedium = translationMediums.first()
             var translate = translationMedium.translate(
                 text,
+                detected?.languageCode ?: "",
                 phraseOption.targetLanguageCode
             )
 
@@ -106,6 +119,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                     continue
                 translate = medium.translate(
                     text,
+                    detected?.languageCode ?: "",
                     phraseOption.targetLanguageCode
                 )
                 translationMedium = medium
