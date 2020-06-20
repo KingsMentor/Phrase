@@ -50,10 +50,7 @@ With mediums, you specify a list of `TranslationMedium` to use in order of fallb
 
 Phrase also allows the implementation of custom translation mediums if any of the inbuilt translation mediums doesn't meet the requirements you have in mind. 
 
-
-#### Available TranslationMedium
-1. GoogleTranslate
-2. FirebaseMLKitTranslate - requires [firebaseSetUp](https://firebase.google.com/docs/android/setup)
+`FirebaseMLKitTranslate` requires [firebaseSetUp](https://firebase.google.com/docs/android/setup)
 
 For both `FirebaseMLKitTranslate` and `GoogleTranslate`, remember to [enable Google Translate API](https://console.cloud.google.com/apis/): 
 
