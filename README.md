@@ -115,9 +115,10 @@ options {
 }
 ```
 
->Phrase uses the target language to:
->- Know which language to translate content to. 
->- Know when to show the `translate` option to the user. Translation action only shows when the detected source language is not the same as the target language. This also means that no translation query is executed when the source and the target language are the same. 
+Phrase uses the target language to:
+
+* Know which language to translate content to. 
+* Know when to show the `translate` option to the user. Translation action only shows when the detected source language is not the same as the target language. This also means that no translation query is executed when the source and the target language are the same. 
 
 2)`actionLabel` - action label sets the text users see which prompts for translation. This is only visible when the source text is in a language different from the target language. This can be hidden by passing `BEHAVIOR_HIDE_TRANSLATE_PROMPT` in `behaviorFlags`.
 
