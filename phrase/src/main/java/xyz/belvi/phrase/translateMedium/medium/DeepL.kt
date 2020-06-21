@@ -9,6 +9,7 @@ import xyz.belvi.phrase.translateMedium.medium.retrofit.DeepLApi
 class DeepL(private val apiKey: String) : TranslationMedium() {
 
     private val mURL = "https://api.deepl.com/"
+    private val apiClient = ApiClient.retrofit(mURL).create(DeepLApi::class.java)
 
     override suspend fun translate(
         text: String,
@@ -18,8 +19,7 @@ class DeepL(private val apiKey: String) : TranslationMedium() {
         val key = "$sourceLanguage:$targeting:$text"
         if (cacheTranslation.containsKey(key))
             return cacheTranslation[key]!!
-        val deepLTranslation = ApiClient.retrofit(mURL).create(DeepLApi::class.java)
-            .translate(apiKey, text, targeting).translations.firstOrNull()
+        val deepLTranslation = apiClient.translate(apiKey, text, targeting).translations.firstOrNull()
         val result = deepLTranslation?.text ?: ""
         cacheTranslation[key] = result
         return result
@@ -32,8 +32,7 @@ class DeepL(private val apiKey: String) : TranslationMedium() {
     override suspend fun detect(text: String, targeting: String): PhraseDetected? {
         if (cacheDetected.containsKey(text))
             return cacheDetected[text]!!
-        val deepLTranslation = ApiClient.retrofit(mURL).create(DeepLApi::class.java)
-            .translate(apiKey, text, targeting).translations.firstOrNull()
+        val deepLTranslation = apiClient.translate(apiKey, text, targeting).translations.firstOrNull()
         val detect = deepLTranslation?.detected_source_language ?: ""
         val result = PhraseDetected(
             text,
