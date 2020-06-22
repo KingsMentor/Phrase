@@ -58,7 +58,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
 
         var translationMediums: List<TranslationMedium>? = if (detected != null) {
             phraseOption.sourcePreferredTranslation.sourceTranslateOption.filter {
-                !detected.languageCode.equals(
+                detected.languageCode.equals(
                     it.sourceLanguageCode,
                     true
                 )
@@ -73,14 +73,14 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                         } >= 0
                     }
                         ?.let {
-                            it.translate
+                            if (it.translate.isEmpty()) translationMediums else it.translate
                         } ?: sourceOptions.find { it.targetLanguageCode.contains("*") }
                         ?.let { it.translate }
-                    ?: if (phraseOption.behavioursOptions.behaviours.translateSourceOptionOnly()) null else translationMediums
+                    ?: if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly()) null else translationMediums
                 }
         } else translationMediums
 
-        if (!phraseOption.behavioursOptions.behaviours.translateSourceOptionOnly()) {
+        if(translationMediums == null) {
             translationMediums =
                 if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly() && phraseOption.preferredSources.indexOfFirst {
                         it.equals(
@@ -90,7 +90,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                     } < 0) {
                     null
                 } else {
-                    translationMediums
+                    this.translationMediums
                 }
         }
 

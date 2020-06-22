@@ -8,15 +8,15 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.firebase.FirebaseApp
-import com.google.firebase.ml.common.modeldownload.FirebaseModelDownloadConditions
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.helpers.PhraseSpannableBuilder
 import xyz.belvi.phrase.options
+import xyz.belvi.phrase.options.Behaviour
 import xyz.belvi.phrase.options.PhraseTranslation
+import xyz.belvi.phrase.options.SourceTranslationOption
 import xyz.belvi.phrase.phrase
-import xyz.belvi.phrase.translateMedium.medium.DeepL
-import xyz.belvi.phrase.translateMedium.medium.FirebaseMLKitTranslate
+import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
 
 class MainActivity : AppCompatActivity() {
@@ -30,12 +30,13 @@ class MainActivity : AppCompatActivity() {
         val font = Typeface.createFromAsset(assets, "rb.ttf")
         // setting up phrase
         val phrase = phrase {
-            mediums = listOf(DeepL(""))
+            mediums = listOf(GoogleTranslate(this@MainActivity,R.raw.credential))
             options {
                 targeting = target.text.toString()
+                sourceTranslation = listOf(SourceTranslationOption("fr", listOf("en")))
                 behaviourFlags {
                     switchAnim
-                    flags = setOf()
+                    flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
                     signatureTypeface = font
                     signatureColor =
                         ContextCompat.getColor(this@MainActivity, R.color.white)
@@ -78,8 +79,10 @@ class MainActivity : AppCompatActivity() {
         update_source.setOnClickListener {
             phrase.updateOptions(options {
                 targeting = target.text.toString()
+                preferredSources = listOf("es")
+                sourceTranslation = listOf(SourceTranslationOption("fr", listOf("en")))
                 behaviourFlags {
-                    flags = setOf()
+                    flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
                     signatureTypeface = font
                     signatureColor =
                         ContextCompat.getColor(this@MainActivity, R.color.white)
@@ -91,7 +94,9 @@ class MainActivity : AppCompatActivity() {
                     "Translated with "
                 }
             })
+            spanish_text.updateSource(getString(R.string.spanish))
             phraseSpannableBuilder.updateSource(source_edit.text.toString())
+            yoruba.setText(R.string.yoruba)
         }
     }
 }

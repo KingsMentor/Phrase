@@ -58,30 +58,35 @@ abstract class PhraseSpannableBuilder constructor(
                 }
 
             detectedMedium?.let { phraseDetected ->
-                if (behaviors.translatePreferredSourceOnly()) {
-                    var allowTranslation =
-                        if (options.behavioursOptions.behaviours.translatePreferredSourceOnly()) {
-                            options.preferredSources.indexOfFirst {
-                                it.equals(phraseDetected.languageCode, true)
-                            } > 0
-                        } else {
-                            true
-                        }
-                    allowTranslation =
-                        (options.sourcePreferredTranslation.sourceTranslateOption.filter { it.sourceLanguageCode != phraseDetected.languageCode }
-                            .let { sourceOptions ->
-                                sourceOptions.find {
-                                    it.targetLanguageCode.contains(options.targetLanguageCode) || it.targetLanguageCode.contains(
-                                        "*"
-                                    )
-                                }?.let { true }
-                                    ?: !options.behavioursOptions.behaviours.translateSourceOptionOnly()
-                            }) && allowTranslation
-                    if (!allowTranslation) {
-                        onContentChanged(this@PhraseSpannableBuilder)
-                        return@launch
+
+                var allowTranslation =
+                    if (options.behavioursOptions.behaviours.translatePreferredSourceOnly()) {
+                        options.preferredSources.indexOfFirst {
+                            it.equals(phraseDetected.languageCode, true)
+                        } >= 0
+                    } else {
+                        true
                     }
+                allowTranslation =
+                    (options.sourcePreferredTranslation.sourceTranslateOption.filter { it.sourceLanguageCode.toLowerCase() == phraseDetected.languageCode.toLowerCase() }
+                        .let { sourceOptions ->
+                            sourceOptions.find { sourceTranslationOption ->
+                                sourceTranslationOption.targetLanguageCode.indexOfFirst {
+                                    it.equals(
+                                        options.targetLanguageCode,
+                                        true
+                                    )
+                                } >= 0 || sourceTranslationOption.targetLanguageCode.contains(
+                                    "*"
+                                )
+                            }?.let { true }
+                                ?: !options.behavioursOptions.behaviours.translatePreferredSourceOnly()
+                        }) || allowTranslation
+                if (!allowTranslation) {
+                    onContentChanged(this@PhraseSpannableBuilder)
+                    return@launch
                 }
+
                 if (phraseDetected.languageCode.equals(
                         options.targetLanguageCode.toLowerCase(),
                         true
