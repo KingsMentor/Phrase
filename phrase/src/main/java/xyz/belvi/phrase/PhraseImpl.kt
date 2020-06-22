@@ -47,7 +47,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         val detectionMedium = phraseOption.preferredDetection ?: run {
             translationMediums.first()
         }
-        return detectionMedium.detect(text,phraseOption.targetLanguageCode)
+        return detectionMedium.detect(text, phraseOption.targetLanguageCode)
     }
 
     override suspend fun translate(text: String, options: PhraseOptions?): PhraseTranslation {
@@ -76,21 +76,23 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                             it.translate
                         } ?: sourceOptions.find { it.targetLanguageCode.contains("*") }
                         ?.let { it.translate }
-                    ?: translationMediums
+                    ?: if (phraseOption.behavioursOptions.behaviours.translateSourceOptionOnly()) null else translationMediums
                 }
         } else translationMediums
 
-        translationMediums =
-            if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly() && phraseOption.preferredSources.indexOfFirst {
-                    it.equals(
-                        detected?.languageCode,
-                        true
-                    )
-                } < 0) {
-                null
-            } else {
-                translationMediums
-            }
+        if (!phraseOption.behavioursOptions.behaviours.translateSourceOptionOnly()) {
+            translationMediums =
+                if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly() && phraseOption.preferredSources.indexOfFirst {
+                        it.equals(
+                            detected?.languageCode,
+                            true
+                        )
+                    } < 0) {
+                    null
+                } else {
+                    translationMediums
+                }
+        }
 
         if ((detected?.languageCode ?: "").equals(
                 phraseOption.targetLanguageCode,

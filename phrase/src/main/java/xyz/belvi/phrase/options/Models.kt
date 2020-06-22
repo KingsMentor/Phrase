@@ -27,11 +27,13 @@ class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
 
         const val BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY: Int = 2
 
-        const val BEHAVIOR_IGNORE_DETECTION: Int = 3
+        const val BEHAVIOR_TRANSLATE_SOURCE_OPTION_ONLY: Int = 3
 
-        const val BEHAVIOR_HIDE_CREDIT: Int = 4
+        const val BEHAVIOR_IGNORE_DETECTION: Int = 4
 
-        const val BEHAVIOR_HIDE_TRANSLATE_PROMPT: Int = 5
+        const val BEHAVIOR_HIDE_CREDIT: Int = 5
+
+        const val BEHAVIOR_HIDE_TRANSLATE_PROMPT: Int = 6
     }
 
     internal fun replaceSourceText() = behaviorSet.contains(BEHAVIOR_REPLACE_SOURCE_TEXT)
@@ -40,6 +42,9 @@ class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
 
     internal fun translatePreferredSourceOnly() =
         behaviorSet.contains(BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
+
+    internal fun translateSourceOptionOnly() =
+        behaviorSet.contains(BEHAVIOR_TRANSLATE_SOURCE_OPTION_ONLY)
 
     internal fun hideSignature() = behaviorSet.contains(BEHAVIOR_HIDE_CREDIT)
 

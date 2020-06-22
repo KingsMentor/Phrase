@@ -67,19 +67,16 @@ abstract class PhraseSpannableBuilder constructor(
                         } else {
                             true
                         }
-                    if (!allowTranslation) {
-                        onContentChanged(this@PhraseSpannableBuilder)
-                        return@launch
-                    }
                     allowTranslation =
-                        options.sourcePreferredTranslation.sourceTranslateOption.filter { it.sourceLanguageCode != phraseDetected.languageCode }
+                        (options.sourcePreferredTranslation.sourceTranslateOption.filter { it.sourceLanguageCode != phraseDetected.languageCode }
                             .let { sourceOptions ->
                                 sourceOptions.find {
                                     it.targetLanguageCode.contains(options.targetLanguageCode) || it.targetLanguageCode.contains(
                                         "*"
                                     )
-                                }?.let { true } ?: false
-                            }
+                                }?.let { true }
+                                    ?: !options.behavioursOptions.behaviours.translateSourceOptionOnly()
+                            }) && allowTranslation
                     if (!allowTranslation) {
                         onContentChanged(this@PhraseSpannableBuilder)
                         return@launch
