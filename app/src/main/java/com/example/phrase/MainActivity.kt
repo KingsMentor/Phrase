@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         val font = Typeface.createFromAsset(assets, "rb.ttf")
         // setting up phrase
         val phrase = phrase {
-            mediums = listOf(GoogleTranslate(this@MainActivity,R.raw.credential))
+            mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
             options {
                 targeting = target.text.toString()
                 sourceTranslation = listOf(SourceTranslationOption("fr", listOf("en")))
@@ -52,21 +52,11 @@ class MainActivity : AppCompatActivity() {
 
         phraseSpannableBuilder =
             object : PhraseSpannableBuilder("", null) {
-                override fun onPhraseTranslating() {
-                }
-
-                override fun onPhraseTranslated(phraseTranslation: PhraseTranslation?) {
-                }
-
-                override fun onActionClick(showingTranslation: Boolean) {
-                    Log.i(MainActivity::class.java.name, showingTranslation.toString())
-                }
-
                 override fun onContentChanged(content: PhraseSpannableBuilder) {
+                    super.onContentChanged(content)
                     translated.text = content
                 }
             }
-
         Phrase.instance().bindTextView(yoruba)
         yoruba.setText(R.string.yoruba)
 
