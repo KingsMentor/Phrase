@@ -20,8 +20,7 @@ abstract class PhraseSpannableBuilder constructor(
     protected var source: String,
     protected var phraseOptions: PhraseOptions? = null
 ) :
-    SpannableStringBuilder(source),
-    PhraseTranslateListener {
+    PhraseTranslateListenerAdapter(source) {
 
     protected var showingTranslateAction = false
     protected var phraseTranslation: PhraseTranslation? = null
