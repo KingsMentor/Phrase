@@ -172,7 +172,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         var switchAnim: Int = 0
 
         @ColorInt
-        var signatureColor: Int = 0
+        var signatureColor: Int = Color.BLACK
         var signatureTypeface: Typeface? = null
         var flags = setOf<@BehaviorFlags Int>()
 
