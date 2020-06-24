@@ -3,7 +3,7 @@ package xyz.belvi.phrase.helpers
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Build
-import android.text.SpannableStringBuilder
+import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.style.ClickableSpan
@@ -11,24 +11,26 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.MetricAffectingSpan
 import android.text.style.TypefaceSpan
 import android.view.View
-import kotlinx.coroutines.*
+import androidx.core.text.toSpannable
+import androidx.core.text.toSpanned
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 
 abstract class PhraseSpannableBuilder constructor(
-    protected var source: String,
+    protected var source: CharSequence,
     protected var phraseOptions: PhraseOptions? = null
 ) :
     PhraseTranslateListenerAdapter(source) {
-
     protected var showingTranslateAction = false
     protected var phraseTranslation: PhraseTranslation? = null
 
     init {
         buildTranslateActionSpan()
-
-
     }
 
     fun updateOptions(options: PhraseOptions) {
@@ -36,7 +38,7 @@ abstract class PhraseSpannableBuilder constructor(
         buildTranslateActionSpan()
     }
 
-    fun updateSource(source: String) {
+    fun updateSource(source: CharSequence) {
         this@PhraseSpannableBuilder.source = source
         buildTranslateActionSpan()
     }
@@ -52,7 +54,9 @@ abstract class PhraseSpannableBuilder constructor(
                 if (behaviors.ignoreDetection() || source.isEmpty())
                     null
                 else {
-                    withContext(Dispatchers.IO) { Phrase.instance().detectLanguage(source) }
+                    withContext(Dispatchers.IO) {
+                        Phrase.instance().detectLanguage(source.toString())
+                    }
                 }
 
             detectedMedium?.let { phraseDetected ->
@@ -100,10 +104,10 @@ abstract class PhraseSpannableBuilder constructor(
                 }
             }
 
-            if (!source.isNullOrBlank() && !behaviors.hideTranslatePrompt() && (this@PhraseSpannableBuilder.toString() == source)) {
+            if (!source.isNullOrBlank() && !behaviors.hideTranslatePrompt() && (this@PhraseSpannableBuilder.toString() == source.toString())) {
                 appendln("\n")
                 val start = length
-                append(options.translateText)
+                append(options.translateText.invoke(detectedMedium))
                 setSpan(
                     SpannablePhraseClickableSpan(),
                     start,
@@ -169,6 +173,7 @@ abstract class PhraseSpannableBuilder constructor(
     }
 
     private fun init() {
+        clearSpans()
         clear()
         append(source)
     }
@@ -181,7 +186,9 @@ abstract class PhraseSpannableBuilder constructor(
                     onPhraseTranslating()
                     val options = options()
                     phraseTranslation =
-                        withContext(Dispatchers.IO) { Phrase.instance().translate(source, options) }
+                        withContext(Dispatchers.IO) {
+                            Phrase.instance().translate(source.toString(), options)
+                        }
                     buildTranslatedPhraseSpan()
                     onPhraseTranslated(phraseTranslation)
                 }

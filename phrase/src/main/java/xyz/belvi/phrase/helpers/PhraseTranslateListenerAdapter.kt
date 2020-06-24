@@ -4,7 +4,7 @@ import android.text.SpannableStringBuilder
 import xyz.belvi.phrase.options.PhraseTranslation
 
 open class PhraseTranslateListenerAdapter constructor(
-    source: String
+    source: CharSequence
 ) : SpannableStringBuilder(source), PhraseTranslateListener {
     override fun onPhraseTranslating() {
 

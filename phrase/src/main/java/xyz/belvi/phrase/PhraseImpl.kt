@@ -144,7 +144,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         var sourceTranslation = listOf<SourceTranslationOption>()
         var preferredDetectionMedium: TranslationMedium? = null
         var targeting: String = Locale.getDefault().language
-        var actionLabel: String = ""
+        var actionLabel: ((detected: PhraseDetected?) -> String) = { "" }
         var resultActionLabel: ((translation: PhraseTranslation) -> String) = { "" }
 
         fun behaviourFlags(behaviourOptions: BehaviourOptionsBuilder.() -> Unit) {
