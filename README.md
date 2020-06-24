@@ -25,17 +25,14 @@ implementation 'xyz.belvi.translate:phrase:1.0.9-beta'
 A single instance of phrase is instantiated for the lifetime of the application. This instance can be created in the application call, activity, or any implementation that best suits you. Here's an example showing how to set up the library with some basic options.  
 
 ```kotlin
-phrase {
-    mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
-    options {
-        targeting = "fr"
-        actionLabel = "Translate"
-        resultActionLabel = {
-            "Translated with "
+        phrase {
+            mediums = listOf(GoogleTranslate(requireContext(), R.raw.credential))
+            options {
+                targeting = "fr"
+                actionLabel = { phraseDetected -> "Translate" }
+                resultActionLabel = { phraseTranslation -> "Translated with" }
+            }
         }
-    }
-}
-
 ```
 
 Let's talk about the parameters required in setting up phrase: 
@@ -93,10 +90,12 @@ options {
         signatureColor =
             ContextCompat.getColor(this@MainActivity, R.color.white)
     }
-    actionLabel = "Translate"
-    resultActionLabel = {
+    actionLabel = { detected -> 
+    // detected is a PhraseDetected object about the content to be translated
+    "Translate" }
+    resultActionLabel = { phraseTranslation ->
         detected.text =
-            "Detected Language Source: " + it.detectedSource?.languageName ?: ""
+            "Detected Language Source: " + phraseTranslation.detectedSource?.languageName ?: ""
         "Translated with "
     }
 }
@@ -133,7 +132,7 @@ options {
 ```kotlin
 options{
     resultActionLabel = { phraseTranslation ->
-        //
+        //phraseTranslation is a PhraseTranslation object
         "Translated with "
     }
 }
