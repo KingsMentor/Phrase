@@ -39,7 +39,9 @@ class MainActivity : AppCompatActivity() {
                 behaviourFlags {
                     switchAnim
                     flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
-//                    signatureTypeface = font
+                    signatureTypeface = font
+                    signatureColor =
+                        ContextCompat.getColor(this@MainActivity, R.color.white)
                 }
                 actionLabel = { detected ->
                     "Translate" }
@@ -76,6 +78,9 @@ class MainActivity : AppCompatActivity() {
                 sourceTranslation = listOf(SourceTranslationOption("fr", listOf("en")))
                 behaviourFlags {
                     flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
+                    signatureTypeface = font
+                    signatureColor =
+                        ContextCompat.getColor(this@MainActivity, R.color.white)
                 }
                 actionLabel = { "Translate" }
                 resultActionLabel = {
