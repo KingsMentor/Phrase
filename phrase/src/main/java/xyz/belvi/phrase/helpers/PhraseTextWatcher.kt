@@ -47,7 +47,7 @@ open class PhraseTextWatcher(
         if (s.isNullOrBlank())
             return
         if (s.toString() != phraseSpannableBuilder.toString())
-            phraseSpannableBuilder.updateSource(s.toString())
+            phraseSpannableBuilder.updateSource(s)
     }
 
     private fun updateEditable() {

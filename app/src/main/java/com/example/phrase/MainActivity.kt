@@ -3,7 +3,9 @@ package com.example.phrase
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableString
 import android.text.method.LinkMovementMethod
+import android.text.style.BackgroundColorSpan
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -41,14 +43,17 @@ class MainActivity : AppCompatActivity() {
                     signatureColor =
                         ContextCompat.getColor(this@MainActivity, R.color.white)
                 }
-                actionLabel = "Translate"
-                resultActionLabel = {
+                actionLabel = { detected ->
+                    "Translate" }
+
+                resultActionLabel = { phraseTranslation ->
                     detected.text =
-                        "Detected Language Source: " + it.detectedSource?.languageName ?: ""
+                        "Detected Language Source: " + phraseTranslation.detectedSource?.languageName ?: ""
                     "Translated with "
                 }
             }
         }
+
 
         phraseSpannableBuilder =
             object : PhraseSpannableBuilder("", null) {
@@ -77,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                     signatureColor =
                         ContextCompat.getColor(this@MainActivity, R.color.white)
                 }
-                actionLabel = "Translate"
+                actionLabel = { "Translate" }
                 resultActionLabel = {
                     detected.text =
                         "Detected Language Source: " + it.detectedSource?.languageName ?: ""
