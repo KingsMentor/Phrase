@@ -40,8 +40,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
     }
 
     override suspend fun detect(text: String, options: PhraseOptions?): PhraseDetected? {
-        val phraseOption = options ?: this.phraseOptions
-        requireNotNull(phraseOption)
+        val phraseOption = (options ?: this.phraseOptions) ?: return null
         if (phraseOption.behavioursOptions.behaviours.ignoreDetection())
             return null
         val detectionMedium = phraseOption.preferredDetection ?: run {
@@ -51,8 +50,8 @@ class PhraseImpl internal constructor() : PhraseUseCase {
     }
 
     override suspend fun translate(text: String, options: PhraseOptions?): PhraseTranslation {
-        val phraseOption = options ?: this.phraseOptions
-        requireNotNull(phraseOption)
+        val phraseOption =
+            (options ?: this.phraseOptions) ?: return PhraseTranslation(text, null, null)
 
         val detected = detect(text, options)
 
@@ -80,7 +79,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                 }
         } else translationMediums
 
-        if(translationMediums == null) {
+        if (translationMediums == null) {
             translationMediums =
                 if (phraseOption.behavioursOptions.behaviours.translatePreferredSourceOnly() && phraseOption.preferredSources.indexOfFirst {
                         it.equals(

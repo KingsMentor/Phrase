@@ -46,8 +46,7 @@ abstract class PhraseSpannableBuilder constructor(
     private fun buildTranslateActionSpan() {
         GlobalScope.launch(Dispatchers.Main) {
             init()
-            val options = options()
-            requireNotNull(options)
+            val options = options() ?: return@launch
             val behaviors = options.behavioursOptions.behaviours
             val detectedMedium =
                 if (behaviors.ignoreDetection() || source.isEmpty())
@@ -119,8 +118,7 @@ abstract class PhraseSpannableBuilder constructor(
     }
 
     private fun buildTranslatedPhraseSpan() {
-        val options = options()
-        requireNotNull(options)
+        val options = options() ?: return
         val optionBehavior = options.behavioursOptions.behaviours
         phraseTranslation?.let { phraseTranslation ->
             init()
