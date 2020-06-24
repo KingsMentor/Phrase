@@ -140,9 +140,9 @@ abstract class PhraseSpannableBuilder constructor(
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 if (!optionBehavior.hideSignature()) {
+                    start = length
+                    append("${phraseTranslation.translationMediumName}")
                     options.behavioursOptions.signatureTypeFace?.let { typeFace ->
-                        start = length
-                        append("${phraseTranslation.translationMediumName}")
                         setSpan(
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) TypefaceSpan(
                                 typeFace
@@ -153,15 +153,14 @@ abstract class PhraseSpannableBuilder constructor(
                             length,
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
-
-                        options.behavioursOptions.signatureColor.let { color ->
-                            setSpan(
-                                ForegroundColorSpan(color),
-                                start,
-                                length,
-                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                            )
-                        }
+                    }
+                    options.behavioursOptions.signatureColor.let { color ->
+                        setSpan(
+                            ForegroundColorSpan(color),
+                            start,
+                            length,
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
                     }
                 }
                 appendln("\n")
