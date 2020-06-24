@@ -16,7 +16,7 @@ This library was inspired by how twitter handles in-app content translation.
 Add this to dependencies in apps `build.gradle`
 
 ```
-implementation 'xyz.belvi.translate:phrase:1.0.9-beta'
+implementation 'xyz.belvi.translate:phrase:1.0.9-beta3'
 
 ```
 
