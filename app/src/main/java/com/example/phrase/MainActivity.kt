@@ -37,7 +37,6 @@ class MainActivity : AppCompatActivity() {
                 targeting = target.text.toString()
                 sourceTranslation = listOf(SourceTranslationOption("fr", listOf("en")))
                 behaviourFlags {
-                    switchAnim
                     flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
                     signatureTypeface = font
                     signatureColor =

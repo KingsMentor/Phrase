@@ -170,9 +170,6 @@ class PhraseImpl internal constructor() : PhraseUseCase {
     }
 
     class BehaviourOptionsBuilder {
-        @AnimRes
-        var switchAnim: Int = 0
-
         @ColorInt
         var signatureColor: Int = Color.BLACK
         var signatureTypeface: Typeface? = null
@@ -182,8 +179,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
             return BehaviourOptions(
                 Behaviour(flags),
                 signatureTypeface,
-                signatureColor,
-                switchAnim
+                signatureColor
             )
         }
     }
