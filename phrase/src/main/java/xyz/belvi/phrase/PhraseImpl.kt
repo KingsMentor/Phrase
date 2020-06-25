@@ -26,6 +26,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
 
     override fun bindTextView(
         textView: TextView,
+        sourceLanguage: String?,
         options: PhraseOptions?,
         phraseTranslateListener: PhraseTranslateListener?
     ) {
@@ -34,6 +35,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         textView.addTextChangedListener(
             PhraseTextWatcher(
                 options,
+                sourceLanguage,
                 phraseTranslateListener
             )
         )

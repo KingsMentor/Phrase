@@ -27,10 +27,11 @@ class Phrase internal constructor() {
 
     fun bindTextView(
         textView: TextView,
+        sourceLanguage: String? = null,
         options: PhraseOptions? = null,
         phraseTranslateListener: PhraseTranslateListener? = null
     ) {
-        return phraseImpl.bindTextView(textView, options, phraseTranslateListener)
+        return phraseImpl.bindTextView(textView,sourceLanguage, options, phraseTranslateListener)
     }
 
     fun setTranslationMedium(translationMediums: List<TranslationMedium>) {

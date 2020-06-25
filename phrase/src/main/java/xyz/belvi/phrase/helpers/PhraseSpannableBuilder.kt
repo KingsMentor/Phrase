@@ -3,7 +3,6 @@ package xyz.belvi.phrase.helpers
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Build
-import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.style.ClickableSpan
@@ -11,47 +10,65 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.MetricAffectingSpan
 import android.text.style.TypefaceSpan
 import android.view.View
-import androidx.core.text.toSpannable
-import androidx.core.text.toSpanned
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import xyz.belvi.phrase.Phrase
+import xyz.belvi.phrase.options.PhraseDetected
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
+import xyz.belvi.phrase.translateMedium.Languages
+
+enum class ActionStatus {
+    SHOWING_SOURCE,
+    SHOWING_WITH_TRANSLATE_ACTION,
+    SHOWING_TRANSLATED
+}
 
 abstract class PhraseSpannableBuilder constructor(
     protected var source: CharSequence,
+    protected var sourceLanguage: String? = null,
     protected var phraseOptions: PhraseOptions? = null
 ) :
     PhraseTranslateListenerAdapter(source) {
-    protected var showingTranslateAction = false
+    internal var actionStatus = ActionStatus.SHOWING_SOURCE
     protected var phraseTranslation: PhraseTranslation? = null
 
     init {
-        buildTranslateActionSpan()
+        buildTranslateActionSpan(source)
     }
 
     fun updateOptions(options: PhraseOptions) {
         this@PhraseSpannableBuilder.phraseOptions = options
-        buildTranslateActionSpan()
+        buildTranslateActionSpan(source)
     }
 
-    fun updateSource(source: CharSequence) {
+    fun updateSource(source: CharSequence, sourceLanguage: String? = null) {
         this@PhraseSpannableBuilder.source = source
-        buildTranslateActionSpan()
+        this@PhraseSpannableBuilder.sourceLanguage = sourceLanguage
+        buildTranslateActionSpan(source)
     }
 
     private fun options() = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
 
-    private fun buildTranslateActionSpan() {
+    private fun buildTranslateActionSpan(source: CharSequence) {
+        init()
         GlobalScope.launch(Dispatchers.Main) {
-            init()
             val options = options() ?: return@launch
             val behaviors = options.behavioursOptions.behaviours
             val detectedMedium =
-                if (behaviors.ignoreDetection() || source.isEmpty())
+                sourceLanguage?.let { sourceLanguage ->
+                    val languageName =
+                        Languages.values().find { it.code == sourceLanguage.toLowerCase() }?.name
+                            ?: sourceLanguage.toLowerCase()
+                    PhraseDetected(
+                        source.toString(),
+                        sourceLanguage.toLowerCase(),
+                        languageName,
+                        null
+                    )
+                } ?: if (behaviors.ignoreDetection() || source.isEmpty())
                     null
                 else {
                     withContext(Dispatchers.IO) {
@@ -85,6 +102,7 @@ abstract class PhraseSpannableBuilder constructor(
                                 ?: !options.behavioursOptions.behaviours.translatePreferredSourceOnly()
                         }) || allowTranslation
                 if (!allowTranslation) {
+                    actionStatus = ActionStatus.SHOWING_SOURCE
                     onContentChanged(this@PhraseSpannableBuilder)
                     return@launch
                 }
@@ -99,6 +117,7 @@ abstract class PhraseSpannableBuilder constructor(
                         )
                     } > 0
                 ) {
+                    actionStatus = ActionStatus.SHOWING_SOURCE
                     onContentChanged(this@PhraseSpannableBuilder)
                     return@launch
                 }
@@ -116,7 +135,7 @@ abstract class PhraseSpannableBuilder constructor(
                 )
 
             }
-            showingTranslateAction = true
+            actionStatus = ActionStatus.SHOWING_WITH_TRANSLATE_ACTION
             onContentChanged(this@PhraseSpannableBuilder)
         }
     }
@@ -167,7 +186,7 @@ abstract class PhraseSpannableBuilder constructor(
             }
             append(phraseTranslation.translation)
         }
-        showingTranslateAction = false
+        actionStatus = ActionStatus.SHOWING_TRANSLATED
         onContentChanged(this@PhraseSpannableBuilder)
     }
 
@@ -179,8 +198,8 @@ abstract class PhraseSpannableBuilder constructor(
 
     inner class SpannablePhraseClickableSpan : ClickableSpan() {
         override fun onClick(widget: View) {
-            onActionClick(showingTranslateAction)
-            if (showingTranslateAction) {
+            onActionClick(actionStatus)
+            if (actionStatus == ActionStatus.SHOWING_WITH_TRANSLATE_ACTION) {
                 GlobalScope.launch(Dispatchers.Main) {
                     onPhraseTranslating()
                     val options = options()
@@ -193,7 +212,7 @@ abstract class PhraseSpannableBuilder constructor(
                 }
 
             } else {
-                buildTranslateActionSpan()
+                buildTranslateActionSpan(source)
             }
             widget.invalidate()
 
