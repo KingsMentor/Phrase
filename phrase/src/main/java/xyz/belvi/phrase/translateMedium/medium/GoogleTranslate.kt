@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import xyz.belvi.phrase.options.PhraseDetected
+import xyz.belvi.phrase.translateMedium.Languages
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 import java.io.InputStream
 
@@ -37,7 +38,8 @@ class GoogleTranslate(
             return cacheTranslation[key]!!
         val result = translate.await().translate(
             text,
-            Translate.TranslateOption.targetLanguage(targeting.toLowerCase()),
+            Translate.TranslateOption.sourceLanguage(sourceLanguage),
+            Translate.TranslateOption.targetLanguage(targeting),
             Translate.TranslateOption.format("text")
 
         ).translatedText
@@ -51,17 +53,20 @@ class GoogleTranslate(
     }
 
     override suspend fun detect(text: String, targeting: String): PhraseDetected? {
-
         if (cacheDetected.containsKey(text))
             return cacheDetected[text]!!
-        return translate.await().let {
-            val detect = it.detect(text).language
-            val languageName =
-                it.listSupportedLanguages().find { it.code == detect }?.name ?: detect
-            val result = PhraseDetected(text, detect, languageName, name())
-            cacheDetected[text] = result
-            result
-        }
+        val result = translate.await().translate(
+            text,
+            Translate.TranslateOption.targetLanguage(targeting.toLowerCase()),
+            Translate.TranslateOption.format("text")
+
+        )
+        val key = "${result.sourceLanguage}:$targeting:$text"
+        cacheTranslation[key] = result.translatedText
+        val languageName =
+            Languages.values().find { it.code == result.sourceLanguage.toLowerCase() }?.name
+                ?: result.sourceLanguage
+        return PhraseDetected(text, result.sourceLanguage, languageName, name())
     }
 
 }

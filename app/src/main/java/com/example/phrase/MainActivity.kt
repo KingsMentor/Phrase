@@ -37,18 +37,19 @@ class MainActivity : AppCompatActivity() {
                 targeting = target.text.toString()
                 sourceTranslation = listOf(SourceTranslationOption("fr", listOf("en")))
                 behaviourFlags {
-                    switchAnim
                     flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
                     signatureTypeface = font
                     signatureColor =
                         ContextCompat.getColor(this@MainActivity, R.color.white)
                 }
                 actionLabel = { detected ->
-                    "Translate" }
+                    "Translate"
+                }
 
                 resultActionLabel = { phraseTranslation ->
                     detected.text =
-                        "Detected Language Source: " + phraseTranslation.detectedSource?.languageName ?: ""
+                        "Detected Language Source: " + phraseTranslation.detectedSource?.languageName
+                            ?: ""
                     "Translated with "
                 }
             }
@@ -62,6 +63,7 @@ class MainActivity : AppCompatActivity() {
                     translated.text = content
                 }
             }
+
         Phrase.instance().bindTextView(yoruba)
         yoruba.setText(R.string.yoruba)
 
@@ -74,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         update_source.setOnClickListener {
             phrase.updateOptions(options {
                 targeting = target.text.toString()
-                preferredSources = listOf("es")
+                preferredSources = listOf("es", "yo")
                 sourceTranslation = listOf(SourceTranslationOption("fr", listOf("en")))
                 behaviourFlags {
                     flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)

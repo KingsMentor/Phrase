@@ -10,6 +10,7 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
 internal interface PhraseUseCase {
     fun bindTextView(
         textView: TextView,
+        sourceLanguage: String? = null,
         options: PhraseOptions? = null,
         phraseTranslateListener: PhraseTranslateListener? = null
     )
