@@ -18,6 +18,7 @@ import xyz.belvi.phrase.options.Behaviour
 import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.options.SourceTranslationOption
 import xyz.belvi.phrase.phrase
+import xyz.belvi.phrase.translateMedium.medium.DeepL
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
 
@@ -31,10 +32,11 @@ class MainActivity : AppCompatActivity() {
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
         // setting up phrase
-        val phrase = phrase {
+        phrase {
             mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
             options {
                 targeting = target.text.toString()
+                preferredSources = listOf("es", "yo")
                 sourceTranslation = listOf(SourceTranslationOption("fr", listOf("en")))
                 behaviourFlags {
                     flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
@@ -47,10 +49,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 resultActionLabel = { phraseTranslation ->
-                    detected.text =
-                        "Detected Language Source: " + phraseTranslation.detectedSource?.languageName
-                            ?: ""
-                    "Translated with "
+                    "Translated from ${phraseTranslation.detectedSource?.languageName} by "
                 }
             }
         }
@@ -74,26 +73,7 @@ class MainActivity : AppCompatActivity() {
 
 
         update_source.setOnClickListener {
-            phrase.updateOptions(options {
-                targeting = target.text.toString()
-                preferredSources = listOf("es", "yo")
-                sourceTranslation = listOf(SourceTranslationOption("fr", listOf("en")))
-                behaviourFlags {
-                    flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
-                    signatureTypeface = font
-                    signatureColor =
-                        ContextCompat.getColor(this@MainActivity, R.color.white)
-                }
-                actionLabel = { "Translate" }
-                resultActionLabel = {
-                    detected.text =
-                        "Detected Language Source: " + it.detectedSource?.languageName ?: ""
-                    "Translated with "
-                }
-            })
-            spanish_text.updateSource(getString(R.string.spanish))
             phraseSpannableBuilder.updateSource(source_edit.text.toString())
-            yoruba.setText(R.string.yoruba)
         }
     }
 }
