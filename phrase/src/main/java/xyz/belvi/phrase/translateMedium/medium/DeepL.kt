@@ -19,7 +19,8 @@ class DeepL(private val apiKey: String) : TranslationMedium() {
         val key = "$sourceLanguage:$targeting:$text"
         if (cacheTranslation.containsKey(key))
             return cacheTranslation[key]!!
-        val deepLTranslation = apiClient.translate(apiKey, text, targeting).translations.firstOrNull()
+        val deepLTranslation =
+            apiClient.translate(apiKey, text, targeting).translations.firstOrNull()
         val result = deepLTranslation?.text ?: ""
         cacheTranslation[key] = result
         return result
@@ -32,18 +33,24 @@ class DeepL(private val apiKey: String) : TranslationMedium() {
     override suspend fun detect(text: String, targeting: String): PhraseDetected? {
         if (cacheDetected.containsKey(text))
             return cacheDetected[text]!!
-        val deepLTranslation = apiClient.translate(apiKey, text, targeting).translations.firstOrNull()
-        val detect = deepLTranslation?.detected_source_language ?: ""
-        val result = PhraseDetected(
-            text,
-            detect,
-            Languages.values().find { it.code == detect.toLowerCase() }?.name ?: detect,
-            name()
-        )
-        cacheDetected[text] = result
-        val key = "$detect:$targeting:$text"
-        cacheTranslation[key] = deepLTranslation?.text ?: ""
-        return result
+        val deepLTranslation = try {
+            apiClient.translate(apiKey, text, targeting).translations.firstOrNull()
+        } catch (e: Exception) {
+            null
+        }
+        return deepLTranslation?.let {
+            val detect = deepLTranslation?.detected_source_language ?: ""
+            val result = PhraseDetected(
+                text,
+                detect,
+                Languages.values().find { it.code == detect.toLowerCase() }?.name ?: detect,
+                name()
+            )
+            cacheDetected[text] = result
+            val key = "$detect:$targeting:$text"
+            cacheTranslation[key] = deepLTranslation?.text ?: ""
+            return result
+        }
     }
 
     data class DeepLTranslation(val detected_source_language: String, val text: String)
