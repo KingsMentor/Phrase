@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
-import androidx.annotation.AnimRes
 import androidx.annotation.ColorInt
 import java.util.Locale
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
@@ -15,7 +14,7 @@ import xyz.belvi.phrase.options.BehaviourOptions
 import xyz.belvi.phrase.options.PhraseDetected
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
-import xyz.belvi.phrase.options.SourceTranslationOption
+import xyz.belvi.phrase.options.SourceTranslationRule
 import xyz.belvi.phrase.options.SourceTranslationPreference
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
@@ -58,7 +57,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         val detected = detect(text, options)
 
         var translationMediums: List<TranslationMedium>? = if (detected != null) {
-            phraseOption.sourcePreferredTranslation.sourceTranslateOption.filter {
+            phraseOption.sourcePreferredTranslation.sourceTranslateRule.filter {
                 detected.languageCode.equals(
                     it.sourceLanguageCode,
                     true
@@ -140,24 +139,18 @@ class PhraseImpl internal constructor() : PhraseUseCase {
     }
 
     class OptionsBuilder {
-        private var behaviourOptions = BehaviourOptions()
+        var behaviour = BehaviourOptions()
         var sourcesToExclude: List<String> = emptyList()
         var preferredSources: List<String> = emptyList()
-        var sourceTranslation = listOf<SourceTranslationOption>()
+        var sourceTranslation = listOf<SourceTranslationRule>()
         var preferredDetectionMedium: TranslationMedium? = null
         var targeting: String = Locale.getDefault().language
         var actionLabel: ((detected: PhraseDetected?) -> String) = { "" }
         var resultActionLabel: ((translation: PhraseTranslation) -> String) = { "" }
 
-        fun behaviourFlags(behaviourOptions: BehaviourOptionsBuilder.() -> Unit) {
-            BehaviourOptionsBuilder().apply(behaviourOptions).run {
-                this@OptionsBuilder.behaviourOptions = this.build()
-            }
-        }
-
         internal fun build(): PhraseOptions {
             return PhraseOptions(
-                behaviourOptions,
+                behaviour,
                 SourceTranslationPreference(sourceTranslation),
                 preferredDetectionMedium,
                 sourcesToExclude,

@@ -87,7 +87,7 @@ abstract class PhraseSpannableBuilder constructor(
                         true
                     }
                 allowTranslation =
-                    (options.sourcePreferredTranslation.sourceTranslateOption.filter { it.sourceLanguageCode.toLowerCase() == phraseDetected.languageCode.toLowerCase() }
+                    (options.sourcePreferredTranslation.sourceTranslateRule.filter { it.sourceLanguageCode.toLowerCase() == phraseDetected.languageCode.toLowerCase() }
                         .let { sourceOptions ->
                             sourceOptions.find { sourceTranslationOption ->
                                 sourceTranslationOption.targetLanguageCode.indexOfFirst {

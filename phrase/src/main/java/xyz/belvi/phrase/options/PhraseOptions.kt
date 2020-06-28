@@ -2,20 +2,19 @@ package xyz.belvi.phrase.options
 
 import android.graphics.Color
 import android.graphics.Typeface
-import androidx.annotation.AnimRes
 import androidx.annotation.ColorInt
 import java.util.Locale
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 data class PhraseOptions internal constructor(
-    val behavioursOptions: BehaviourOptions = BehaviourOptions(),
-    val sourcePreferredTranslation: SourceTranslationPreference = SourceTranslationPreference(),
-    val preferredDetection: TranslationMedium?,
-    val excludeSources: List<String> = emptyList(),
-    val preferredSources: List<String> = emptyList(),
-    val targetLanguageCode: String = Locale.getDefault().language,
-    val translateText: ((detected: PhraseDetected?) -> String),
-    val translateFrom: ((translation: PhraseTranslation) -> String)
+    var behavioursOptions: BehaviourOptions = BehaviourOptions(),
+    var sourcePreferredTranslation: SourceTranslationPreference = SourceTranslationPreference(),
+    var preferredDetection: TranslationMedium?,
+    var excludeSources: List<String> = emptyList(),
+    var preferredSources: List<String> = emptyList(),
+    var targetLanguageCode: String = Locale.getDefault().language,
+    var translateText: ((detected: PhraseDetected?) -> String),
+    var translateFrom: ((translation: PhraseTranslation) -> String)
 )
 
 data class BehaviourOptions internal constructor(
@@ -24,12 +23,12 @@ data class BehaviourOptions internal constructor(
     @ColorInt val signatureColor: Int = Color.BLACK
 )
 
-data class SourceTranslationOption(
+data class SourceTranslationRule(
     val sourceLanguageCode: String,
     val targetLanguageCode: List<String> = emptyList(),
     val translate: List<TranslationMedium> = emptyList()
 )
 
 data class SourceTranslationPreference internal constructor(
-    internal val sourceTranslateOption: List<SourceTranslationOption> = emptyList()
+    internal val sourceTranslateRule: List<SourceTranslationRule> = emptyList()
 )
