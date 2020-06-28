@@ -16,7 +16,7 @@ This library was inspired by how twitter handles in-app content translation.
 Add this to dependencies in apps `build.gradle`
 
 ```
-implementation 'xyz.belvi.translate:phrase:1.0.9-beta3'
+implementation 'xyz.belvi.translate:phrase:1.1.0'
 
 ```
 
@@ -216,7 +216,6 @@ options {
     }
 }
 ```
-- `switchAnim` -  sets animation for text change. If you do not want any text change animation, do not set this value. 
 - `signatureTypeface` - Phrase appends Translation engine name to `resultActionLabel`. This is so that credit is given to the Translation Engine. `signatureTypeface` defines the typeface for rendering this text. 
 - `signatureColor` - sets text color for Translation engine credit. 
 
@@ -233,7 +232,7 @@ options {
 ```
 - `BEHAVIOR_REPLACE_SOURCE_TEXT` - When this flag is set, the source text is replaced with translated text after translation
 
-- `BEHAVIOR_TRANSLATE_SOURCE_OPTION_ONLY`-  When this flag is set, Phrase only translate sources included in `preferredSources`.
+- `BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY`-  When this flag is set, Phrase only translate sources included in `preferredSources`.
 
 - `BEHAVIOR_IGNORE_DETECTION`- setting this flag means you always want to run translation without detection first. For this case, Phrase will always show the actionLabel to the user. 
 
@@ -333,7 +332,7 @@ Step 1. Add to xml
 Step 2. Reference in kotlin or Java by calling `prepare()`
 
 ```kotlin
-spanish_text.prepare(getString(R.string.spanish),options,object : PhraseTranslateListener{
+spanish_text.prepare(getString(R.string.spanish),sourceLanguage: null,options,object : PhraseTranslateListener{
     override fun onPhraseTranslating() {
         // called when a text is about to be translated. 
     }

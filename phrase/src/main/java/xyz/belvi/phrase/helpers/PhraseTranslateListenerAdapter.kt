@@ -14,7 +14,7 @@ open class PhraseTranslateListenerAdapter constructor(
 
     }
 
-    override fun onActionClick(showingTranslation: Boolean) {
+    override fun onActionClick(actionStatus: ActionStatus) {
 
     }
 

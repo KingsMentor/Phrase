@@ -11,7 +11,7 @@ data class PhraseDetected(
     val text: String,
     val languageCode: String,
     val languageName: String,
-    val detectionMediumName: String
+    val detectionMediumName: String?
 )
 
 data class PhraseTranslation(

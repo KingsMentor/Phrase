@@ -21,8 +21,7 @@ data class PhraseOptions internal constructor(
 data class BehaviourOptions internal constructor(
     val behaviours: Behaviour = Behaviour(),
     val signatureTypeFace: Typeface? = null,
-    @ColorInt val signatureColor: Int = Color.BLACK,
-    @AnimRes val switchAnim: Int = 0
+    @ColorInt val signatureColor: Int = Color.BLACK
 )
 
 data class SourceTranslationOption(
