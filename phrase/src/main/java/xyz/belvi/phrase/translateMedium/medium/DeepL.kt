@@ -20,7 +20,11 @@ class DeepL(private val apiKey: String) : TranslationMedium() {
         if (cacheTranslation.containsKey(key))
             return cacheTranslation[key]!!
         val deepLTranslation =
-            apiClient.translate(apiKey, text, targeting).translations.firstOrNull()
+            try {
+                apiClient.translate(apiKey, text, targeting).translations.firstOrNull()
+            } catch (e: Exception) {
+                null
+            }
         val result = deepLTranslation?.text ?: ""
         cacheTranslation[key] = result
         return result
