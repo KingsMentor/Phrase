@@ -123,6 +123,10 @@ abstract class PhraseSpannableBuilder constructor(
                 }
             }
 
+            if (detectedMedium == null && !behaviors.ignoreDetection()) {
+                onContentChanged(this@PhraseSpannableBuilder)
+                return@launch
+            }
             if (!source.isNullOrBlank() && !behaviors.hideTranslatePrompt() && (this@PhraseSpannableBuilder.toString() == source.toString())) {
                 appendln("\n")
                 val start = length
@@ -185,9 +189,12 @@ abstract class PhraseSpannableBuilder constructor(
                 appendln("\n")
             }
             append(phraseTranslation.translation)
+            actionStatus = ActionStatus.SHOWING_TRANSLATED
+            onContentChanged(this@PhraseSpannableBuilder)
+        } ?: kotlin.run {
+            buildTranslateActionSpan(source)
         }
-        actionStatus = ActionStatus.SHOWING_TRANSLATED
-        onContentChanged(this@PhraseSpannableBuilder)
+
     }
 
     private fun init() {
@@ -200,17 +207,16 @@ abstract class PhraseSpannableBuilder constructor(
         override fun onClick(widget: View) {
             onActionClick(actionStatus)
             if (actionStatus == ActionStatus.SHOWING_WITH_TRANSLATE_ACTION) {
+                onPhraseTranslating()
                 GlobalScope.launch(Dispatchers.Main) {
-                    onPhraseTranslating()
                     val options = options()
                     phraseTranslation =
                         withContext(Dispatchers.IO) {
                             Phrase.instance().translate(source.toString(), options)
                         }
-                    buildTranslatedPhraseSpan()
-                    onPhraseTranslated(phraseTranslation)
                 }
-
+                buildTranslatedPhraseSpan()
+                onPhraseTranslated(phraseTranslation)
             } else {
                 buildTranslateActionSpan(source)
             }

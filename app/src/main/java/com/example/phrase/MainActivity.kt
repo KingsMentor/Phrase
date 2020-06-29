@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
         // setting up phrase
-        phrase {
+        val p = phrase {
             mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
             options = options {
                 targeting = target.text.toString()
@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        p.de
 
 
         phraseSpannableBuilder =

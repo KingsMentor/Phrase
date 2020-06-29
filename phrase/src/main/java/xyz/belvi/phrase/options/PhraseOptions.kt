@@ -9,7 +9,7 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
 data class PhraseOptions internal constructor(
     var behavioursOptions: BehaviourOptions = BehaviourOptions(),
     var sourcePreferredTranslation: SourceTranslationPreference = SourceTranslationPreference(),
-    var preferredDetection: TranslationMedium?,
+    var preferredDetection: List<TranslationMedium> = emptyList(),
     var excludeSources: List<String> = emptyList(),
     var preferredSources: List<String> = emptyList(),
     var targetLanguageCode: String = Locale.getDefault().language,

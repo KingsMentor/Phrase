@@ -35,7 +35,7 @@ class Phrase internal constructor() {
     companion object {
         private val phrase = Phrase()
         /**
-         * Get current instance of Phrase. Only one instance tuns through the lifeCycle of the application. 
+         * Get current instance of Phrase. Only one instance tuns through the lifeCycle of the application.
          */
         fun instance(): Phrase {
             return phrase
@@ -88,7 +88,7 @@ class Phrase internal constructor() {
      * @see defaultOption for PhraseOption used when @param options is not provided
      *
      */
-    suspend fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation {
+    suspend fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation?{
         return phraseImpl.translate(text, options)
     }
 
