@@ -33,6 +33,9 @@ class PhraseImpl internal constructor() : PhraseUseCase {
     /**
      *
      * implementation for binding textView to Phrase
+     * @param textView#movementMethod is set to allow click on translate link
+     * @param textView#highlightColor is set to transparent to remove background color when link is clicked
+     *
      * */
     override fun bindTextView(
         textView: TextView,
@@ -157,6 +160,11 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         // run translation with the translationMediums found. fallback implementation is based on this list.
         return translationMediums?.let {
             var translationMedium = translationMediums.first()
+            val inCache = translationMedium.isTranslationInCached(
+                text,
+                detected?.languageCode ?: "",
+                phraseOption.targetLanguageCode
+            )
             var translate = translationMedium.translate(
                 text,
                 detected?.languageCode ?: "",
@@ -175,7 +183,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                 )
                 translationMedium = medium
             }
-            PhraseTranslation(translate, translationMedium.name(), detected)
+            PhraseTranslation(translate, translationMedium.name(), detected, inCache)
         }
     }
 
@@ -183,18 +191,60 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         this.phraseOptions = options
     }
 
+    /**
+     * implementation for changing default translateMediums for Phrase
+     */
     override fun setTranslationMediums(translationMediums: List<TranslationMedium>) {
         this.translationMediums = translationMediums
     }
 
     class OptionsBuilder {
+        /**
+         * define Phrase behaviours
+         */
         var behaviour = BehaviourOptions()
+
+        /**
+         * define sources to excluded. text detected to be in a language-code added to this list will not be translated
+         */
         var sourcesToExclude: List<String> = emptyList()
+
+        /**
+         * define sources to be translated.
+         * @see behaviour#flags on how to set BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY. this flag ensure only language sources in this list is translated
+         */
         var preferredSources: List<String> = emptyList()
+
+        /**
+         * define rules for translating from one source to multiple targets.
+         * With @param sourceTranslation you can define that translation from en to listOf('fr','es') should be processed with DEEPL while
+         * translation from en to listOf('de','dk') should be processed with GoogleTranslate
+         * this also works with flag: BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY. is this flag is set, only source language meeting this rule or defined in preferredSources will be translated
+         */
         var sourceTranslation = listOf<SourceTranslationRule>()
+
+        /**
+         * define mediums for processing language detection.
+         * If this is not defined, @param translateMedium will be used instead. This list works with a fallback mechanism.
+         * If the first medium in this list fails to detect the source language, it falls back to the second item on the list, until the list is exhausted.
+         */
         var preferredDetectionMedium = listOf<TranslationMedium>()
+
+        /**
+         * set a target language to translate text to.
+         */
         var targeting: String = Locale.getDefault().language
+
+        /**
+         * define a label that prompt a user to translate a text
+         * detected contains information about the language detected and the medium used.
+         */
         var actionLabel: ((detected: PhraseDetected?) -> String) = { "" }
+
+        /**
+         * define a label that user will see after translation.
+         * use translation to get details regarding the translated text
+         */
         var resultActionLabel: ((translation: PhraseTranslation) -> String) = { "" }
 
         internal fun build(): PhraseOptions {
@@ -212,9 +262,25 @@ class PhraseImpl internal constructor() : PhraseUseCase {
     }
 
     class BehaviourOptionsBuilder {
+        /**
+         * set color for translationMedium name shown to user after translation. This is to give credit to the medium used for translation.
+         * use BEHAVIOR_HIDE_CREDIT to hide this credit.
+         * use BEHAVIOR_HIDE_TRANSLATE_PROMPT to hide prompt entire
+         */
         @ColorInt
         var signatureColor: Int = Color.BLACK
+
+        /**
+         * set typeface for translationMedium name shown to user after translation. This is to give credit to the medium used for translation.
+         * use BEHAVIOR_HIDE_CREDIT to hide this credit.
+         * use BEHAVIOR_HIDE_TRANSLATE_PROMPT to hide prompt entire
+         */
         var signatureTypeface: Typeface? = null
+
+        /**
+         * set list of flags to handle how Phrase use PhraseOptions
+         * @see Behaviour
+         */
         var flags = setOf<@BehaviorFlags Int>()
 
         internal fun build(): BehaviourOptions {

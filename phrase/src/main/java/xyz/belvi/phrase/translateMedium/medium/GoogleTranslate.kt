@@ -52,17 +52,26 @@ class GoogleTranslate(
         return "Google"
     }
 
+    override fun isTranslationInCached(
+        text: String,
+        sourceLanguage: String,
+        targeting: String
+    ): Boolean {
+        val key = "$sourceLanguage:$targeting:$text"
+        return cacheTranslation.containsKey(key)
+    }
+
     override suspend fun detect(text: String, targeting: String): PhraseDetected? {
         if (cacheDetected.containsKey(text))
-            return cacheDetected[text]!!
+            return cacheDetected[text]!!.copy(fromCache = true)
         val result = translate.await().translate(
             text,
             Translate.TranslateOption.targetLanguage(targeting.toLowerCase()),
             Translate.TranslateOption.format("text")
-
         )
         val key = "${result.sourceLanguage}:$targeting:$text"
-        cacheTranslation[key] = result.translatedText
+        if (!result.translatedText.isNullOrBlank())
+            cacheTranslation[key] = result.translatedText
         val languageName =
             Languages.values().find { it.code == result.sourceLanguage.toLowerCase() }?.name
                 ?: result.sourceLanguage

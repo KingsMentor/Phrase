@@ -26,7 +26,8 @@ class DeepL(private val apiKey: String) : TranslationMedium() {
                 null
             }
         val result = deepLTranslation?.text ?: ""
-        cacheTranslation[key] = result
+        if (!result.isNullOrBlank())
+            cacheTranslation[key] = result
         return result
     }
 
@@ -34,9 +35,18 @@ class DeepL(private val apiKey: String) : TranslationMedium() {
         return "DeepL"
     }
 
+    override fun isTranslationInCached(
+        text: String,
+        sourceLanguage: String,
+        targeting: String
+    ): Boolean {
+        val key = "$sourceLanguage:$targeting:$text"
+        return cacheTranslation.containsKey(key)
+    }
+
     override suspend fun detect(text: String, targeting: String): PhraseDetected? {
         if (cacheDetected.containsKey(text))
-            return cacheDetected[text]!!
+            return cacheDetected[text]!!.copy(fromCache = true)
         val deepLTranslation = try {
             apiClient.translate(apiKey, text, targeting).translations.firstOrNull()
         } catch (e: Exception) {

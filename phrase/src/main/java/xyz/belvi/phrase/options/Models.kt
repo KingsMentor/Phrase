@@ -11,13 +11,15 @@ data class PhraseDetected(
     val text: String,
     val languageCode: String,
     val languageName: String,
-    val detectionMediumName: String?
+    val detectionMediumName: String?,
+    val fromCache: Boolean = false
 )
 
 data class PhraseTranslation(
     val translation: String,
     val translationMediumName: String?,
-    val detectedSource: PhraseDetected?
+    val detectedSource: PhraseDetected?,
+    val fromCache: Boolean = false
 )
 
 class Behaviour(private val behaviorSet: Set<@BehaviorFlags Int> = setOf()) {
