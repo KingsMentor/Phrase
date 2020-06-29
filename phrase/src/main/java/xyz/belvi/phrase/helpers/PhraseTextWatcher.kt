@@ -3,9 +3,17 @@ package xyz.belvi.phrase.helpers
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.TextWatcher
+import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 
+/**
+ * this is a custom textWatcher used by Phrase. PhraseTextWatcher bring Phrase capability to any textView that adds it as a text watcher.
+ * @param sourceLanguage is the language code of the original text. If this is set, language detection is skipped
+ * @param phraseOptions to be used for this builder. If none is provided, the default phraseOptions is used.
+ * @param phraseTranslateListener is a callback to get Phrase update for this implementation.
+ * @see Phrase#defaultOption for default phraseOptions used.
+ */
 open class PhraseTextWatcher(
     phraseOptions: PhraseOptions? = null,
     private var sourceLanguage: String? = null,
@@ -14,7 +22,10 @@ open class PhraseTextWatcher(
     private var editable: Editable? = null
     private val phraseSpannableBuilder: PhraseSpannableBuilder
 
-    private fun updateSourceLanguage(sourceLanguage: String) {
+    /**
+     * @param sourceLanguage is the sourceLanguage of the original text. This should remain null if you want Phrase to run language detection for the new text.
+     */
+    fun updateSourceLanguage(sourceLanguage: String) {
         this.sourceLanguage = sourceLanguage
     }
 
@@ -42,11 +53,14 @@ open class PhraseTextWatcher(
 
     override fun afterTextChanged(s: Editable?) {
         editable = s
+        // only update source when there's a relevant text change
         if (s.toString() == phraseSpannableBuilder.toString() && phraseSpannableBuilder.actionStatus == ActionStatus.SHOWING_SOURCE) {
-            phraseSpannableBuilder.updateSource(phraseSpannableBuilder.subSequence(0,phraseSpannableBuilder.length), sourceLanguage)
-            return
-        }
-        if (s.isNullOrBlank()) {
+            phraseSpannableBuilder.updateSource(
+                phraseSpannableBuilder.subSequence(
+                    0,
+                    phraseSpannableBuilder.length
+                ), sourceLanguage
+            )
             return
         }
     }
@@ -58,11 +72,13 @@ open class PhraseTextWatcher(
         if (s.isNullOrBlank())
             return
         if (s.toString() != phraseSpannableBuilder.toString())
-            phraseSpannableBuilder.updateSource(s.subSequence(0,s.length), sourceLanguage)
+            phraseSpannableBuilder.updateSource(s.subSequence(0, s.length), sourceLanguage)
     }
 
+    /**
+     * update textView with changes identified by Phrase via editable
+     */
     private fun updateEditable(content: SpannableStringBuilder? = null) {
-
         if (content.toString() == editable.toString()) {
             return
         }

@@ -20,12 +20,25 @@ import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.translateMedium.Languages
 
+/**
+ * this is the action status for PhraseSpannableBuilder
+ * @param SHOWING_SOURCE for when PhraseSpannableBuilder contains just the source
+ * @param SHOWING_WITH_TRANSLATE_ACTION for when PhraseSpannableBuilder contains source text and a prompt to translate
+ * @param SHOWING_TRANSLATED for when PhraseSpannableBuilder contains source and translated text, witch information about translated medium (if behavior flag permits)
+ */
 enum class ActionStatus {
     SHOWING_SOURCE,
     SHOWING_WITH_TRANSLATE_ACTION,
     SHOWING_TRANSLATED
 }
 
+/***
+ * handles spannableString for Phrase
+ * @param source is the original text
+ * @param sourceLanguage is the language code of the original text. If this is set, language detection is skipped
+ * @param phraseOptions to be used for this builder. If none is provided, the default phraseOptions is used.
+ * @see Phrase#defaultOption for default phraseOptions used.
+ */
 abstract class PhraseSpannableBuilder constructor(
     protected var source: CharSequence,
     protected var sourceLanguage: String? = null,
@@ -35,21 +48,35 @@ abstract class PhraseSpannableBuilder constructor(
     internal var actionStatus = ActionStatus.SHOWING_SOURCE
     protected var phraseTranslation: PhraseTranslation? = null
 
+    /**
+     * this is initialized by building a span with just the original text as source
+     */
     init {
         buildTranslateActionSpan(source)
     }
 
+    /**
+     * for updating phraseOption associated with this spannableBuilder
+     */
     fun updateOptions(options: PhraseOptions) {
         this@PhraseSpannableBuilder.phraseOptions = options
         buildTranslateActionSpan(source)
     }
 
+    /**
+     * for updating source associated with this spannableBuilder. This changes the original text and prepare this builder for another translation
+     * @param source is the new original text
+     * @param sourceLanguage is the sourceLanguage of the original text. This should remain null if you want Phrase to run language detection for the new text.
+     */
     fun updateSource(source: CharSequence, sourceLanguage: String? = null) {
         this@PhraseSpannableBuilder.source = source
         this@PhraseSpannableBuilder.sourceLanguage = sourceLanguage
         buildTranslateActionSpan(source)
     }
 
+    /**
+     * get the options for PhraseSpannableBuilder. this returns the default phraseOption in Pgrase.instance if this builder has not been supplied with any option.
+     */
     private fun options() = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
 
     private fun buildTranslateActionSpan(source: CharSequence) {
@@ -66,7 +93,8 @@ abstract class PhraseSpannableBuilder constructor(
                         source.toString(),
                         sourceLanguage.toLowerCase(),
                         languageName,
-                        null
+                        null,
+                        true
                     )
                 } ?: if (behaviors.ignoreDetection() || source.isEmpty())
                     null
@@ -197,6 +225,9 @@ abstract class PhraseSpannableBuilder constructor(
 
     }
 
+    /**
+     * we have to clear spans and text before appending source. This is to ensure the visual presentation doesn't change after phrase and processed the source and added a translation prompt
+     */
     private fun init() {
         clearSpans()
         clear()
@@ -230,6 +261,9 @@ abstract class PhraseSpannableBuilder constructor(
         }
     }
 
+    /**
+     * for implementing fontSpan for Phrase credit or signature
+     */
     internal class CustomTypefaceSpan(private val typeface: Typeface) : MetricAffectingSpan() {
         override fun updateDrawState(ds: TextPaint) {
             applyCustomTypeFace(ds, typeface)
