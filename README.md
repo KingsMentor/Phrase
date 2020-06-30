@@ -7,7 +7,7 @@ Phrase was built to remove the constraint of having to use one translation engin
 This library was inspired by how twitter handles in-app content translation. 
 
 [ ![Download](https://api.bintray.com/packages/kingsmentor/maven/phrase/images/download.svg) ](https://bintray.com/kingsmentor/maven/phrase/_latestVersion)
-
+[![HitCount](http://hits.dwyl.com/kingsmentor/phrase.svg)](http://hits.dwyl.com/kingsmentor/phrase)
 
 ![Phrase Sample](https://github.com/KingsMentor/phrase/blob/master/documentation/imgs/phrase.gif)
 
