@@ -11,7 +11,7 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
  */
 data class PhraseOptions internal constructor(
     /**
-     * setting behaivourOptions for Phrase
+     * setting behaviourOptions for Phrase
      * @see BehaviourOptions
      */
     var behavioursOptions: BehaviourOptions = BehaviourOptions(),
@@ -52,7 +52,7 @@ data class PhraseOptions internal constructor(
 )
 
 /**
- * define behaivourOptions for phrase
+ * define behaviourOptions for phrase
  */
 data class BehaviourOptions internal constructor(
     /**
