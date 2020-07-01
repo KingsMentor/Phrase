@@ -57,7 +57,8 @@ class PhraseTest {
             false
         )
         runBlocking {
-            Mockito.`when`(googleTranslate.detect(originalText, targetLanguage)).thenReturn(detected)
+            Mockito.`when`(googleTranslate.detect(originalText, targetLanguage))
+                .thenReturn(detected)
             val result = phrase.detectLanguage(originalText)
             Assert.assertEquals(result?.detectionMediumName ?: "", googleTranslate.name())
         }
@@ -75,7 +76,52 @@ class PhraseTest {
             false
         )
         runBlocking {
-            Mockito.`when`(googleTranslate.detect(originalText, targetLanguage)).thenReturn(null) // this will ensure google translate trial will fail and DeepL (which is the second on our list) will be used
+            Mockito.`when`(googleTranslate.detect(originalText, targetLanguage))
+                .thenReturn(null) // this will ensure google translate trial will fail and DeepL (which is the second on our list) will be used
+            Mockito.`when`(deepL.detect(originalText, targetLanguage)).thenReturn(detected)
+            val result = phrase.detectLanguage(originalText)
+            Assert.assertEquals(result?.detectionMediumName ?: "", deepL.name())
+        }
+    }
+
+    @Test
+    fun `when preferredDetection is provided, use this instead of mediums provided to phrase `() {
+        phraseOptions.preferredDetection = listOf(firebaseTranslate, googleTranslate)
+        Mockito.`when`(googleTranslate.name()).thenReturn("Google")
+        Mockito.`when`(deepL.name()).thenReturn("DeepL")
+        Mockito.`when`(firebaseTranslate.name()).thenReturn("Firebase")
+        val detected = PhraseDetected(
+            originalText,
+            languageCode,
+            languageName,
+            deepL.name(),
+            false
+        )
+        runBlocking {
+            Mockito.`when`(firebaseTranslate.detect(originalText, targetLanguage))
+                .thenReturn(detected)
+            var result = phrase.detectLanguage(originalText)
+            Assert.assertEquals(result?.detectionMediumName ?: "", deepL.name())
+        }
+    }
+
+
+    @Test
+    fun `when preferredDetection fails, fall back to mediums list to run translation `() {
+        phraseOptions.preferredDetection = listOf(firebaseTranslate, googleTranslate)
+        Mockito.`when`(googleTranslate.name()).thenReturn("Google")
+        Mockito.`when`(deepL.name()).thenReturn("DeepL")
+        Mockito.`when`(firebaseTranslate.name()).thenReturn("Firebase")
+        val detected = PhraseDetected(
+            originalText,
+            languageCode,
+            languageName,
+            deepL.name(),
+            false
+        )
+        runBlocking {
+            Mockito.`when`(firebaseTranslate.detect(originalText, targetLanguage)).thenReturn(null)
+            Mockito.`when`(googleTranslate.detect(originalText, targetLanguage)).thenReturn(null)
             Mockito.`when`(deepL.detect(originalText, targetLanguage)).thenReturn(detected)
             val result = phrase.detectLanguage(originalText)
             Assert.assertEquals(result?.detectionMediumName ?: "", deepL.name())
