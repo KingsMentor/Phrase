@@ -37,7 +37,8 @@ class FirebaseMLKitTranslate(
             FirebaseNaturalLanguage.getInstance().getTranslator(options)
         englishGermanTranslator.downloadModelIfNeeded(conditions).await()
         val result = englishGermanTranslator.translate(text).await()
-        cacheTranslation[key] = result
+        if (!result.isNullOrBlank())
+            cacheTranslation[key] = result
         return result
     }
 
@@ -45,13 +46,23 @@ class FirebaseMLKitTranslate(
         return "Google"
     }
 
+    override fun isTranslationInCached(
+        text: String,
+        sourceLanguage: String,
+        targeting: String
+    ): Boolean {
+        val key = "$sourceLanguage:$targeting:$text"
+        return cacheTranslation.containsKey(key)
+    }
+
     override suspend fun detect(text: String, targeting: String): PhraseDetected? {
         if (cacheDetected.containsKey(text))
-            return cacheDetected[text]!!
+            return cacheDetected[text]!!.copy(fromCache = true)
         val language =
             FirebaseNaturalLanguage.getInstance().languageIdentification.identifyLanguage(text)
                 .await()
-        val languageName = Languages.values().find { it.code == language.toLowerCase() }?.name ?: language
+        val languageName =
+            Languages.values().find { it.code == language.toLowerCase() }?.name ?: language
         val result = PhraseDetected(text, language, languageName, name())
         cacheDetected[text] = result
         return result

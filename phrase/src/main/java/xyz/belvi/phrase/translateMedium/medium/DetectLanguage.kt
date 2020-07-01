@@ -23,10 +23,22 @@ class DetectLanguage(private val apiKey: String) : TranslationMedium() {
         return "DetectLanguage"
     }
 
+    override fun isTranslationInCached(
+        text: String,
+        sourceLanguage: String,
+        targeting: String
+    ): Boolean {
+        return false
+    }
+
     override suspend fun detect(text: String, targeting: String): PhraseDetected? {
         if (cacheDetected.containsKey(text))
-            return cacheDetected[text]!!
-        val deepLTranslation = apiClient.detect(apiKey, text).data.detections.firstOrNull()
+            return cacheDetected[text]!!.copy(fromCache = true)
+        val deepLTranslation = try {
+            apiClient.detect(apiKey, text).data.detections.firstOrNull()
+        } catch (e: Exception) {
+            null
+        }
         val detect = deepLTranslation?.language ?: ""
         val result = PhraseDetected(
             text,

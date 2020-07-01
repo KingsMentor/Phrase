@@ -1,5 +1,9 @@
 package xyz.belvi.phrase.translateMedium
 
+/**
+ * source language code.
+ * @see 'https://cloud.google.com/translate/docs/languages' for an updated list.
+ */
 enum class Languages(val code: String) {
     Afrikaans("af"),
     Albanian("sq"),

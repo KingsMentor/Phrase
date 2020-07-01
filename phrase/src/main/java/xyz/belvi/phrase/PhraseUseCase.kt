@@ -7,6 +7,9 @@ import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
+/**
+ * expose callable interface available via Phrase Instance
+ */
 internal interface PhraseUseCase {
     fun bindTextView(
         textView: TextView,
@@ -16,7 +19,7 @@ internal interface PhraseUseCase {
     )
 
     suspend fun detect(text: String, options: PhraseOptions? = null): PhraseDetected?
-    suspend fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation
+    suspend fun translate(text: String, options: PhraseOptions? = null): PhraseTranslation?
     fun updateOptions(options: PhraseOptions)
     fun setTranslationMediums(translationMediums: List<TranslationMedium>)
 }

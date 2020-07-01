@@ -3,22 +3,18 @@ package com.example.phrase
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.SpannableString
 import android.text.method.LinkMovementMethod
-import android.text.style.BackgroundColorSpan
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.firebase.FirebaseApp
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
+import xyz.belvi.phrase.behaviour
 import xyz.belvi.phrase.helpers.PhraseSpannableBuilder
 import xyz.belvi.phrase.options
 import xyz.belvi.phrase.options.Behaviour
-import xyz.belvi.phrase.options.PhraseTranslation
-import xyz.belvi.phrase.options.SourceTranslationOption
+import xyz.belvi.phrase.options.SourceTranslationRule
 import xyz.belvi.phrase.phrase
-import xyz.belvi.phrase.translateMedium.medium.DeepL
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
 
@@ -32,28 +28,28 @@ class MainActivity : AppCompatActivity() {
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
         // setting up phrase
-        phrase {
-            mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
-            options {
-                targeting = target.text.toString()
-                preferredSources = listOf("es", "yo")
-                sourceTranslation = listOf(SourceTranslationOption("fr", listOf("en")))
-                behaviourFlags {
-                    flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
-                    signatureTypeface = font
-                    signatureColor =
-                        ContextCompat.getColor(this@MainActivity, R.color.white)
-                }
-                actionLabel = { detected ->
-                    "Translate"
-                }
+        val pOptions = options {
+            targeting = target.text.toString()
+            preferredSources = listOf("es", "yo")
+            sourceTranslation = listOf(SourceTranslationRule("fr", listOf("en")))
+            behaviour = behaviour {
+                flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
+                signatureTypeface = font
+                signatureColor =
+                    ContextCompat.getColor(this@MainActivity, R.color.white)
+            }
+            actionLabel = { detected ->
+                "Translate"
+            }
 
-                resultActionLabel = { phraseTranslation ->
-                    "Translated from ${phraseTranslation.detectedSource?.languageName} by "
-                }
+            resultActionLabel = { phraseTranslation ->
+                "Translated from ${phraseTranslation.detectedSource?.languageName} by "
             }
         }
-
+        val phrase = phrase {
+            mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
+            options = pOptions
+        }
 
         phraseSpannableBuilder =
             object : PhraseSpannableBuilder("", null) {
@@ -73,6 +69,7 @@ class MainActivity : AppCompatActivity() {
 
 
         update_source.setOnClickListener {
+            pOptions.targetLanguageCode = target.text.toString()
             phraseSpannableBuilder.updateSource(source_edit.text.toString())
         }
     }
