@@ -11,7 +11,7 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
  */
 data class PhraseOptions internal constructor(
     /**
-     * setting behaivourOptions for Phrase
+     * setting behaviourOptions for Phrase
      * @see BehaviourOptions
      */
     var behavioursOptions: BehaviourOptions = BehaviourOptions(),
@@ -33,9 +33,11 @@ data class PhraseOptions internal constructor(
      */
     var preferredSources: List<String> = emptyList(),
     /**
-     * target language code of the user. This is the language all text appearing in other language will be translated to
+     * target language code of the user. This is the language all text appearing in other language will be translated to.
+     * Phrase translate to the first item on this list. This is a list because a user might understand more than one language.
+     * For such users, Phrase doesn't show translation option for sourceLanguageCode that appears in this list.
      */
-    var targetLanguageCode: String = Locale.getDefault().language,
+    var targetLanguageCode: List<String> = listOf(Locale.getDefault().language),
     /**
      * the text to be displayed to the user that prompt for text translation
      * Phrase appends this text depending on whether BEHAVIOR_HIDE_TRANSLATE_PROMPT is set or not.
@@ -52,7 +54,7 @@ data class PhraseOptions internal constructor(
 )
 
 /**
- * define behaivourOptions for phrase
+ * define behaviourOptions for phrase
  */
 data class BehaviourOptions internal constructor(
     /**

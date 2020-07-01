@@ -125,11 +125,10 @@ abstract class PhraseSpannableBuilder constructor(
              */
 
             phraseDetected?.let { detected ->
-                // halt this process if the sourceLangauge is part of the excluded list or it is same with the target langauge,
-                if (detected.languageCode.equals(
-                        options.targetLanguageCode.toLowerCase(),
-                        true
-                    ) || options.excludeSources.indexOfFirst {
+                // halt this process if the sourceLanguage is part of the excluded list or it is same with the target language,
+                if ((options.targetLanguageCode.indexOfFirst {
+                        it.toLowerCase() == (detected.languageCode).toLowerCase()
+                    } >= 0) || options.excludeSources.indexOfFirst {
                         it.equals(
                             detected.languageCode,
                             true
@@ -155,12 +154,9 @@ abstract class PhraseSpannableBuilder constructor(
                     (options.sourcePreferredTranslation.sourceTranslateRule.filter { it.sourceLanguageCode.toLowerCase() == detected.languageCode.toLowerCase() }
                         .let { sourceOptions ->
                             sourceOptions.find { sourceTranslationOption ->
-                                sourceTranslationOption.targetLanguageCode.indexOfFirst {
-                                    it.equals(
-                                        options.targetLanguageCode,
-                                        true
-                                    )
-                                } >= 0 || sourceTranslationOption.targetLanguageCode.contains(
+                                sourceTranslationOption.targetLanguageCode.intersect(options.targetLanguageCode)
+                                    .isNotEmpty()
+                                        || sourceTranslationOption.targetLanguageCode.contains(
                                     "*"
                                 )
                             }?.let { true }

@@ -65,7 +65,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
             translationMediums.first()
         }
         // run detection with the medium found
-        var detected = detectionMedium.detect(text, phraseOption.targetLanguageCode)
+        var detected = detectionMedium.detect(text, phraseOption.targetLanguageCode.first())
 
         /*
          *  if detectionMedium fails to detects language, fall back to the rest of the mediums available in preferredDetection and translationMediums in order at which it appears in the list
@@ -77,7 +77,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         while (translationIterator.hasNext() && detected == null) {
             val next = translationIterator.next()
             if (next != detectionMedium) {
-                detected = next.detect(text, phraseOption.targetLanguageCode)
+                detected = next.detect(text, phraseOption.targetLanguageCode.first())
             }
         }
         return detected
@@ -96,10 +96,9 @@ class PhraseImpl internal constructor() : PhraseUseCase {
             return null
 
         // if the detected source is in excluded list or is same with translation target language, we do not want to run translation.
-        if ((detected?.languageCode ?: "").equals(
-                phraseOption.targetLanguageCode,
-                true
-            ) || phraseOption.excludeSources.indexOfFirst {
+        if ((phraseOption.targetLanguageCode.indexOfFirst {
+                it.toLowerCase() == (detected?.languageCode ?: "").toLowerCase()
+            } >= 0) || phraseOption.excludeSources.indexOfFirst {
                 it.equals(
                     (detected?.languageCode ?: ""), true
                 )
@@ -123,13 +122,9 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                 )
             }
                 .let { sourceOptions ->
-                    sourceOptions.find { sourceTranslationOption ->
-                        sourceTranslationOption.targetLanguageCode.indexOfFirst {
-                            it.equals(
-                                phraseOption.targetLanguageCode,
-                                true
-                            )
-                        } >= 0
+                    sourceOptions.find {
+                        it.targetLanguageCode.intersect(phraseOption.targetLanguageCode)
+                            .isNotEmpty()
                     }?.let {
                         if (it.translate.isEmpty()) translationMediums else it.translate
                     } ?: sourceOptions.find { it.targetLanguageCode.contains("*") }
@@ -163,12 +158,12 @@ class PhraseImpl internal constructor() : PhraseUseCase {
             val inCache = translationMedium.isTranslationInCached(
                 text,
                 detected?.languageCode ?: "",
-                phraseOption.targetLanguageCode
+                phraseOption.targetLanguageCode.first()
             )
             var translate = translationMedium.translate(
                 text,
                 detected?.languageCode ?: "",
-                phraseOption.targetLanguageCode
+                phraseOption.targetLanguageCode.first()
             )
 
             val translationIterator = translationMediums.iterator()
@@ -179,7 +174,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                 translate = medium.translate(
                     text,
                     detected?.languageCode ?: "",
-                    phraseOption.targetLanguageCode
+                    phraseOption.targetLanguageCode.first()
                 )
                 translationMedium = medium
             }
@@ -233,7 +228,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         /**
          * set a target language to translate text to.
          */
-        var targeting: String = Locale.getDefault().language
+        var targeting = listOf(Locale.getDefault().language)
 
         /**
          * define a label that prompt a user to translate a text
