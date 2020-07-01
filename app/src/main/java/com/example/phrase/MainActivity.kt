@@ -28,29 +28,28 @@ class MainActivity : AppCompatActivity() {
 
         val font = Typeface.createFromAsset(assets, "rb.ttf")
         // setting up phrase
-        val p = phrase {
-            mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
-            options = options {
-                targeting = target.text.toString()
-                preferredSources = listOf("es", "yo")
-                sourceTranslation = listOf(SourceTranslationRule("fr", listOf("en")))
-                behaviour = behaviour {
-                    flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
-                    signatureTypeface = font
-                    signatureColor =
-                        ContextCompat.getColor(this@MainActivity, R.color.white)
-                }
-                actionLabel = { detected ->
-                    "Translate"
-                }
+        val pOptions = options {
+            targeting = target.text.toString()
+            preferredSources = listOf("es", "yo")
+            sourceTranslation = listOf(SourceTranslationRule("fr", listOf("en")))
+            behaviour = behaviour {
+                flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
+                signatureTypeface = font
+                signatureColor =
+                    ContextCompat.getColor(this@MainActivity, R.color.white)
+            }
+            actionLabel = { detected ->
+                "Translate"
+            }
 
-                resultActionLabel = { phraseTranslation ->
-                    "Translated from ${phraseTranslation.detectedSource?.languageName} by "
-                }
+            resultActionLabel = { phraseTranslation ->
+                "Translated from ${phraseTranslation.detectedSource?.languageName} by "
             }
         }
-        p.de
-
+        val phrase = phrase {
+            mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
+            options = pOptions
+        }
 
         phraseSpannableBuilder =
             object : PhraseSpannableBuilder("", null) {
@@ -70,6 +69,7 @@ class MainActivity : AppCompatActivity() {
 
 
         update_source.setOnClickListener {
+            pOptions.targetLanguageCode = target.text.toString()
             phraseSpannableBuilder.updateSource(source_edit.text.toString())
         }
     }

@@ -69,8 +69,10 @@ open class PhraseTextWatcher(
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        // we do not want to update source for empty string.
         if (s.isNullOrBlank())
             return
+        // only update source when changes is not same with current content of phraseSpannableBuilder
         if (s.toString() != phraseSpannableBuilder.toString())
             phraseSpannableBuilder.updateSource(s.subSequence(0, s.length), sourceLanguage)
     }

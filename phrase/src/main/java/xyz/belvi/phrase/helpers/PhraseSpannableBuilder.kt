@@ -79,12 +79,24 @@ abstract class PhraseSpannableBuilder constructor(
      */
     private fun options() = phraseOptions ?: Phrase.instance().phraseImpl.phraseOptions
 
+    /**
+     * build string to include original text and a translate actionLabel.
+     * Phrase adds translate actionLabel based options provided via phraseOptions.
+     * First, sourceLanguage is detected
+     * then, sourceLanguage is unable to be detected, translation actionLabel is not appended to source (if user doesn't set BEHAVIOR_IGNORE_DETECTION)
+     */
     private fun buildTranslateActionSpan(source: CharSequence) {
         init()
         GlobalScope.launch(Dispatchers.Main) {
             val options = options() ?: return@launch
             val behaviors = options.behavioursOptions.behaviours
-            val detectedMedium =
+
+            /*
+             * detected source language. is sourceLanguage is provided, we want to skip language detection.
+             * if sourceLanguage is not provided and BEHAVIOR_IGNORE_DETECTION is set, phraseDetected is null since we want to skip language detection.
+             * Otherwise,  Phrase.instance().detectLanguage(source.toString()) is executed.
+             */
+            val phraseDetected =
                 sourceLanguage?.let { sourceLanguage ->
                     val languageName =
                         Languages.values().find { it.code == sourceLanguage.toLowerCase() }?.name
@@ -104,18 +116,43 @@ abstract class PhraseSpannableBuilder constructor(
                     }
                 }
 
-            detectedMedium?.let { phraseDetected ->
+            if (options.excludeSources.indexOfFirst {
+                    it.toLowerCase() == (phraseDetected?.languageCode ?: "").toLowerCase()
+                } < 0) {
 
+            }
+            /* with the detected sourceLanguage, check to see if there's any rule that check against translating from the source language at all
+             */
+
+            phraseDetected?.let { detected ->
+                // halt this process if the sourceLangauge is part of the excluded list or it is same with the target langauge,
+                if (detected.languageCode.equals(
+                        options.targetLanguageCode.toLowerCase(),
+                        true
+                    ) || options.excludeSources.indexOfFirst {
+                        it.equals(
+                            detected.languageCode,
+                            true
+                        )
+                    } > 0
+                ) {
+                    actionStatus = ActionStatus.SHOWING_SOURCE
+                    onContentChanged(this@PhraseSpannableBuilder)
+                    return@launch
+                }
+
+                // if options supports translation of only preferred sources, check if sourceLanguage is in preferred list.
                 var allowTranslation =
                     if (options.behavioursOptions.behaviours.translatePreferredSourceOnly()) {
                         options.preferredSources.indexOfFirst {
-                            it.equals(phraseDetected.languageCode, true)
+                            it.equals(detected.languageCode, true)
                         } >= 0
                     } else {
                         true
                     }
+                // check if source langauge is defined in languageTranslation preference
                 allowTranslation =
-                    (options.sourcePreferredTranslation.sourceTranslateRule.filter { it.sourceLanguageCode.toLowerCase() == phraseDetected.languageCode.toLowerCase() }
+                    (options.sourcePreferredTranslation.sourceTranslateRule.filter { it.sourceLanguageCode.toLowerCase() == detected.languageCode.toLowerCase() }
                         .let { sourceOptions ->
                             sourceOptions.find { sourceTranslationOption ->
                                 sourceTranslationOption.targetLanguageCode.indexOfFirst {
@@ -129,36 +166,25 @@ abstract class PhraseSpannableBuilder constructor(
                             }?.let { true }
                                 ?: !options.behavioursOptions.behaviours.translatePreferredSourceOnly()
                         }) || allowTranslation
+                // if source language is neither in sourcePreferredTranslation nor preferredSources and BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY is set, actionLable for translation shouldn't be appended to this string.
                 if (!allowTranslation) {
                     actionStatus = ActionStatus.SHOWING_SOURCE
                     onContentChanged(this@PhraseSpannableBuilder)
                     return@launch
                 }
-
-                if (phraseDetected.languageCode.equals(
-                        options.targetLanguageCode.toLowerCase(),
-                        true
-                    ) || options.excludeSources.indexOfFirst {
-                        it.equals(
-                            phraseDetected.languageCode,
-                            true
-                        )
-                    } > 0
-                ) {
-                    actionStatus = ActionStatus.SHOWING_SOURCE
-                    onContentChanged(this@PhraseSpannableBuilder)
-                    return@launch
-                }
             }
-
-            if (detectedMedium == null && !behaviors.ignoreDetection()) {
+            // another check to ensure nullable phraseDetected is only allowed for BEHAVIOR_IGNORE_DETECTION
+            if (phraseDetected == null && !behaviors.ignoreDetection()) {
                 onContentChanged(this@PhraseSpannableBuilder)
                 return@launch
             }
+            // final check to confirm original text is not empty.
+            // also, actionLabel is appended only if BEHAVIOR_HIDE_TRANSLATE_PROMPT is not set and source is not same with the content of PhraseSpannableBuilder (to avoid text repetition)
             if (!source.isNullOrBlank() && !behaviors.hideTranslatePrompt() && (this@PhraseSpannableBuilder.toString() == source.toString())) {
                 appendln("\n")
                 val start = length
-                append(options.translateText.invoke(detectedMedium))
+                append(options.translateText.invoke(phraseDetected))
+                // add clickableSpan to actionLabel
                 setSpan(
                     SpannablePhraseClickableSpan(),
                     start,
@@ -172,26 +198,35 @@ abstract class PhraseSpannableBuilder constructor(
         }
     }
 
+    /**
+     * build string to include original text and a translated actionLabel and the translated string
+     * Phrase adds translate resultActionLabel based options provided via phraseOptions.
+     * this is called after translation has happened.
+     */
     private fun buildTranslatedPhraseSpan() {
         val options = options() ?: return
         val optionBehavior = options.behavioursOptions.behaviours
         phraseTranslation?.let { phraseTranslation ->
             init()
-            appendln("\n")
+            // if BEHAVIOR_REPLACE_SOURCE_TEXT is set, we want to replace the source text with translation.
             if (optionBehavior.replaceSourceText()) {
                 clear()
             }
+            // resultActionLabel is appeneded to result is BEHAVIOR_HIDE_TRANSLATE_PROMPT is not set.
             if (!optionBehavior.hideTranslatePrompt()) {
                 var start = length
                 append(options.translateFrom.invoke(phraseTranslation))
+                // add clickableSpan to resultActionLabel
                 setSpan(
                     SpannablePhraseClickableSpan(),
                     start,
                     length,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
+                // style translation medium name.
                 if (!optionBehavior.hideSignature()) {
                     start = length
+                    appendln("\n")
                     append("${phraseTranslation.translationMediumName}")
                     options.behavioursOptions.signatureTypeFace?.let { typeFace ->
                         setSpan(
@@ -214,8 +249,8 @@ abstract class PhraseSpannableBuilder constructor(
                         )
                     }
                 }
-                appendln("\n")
             }
+            appendln("\n")
             append(phraseTranslation.translation)
             actionStatus = ActionStatus.SHOWING_TRANSLATED
             onContentChanged(this@PhraseSpannableBuilder)
@@ -234,11 +269,17 @@ abstract class PhraseSpannableBuilder constructor(
         append(source)
     }
 
+    /**
+     * customer ClickableSpan impementation to handle click actions on actionLabel and resultActionLabel
+     */
     inner class SpannablePhraseClickableSpan : ClickableSpan() {
         override fun onClick(widget: View) {
             onActionClick(actionStatus)
+            // if text is currently prompting user to translate
             if (actionStatus == ActionStatus.SHOWING_WITH_TRANSLATE_ACTION) {
+                // notify listener of tranalation
                 onPhraseTranslating()
+                // translate text
                 GlobalScope.launch(Dispatchers.Main) {
                     val options = options()
                     phraseTranslation =
@@ -246,9 +287,12 @@ abstract class PhraseSpannableBuilder constructor(
                             Phrase.instance().translate(source.toString(), options)
                         }
                 }
+                // build translated string
                 buildTranslatedPhraseSpan()
+                // notify listener of translation
                 onPhraseTranslated(phraseTranslation)
             } else {
+                // resultActionLabel is clicked, show original state of text
                 buildTranslateActionSpan(source)
             }
             widget.invalidate()
