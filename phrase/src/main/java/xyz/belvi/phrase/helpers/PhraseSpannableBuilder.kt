@@ -225,7 +225,6 @@ abstract class PhraseSpannableBuilder constructor(
                 // style translation medium name.
                 if (!optionBehavior.hideSignature()) {
                     start = length
-                    appendln("\n")
                     append("${phraseTranslation.translationMediumName}")
                     options.behavioursOptions.signatureTypeFace?.let { typeFace ->
                         setSpan(
