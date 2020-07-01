@@ -34,7 +34,7 @@ class PhraseTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
         phraseOptions = options {
-            targeting = targetLanguage
+            targeting = listOf(targetLanguage)
             actionLabel = { detected -> "Translate With" }
             resultActionLabel =
                 { translation -> "Translated from ${translation.detectedSource?.languageName} by" }

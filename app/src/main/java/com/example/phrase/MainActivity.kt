@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         val font = Typeface.createFromAsset(assets, "rb.ttf")
         // setting up phrase
         val pOptions = options {
-            targeting = target.text.toString()
+            targeting = listOf(target.text.toString())
             preferredSources = listOf("es", "yo")
             sourceTranslation = listOf(SourceTranslationRule("fr", listOf("en")))
             behaviour = behaviour {
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
 
         update_source.setOnClickListener {
-            pOptions.targetLanguageCode = target.text.toString()
+            pOptions.targetLanguageCode = listOf(target.text.toString())
             phraseSpannableBuilder.updateSource(source_edit.text.toString())
         }
     }
