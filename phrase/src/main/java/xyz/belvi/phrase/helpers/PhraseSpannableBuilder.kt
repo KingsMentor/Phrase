@@ -248,6 +248,7 @@ abstract class PhraseSpannableBuilder constructor(
                     }
                 }
             }
+            appendln("\n")
             append(phraseTranslation.translation)
             actionStatus = ActionStatus.SHOWING_TRANSLATED
             onContentChanged(this@PhraseSpannableBuilder)
