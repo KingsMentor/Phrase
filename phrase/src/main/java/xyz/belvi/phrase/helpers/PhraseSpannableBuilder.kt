@@ -10,10 +10,7 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.MetricAffectingSpan
 import android.text.style.TypefaceSpan
 import android.view.View
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.options.PhraseDetected
 import xyz.belvi.phrase.options.PhraseOptions
@@ -47,6 +44,7 @@ abstract class PhraseSpannableBuilder constructor(
     PhraseTranslateListenerAdapter(source) {
     internal var actionStatus = ActionStatus.SHOWING_SOURCE
     protected var phraseTranslation: PhraseTranslation? = null
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     /**
      * this is initialized by building a span with just the original text as source
@@ -74,6 +72,10 @@ abstract class PhraseSpannableBuilder constructor(
         buildTranslateActionSpan(source)
     }
 
+    fun cancelPendingJobs() {
+        scope.cancel()
+    }
+
     /**
      * get the options for PhraseSpannableBuilder. this returns the default phraseOption in Pgrase.instance if this builder has not been supplied with any option.
      */
@@ -87,7 +89,7 @@ abstract class PhraseSpannableBuilder constructor(
      */
     private fun buildTranslateActionSpan(source: CharSequence) {
         init()
-        GlobalScope.launch(Dispatchers.Main) {
+        scope.launch {
             val options = options() ?: return@launch
             val behaviors = options.behavioursOptions.behaviours
 
@@ -210,6 +212,7 @@ abstract class PhraseSpannableBuilder constructor(
             }
             // resultActionLabel is appeneded to result is BEHAVIOR_HIDE_TRANSLATE_PROMPT is not set.
             if (!optionBehavior.hideTranslatePrompt()) {
+                appendln("\n")
                 var start = length
                 append(options.translateFrom.invoke(phraseTranslation))
                 // add clickableSpan to resultActionLabel
@@ -222,7 +225,6 @@ abstract class PhraseSpannableBuilder constructor(
                 // style translation medium name.
                 if (!optionBehavior.hideSignature()) {
                     start = length
-                    appendln("\n")
                     append("${phraseTranslation.translationMediumName}")
                     options.behavioursOptions.signatureTypeFace?.let { typeFace ->
                         setSpan(
@@ -276,17 +278,18 @@ abstract class PhraseSpannableBuilder constructor(
                 // notify listener of tranalation
                 onPhraseTranslating()
                 // translate text
-                GlobalScope.launch(Dispatchers.Main) {
+                scope.launch {
                     val options = options()
                     phraseTranslation =
                         withContext(Dispatchers.IO) {
                             Phrase.instance().translate(source.toString(), options)
                         }
+                    // build translated string
+                    buildTranslatedPhraseSpan()
+                    // notify listener of translation
+                    onPhraseTranslated(phraseTranslation)
                 }
-                // build translated string
-                buildTranslatedPhraseSpan()
-                // notify listener of translation
-                onPhraseTranslated(phraseTranslation)
+
             } else {
                 // resultActionLabel is clicked, show original state of text
                 buildTranslateActionSpan(source)

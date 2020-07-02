@@ -9,6 +9,8 @@ import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import xyz.belvi.phrase.options.PhraseDetected
 import xyz.belvi.phrase.options.PhraseOptions
+import xyz.belvi.phrase.options.SourceTranslationPreference
+import xyz.belvi.phrase.options.SourceTranslationRule
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 class PhraseTest {
@@ -25,8 +27,8 @@ class PhraseTest {
     @Mock
     lateinit var firebaseTranslate: TranslationMedium
     private var targetLanguage = "fr"
-    var languageName = "en"
-    var languageCode = "english"
+    var languageName = "english"
+    var languageCode = "en"
     private val originalText = "This is a sample of the original text. Assume this is in English"
     var translated = "This is a sample of the translated text. Assume this is in French"
 
@@ -44,6 +46,25 @@ class PhraseTest {
             options = phraseOptions
         }
 
+    }
+
+    @Test
+    fun `translate a text to user's target language`() {
+        val detected = PhraseDetected(
+            originalText,
+            languageCode,
+            languageName,
+            deepL.name(),
+            false
+        )
+        runBlocking {
+            Mockito.`when`(googleTranslate.detect(originalText, targetLanguage))
+                .thenReturn(detected)
+            Mockito.`when`(googleTranslate.translate(originalText, languageCode, "fr"))
+                .thenReturn(translated)
+            val result = phrase.translate(originalText)
+            Assert.assertEquals(result?.translation ?: "", translated)
+        }
     }
 
     @Test
@@ -107,7 +128,7 @@ class PhraseTest {
 
 
     @Test
-    fun `when preferredDetection fails, fall back to mediums list to run translation `() {
+    fun `when preferredDetection fails, fall back to translationmediums list to detect language source `() {
         phraseOptions.preferredDetection = listOf(firebaseTranslate, googleTranslate)
         Mockito.`when`(googleTranslate.name()).thenReturn("Google")
         Mockito.`when`(deepL.name()).thenReturn("DeepL")
@@ -125,6 +146,60 @@ class PhraseTest {
             Mockito.`when`(deepL.detect(originalText, targetLanguage)).thenReturn(detected)
             val result = phrase.detectLanguage(originalText)
             Assert.assertEquals(result?.detectionMediumName ?: "", deepL.name())
+        }
+    }
+
+    @Test
+    fun `when detected source is part of user's target language, return original text`() {
+        phraseOptions.preferredDetection = listOf(googleTranslate)
+        phraseOptions.targetLanguageCode = listOf("fr", "en")
+        Mockito.`when`(googleTranslate.name()).thenReturn("Google")
+        Mockito.`when`(deepL.name()).thenReturn("DeepL")
+        Mockito.`when`(firebaseTranslate.name()).thenReturn("Firebase")
+        val detected = PhraseDetected(
+            originalText,
+            languageCode,
+            languageName,
+            deepL.name(),
+            false
+        )
+        runBlocking {
+            Mockito.`when`(googleTranslate.detect(originalText, targetLanguage))
+                .thenReturn(detected)
+            Mockito.`when`(googleTranslate.translate(originalText, languageCode, "fr"))
+                .thenReturn(translated)
+            Mockito.`when`(googleTranslate.translate(originalText, languageCode, "en"))
+                .thenReturn(originalText)
+            val result = phrase.translate(originalText)
+            Assert.assertEquals(result?.translation ?: "", originalText)
+        }
+    }
+
+    @Test
+    fun `when medium defined in sourceTranslation`() {
+        phraseOptions.preferredDetection = listOf(googleTranslate)
+        phraseOptions.sourcePreferredTranslation = SourceTranslationPreference(
+            listOf(
+                SourceTranslationRule("en", listOf("fr"), listOf(deepL))
+            )
+        )
+        Mockito.`when`(deepL.name()).thenReturn("DeepL")
+        val detected = PhraseDetected(
+            originalText,
+            languageCode,
+            languageName,
+            deepL.name(),
+            false
+        )
+        runBlocking {
+            Mockito.`when`(deepL.detect(originalText, targetLanguage))
+                .thenReturn(detected)
+            Mockito.`when`(deepL.translate(originalText, languageCode, "fr"))
+                .thenReturn(translated)
+            val result = phrase.translate(originalText)
+            Assert.assertEquals(result?.translation ?: "", translated)
+            // instead of using googleTranslate to run translation, deepL is used because it has been specified to translate en text to fr.
+            Assert.assertEquals(result?.detectedSource ?.detectionMediumName, deepL.name())
         }
     }
 }
