@@ -16,7 +16,7 @@ This library was inspired by how twitter handles in-app content translation.
 Add this to dependencies in apps `build.gradle`
 
 ```
-implementation 'xyz.belvi.translate:phrase:1.1.1'
+implementation 'xyz.belvi.translate:phrase:1.1.2'
 
 ```
 
@@ -28,7 +28,7 @@ A single instance of phrase is instantiated for the lifetime of the application.
         phrase {
             mediums = listOf(GoogleTranslate(requireContext(), R.raw.credential))
             options {
-                targeting = "fr"
+                targeting = listOf("fr")
                 actionLabel = { phraseDetected -> "Translate" }
                 resultActionLabel = { phraseTranslation -> "Translated with" }
             }
@@ -83,7 +83,7 @@ Here's an example of how an option is built:
 
 ```kotlin
 options {
-    targeting = target.text.toString()
+    targeting = listOf(target.text.toString())
     behaviourFlags {
         flags = setOf()
         signatureTypeface = font
