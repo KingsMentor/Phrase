@@ -98,7 +98,8 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         // if the detected source is in excluded list or is same with translation target language, we do not want to run translation.
         if ((phraseOption.targetLanguageCode.indexOfFirst {
                 it.toLowerCase() == (detected?.languageCode ?: "").toLowerCase()
-            } >= 0) || phraseOption.excludeSources.indexOfFirst {
+            } >= 0)) return PhraseTranslation(text, detected?.detectionMediumName, detected, true)
+        else if (phraseOption.excludeSources.indexOfFirst {
                 it.equals(
                     (detected?.languageCode ?: ""), true
                 )
