@@ -177,6 +177,7 @@ class PhraseTest {
 
     @Test
     fun `when medium defined in sourceTranslation`() {
+        phraseOptions.preferredDetection = listOf(googleTranslate)
         phraseOptions.sourcePreferredTranslation = SourceTranslationPreference(
             listOf(
                 SourceTranslationRule("en", listOf("fr"), listOf(deepL))
@@ -197,6 +198,7 @@ class PhraseTest {
                 .thenReturn(translated)
             val result = phrase.translate(originalText)
             Assert.assertEquals(result?.translation ?: "", translated)
+            // instead of using googleTranslate to run translation, deepL is used because it has been specified to translate en text to fr.
             Assert.assertEquals(result?.detectedSource ?.detectionMediumName, deepL.name())
         }
     }
