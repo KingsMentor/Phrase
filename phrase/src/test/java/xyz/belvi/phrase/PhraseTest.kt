@@ -178,6 +178,7 @@ class PhraseTest {
     @Test
     fun `when medium defined in sourceTranslation`() {
         phraseOptions.preferredDetection = listOf(googleTranslate)
+        phraseOptions.preferredSources = listOf("en","fr")
         phraseOptions.sourcePreferredTranslation = SourceTranslationPreference(
             listOf(
                 SourceTranslationRule("en", listOf("fr"), listOf(deepL))

@@ -124,7 +124,7 @@ class PhraseImpl internal constructor() : PhraseUseCase {
             }
                 .let { sourceOptions ->
                     sourceOptions.find {
-                        it.targetLanguageCode.intersect(phraseOption.targetLanguageCode)
+                        it.targetLanguageCode.intersect(phraseOption.targetLanguageCode.map { it.toLowerCase() })
                             .isNotEmpty()
                     }?.let {
                         if (it.translate.isEmpty()) translationMediums else it.translate

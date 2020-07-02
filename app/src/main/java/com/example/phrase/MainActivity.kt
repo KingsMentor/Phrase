@@ -15,6 +15,7 @@ import xyz.belvi.phrase.options
 import xyz.belvi.phrase.options.Behaviour
 import xyz.belvi.phrase.options.SourceTranslationRule
 import xyz.belvi.phrase.phrase
+import xyz.belvi.phrase.translateMedium.medium.DeepL
 import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
 
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         val pOptions = options {
             targeting = listOf(target.text.toString())
             preferredSources = listOf("es", "yo")
-            sourceTranslation = listOf(SourceTranslationRule("fr", listOf("en")))
+            sourceTranslation = listOf(SourceTranslationRule("es", listOf("en"), listOf(DeepL("b1957aec-bc22-14ca-bc0a-1a0755b3b364"))))
             behaviour = behaviour {
                 flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
                 signatureTypeface = font

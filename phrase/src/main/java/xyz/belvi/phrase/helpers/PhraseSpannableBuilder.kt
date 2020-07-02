@@ -151,12 +151,12 @@ abstract class PhraseSpannableBuilder constructor(
                     } else {
                         true
                     }
-                // check if source langauge is defined in languageTranslation preference
+                // check if source language is defined in languageTranslation preference
                 allowTranslation =
                     (options.sourcePreferredTranslation.sourceTranslateRule.filter { it.sourceLanguageCode.toLowerCase() == detected.languageCode.toLowerCase() }
                         .let { sourceOptions ->
                             sourceOptions.find { sourceTranslationOption ->
-                                sourceTranslationOption.targetLanguageCode.intersect(options.targetLanguageCode)
+                                sourceTranslationOption.targetLanguageCode.map { it.toLowerCase() }.intersect(options.targetLanguageCode.map { it.toLowerCase() })
                                     .isNotEmpty()
                                         || sourceTranslationOption.targetLanguageCode.contains(
                                     "*"
