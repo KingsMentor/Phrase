@@ -1,6 +1,6 @@
 # Introducing Phrase
 
-Phrase provides a way to translate user-generated content to a desired target language using different translation engines or options of your choice.
+Phrase provides a way to translate user-generated content to any target language using different translation engines or options of your choice.
 
 Phrase was built to remove the constraint of having to use one translation engine in your application. It helps Android developers leverage the strength of different translation engines while giving the best experience to Users. 
 
