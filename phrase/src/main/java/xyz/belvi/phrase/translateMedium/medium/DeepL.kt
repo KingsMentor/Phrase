@@ -1,6 +1,7 @@
 package xyz.belvi.phrase.translateMedium.medium
 
 import xyz.belvi.phrase.options.PhraseDetected
+import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.translateMedium.Languages
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 import xyz.belvi.phrase.translateMedium.medium.retrofit.ApiClient
@@ -13,12 +14,11 @@ class DeepL(private val apiKey: String) : TranslationMedium() {
 
     override suspend fun translate(
         text: String,
-        sourceLanguage: String,
         targeting: String
     ): String {
-        val key = "$sourceLanguage:$targeting:$text"
-        if (cacheTranslation.containsKey(key))
-            return cacheTranslation[key]!!
+        val key = cacheKey(text, targeting)
+        if (isTranslationInCached(key, targeting))
+            return phraseCache[key]?.translation!!
         val deepLTranslation =
             try {
                 apiClient.translate(apiKey, text, targeting).translations.firstOrNull()
@@ -26,8 +26,17 @@ class DeepL(private val apiKey: String) : TranslationMedium() {
                 null
             }
         val result = deepLTranslation?.text ?: ""
-        if (!result.isNullOrBlank())
-            cacheTranslation[key] = result
+        if (!result.isNullOrBlank()) {
+            val detect = deepLTranslation?.detected_source_language
+            cache(
+                key,
+                result,
+                detectedLanguageCode = detect,
+                detectedLanguageName = Languages.values()
+                    .find { it.code == detect?.toLowerCase() }?.name ?: detect
+            )
+        }
+
         return result
     }
 
@@ -35,35 +44,43 @@ class DeepL(private val apiKey: String) : TranslationMedium() {
         return "DeepL"
     }
 
-    override fun isTranslationInCached(
-        text: String,
-        sourceLanguage: String,
-        targeting: String
-    ): Boolean {
-        val key = "$sourceLanguage:$targeting:$text"
-        return cacheTranslation.containsKey(key)
+    override fun cacheKey(text: String, targeting: String): String {
+        return "$targeting:${text.hashCode()}"
     }
 
-    override suspend fun detect(text: String, targeting: String): PhraseDetected? {
-        if (cacheDetected.containsKey(text))
-            return cacheDetected[text]!!.copy(fromCache = true)
+    override fun clearCache() {
+        phraseCache.evictAll()
+    }
+
+    override fun isTranslationInCached(
+        text: String,
+        targeting: String
+    ): Boolean {
+        return !phraseCache[cacheKey(text, targeting)]?.translation.isNullOrBlank()
+    }
+
+    override suspend fun detect(
+        text: String,
+        targeting: String
+    ): PhraseDetected? {
+        val key = cacheKey(text, targeting)
+        if (phraseCache[key]?.detectedSource != null)
+            return phraseCache[key]?.detectedSource?.copy(fromCache = true)
         val deepLTranslation = try {
             apiClient.translate(apiKey, text, targeting).translations.firstOrNull()
         } catch (e: Exception) {
             null
         }
         return deepLTranslation?.let {
-            val detect = deepLTranslation?.detected_source_language ?: ""
-            val result = PhraseDetected(
+            val detect = deepLTranslation.detected_source_language
+            return PhraseDetected(
                 text,
                 detect,
                 Languages.values().find { it.code == detect.toLowerCase() }?.name ?: detect,
                 name()
-            )
-            cacheDetected[text] = result
-            val key = "$detect:$targeting:$text"
-            cacheTranslation[key] = deepLTranslation?.text ?: ""
-            return result
+            ).also {
+                cache(key, detectedPhrase = it)
+            }
         }
     }
 

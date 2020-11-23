@@ -12,22 +12,17 @@ import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 class FirebaseMLKitTranslate(
     private val conditions: FirebaseModelDownloadConditions = FirebaseModelDownloadConditions.Builder()
-        .build(),
-    private val defaultSource: Int = FirebaseTranslateLanguage.EN
+        .build()
 ) :
     TranslationMedium() {
     override suspend fun translate(
         text: String,
-        sourceLanguage: String,
         targeting: String
     ): String {
-        val key = "$sourceLanguage:$targeting:$text"
-        if (cacheTranslation.containsKey(key))
-            return cacheTranslation[key]!!
+        val key = cacheKey(text, targeting)
+        if (isTranslationInCached(key, targeting))
+            return phraseCache[key]?.translation!!
         val options = FirebaseTranslatorOptions.Builder()
-            .setSourceLanguage(
-                FirebaseTranslateLanguage.languageForLanguageCode(sourceLanguage) ?: defaultSource
-            )
             .setTargetLanguage(
                 FirebaseTranslateLanguage.languageForLanguageCode(targeting)
                     ?: FirebaseTranslateLanguage.EN
@@ -38,7 +33,7 @@ class FirebaseMLKitTranslate(
         englishGermanTranslator.downloadModelIfNeeded(conditions).await()
         val result = englishGermanTranslator.translate(text).await()
         if (!result.isNullOrBlank())
-            cacheTranslation[key] = result
+            cache(key, result)
         return result
     }
 
@@ -46,25 +41,35 @@ class FirebaseMLKitTranslate(
         return "Google"
     }
 
-    override fun isTranslationInCached(
-        text: String,
-        sourceLanguage: String,
-        targeting: String
-    ): Boolean {
-        val key = "$sourceLanguage:$targeting:$text"
-        return cacheTranslation.containsKey(key)
+    override fun cacheKey(text: String, targeting: String): String {
+        return "$targeting:${text.hashCode()}"
     }
 
-    override suspend fun detect(text: String, targeting: String): PhraseDetected? {
-        if (cacheDetected.containsKey(text))
-            return cacheDetected[text]!!.copy(fromCache = true)
+    override fun clearCache() {
+        phraseCache.evictAll()
+    }
+
+    override fun isTranslationInCached(
+        text: String,
+        targeting: String
+    ): Boolean {
+        return !phraseCache[cacheKey(text, targeting)]?.translation.isNullOrBlank()
+    }
+
+    override suspend fun detect(
+        text: String,
+        targeting: String
+    ): PhraseDetected? {
+        val key = cacheKey(text, targeting)
+        if (phraseCache[key]?.detectedSource != null)
+            return phraseCache[key]?.detectedSource?.copy(fromCache = true)
         val language =
             FirebaseNaturalLanguage.getInstance().languageIdentification.identifyLanguage(text)
                 .await()
         val languageName =
             Languages.values().find { it.code == language.toLowerCase() }?.name ?: language
-        val result = PhraseDetected(text, language, languageName, name())
-        cacheDetected[text] = result
-        return result
+        return PhraseDetected(text, language, languageName, name()).also {
+            cache(key, detectedPhrase = it)
+        }
     }
 }

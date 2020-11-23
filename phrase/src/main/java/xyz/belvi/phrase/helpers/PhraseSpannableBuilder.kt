@@ -121,7 +121,8 @@ abstract class PhraseSpannableBuilder constructor(
             if (options.excludeSources.indexOfFirst {
                     it.toLowerCase() == (phraseDetected?.languageCode ?: "").toLowerCase()
                 } < 0) {
-
+                onContentChanged(this@PhraseSpannableBuilder)
+                return@launch
             }
             /* with the detected sourceLanguage, check to see if there's any rule that check against translating from the source language at all
              */
@@ -156,7 +157,8 @@ abstract class PhraseSpannableBuilder constructor(
                     (options.sourcePreferredTranslation.sourceTranslateRule.filter { it.sourceLanguageCode.toLowerCase() == detected.languageCode.toLowerCase() }
                         .let { sourceOptions ->
                             sourceOptions.find { sourceTranslationOption ->
-                                sourceTranslationOption.targetLanguageCode.map { it.toLowerCase() }.intersect(options.targetLanguageCode.map { it.toLowerCase() })
+                                sourceTranslationOption.targetLanguageCode.map { it.toLowerCase() }
+                                    .intersect(options.targetLanguageCode.map { it.toLowerCase() })
                                     .isNotEmpty()
                                         || sourceTranslationOption.targetLanguageCode.contains(
                                     "*"

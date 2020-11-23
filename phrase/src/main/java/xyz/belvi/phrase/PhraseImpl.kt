@@ -156,29 +156,18 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         // run translation with the translationMediums found. fallback implementation is based on this list.
         return translationMediums?.let {
             var translationMedium = translationMediums.first()
-            val inCache = translationMedium.isTranslationInCached(
-                text,
-                detected?.languageCode ?: "",
-                phraseOption.targetLanguageCode.first()
-            )
-            var translate = translationMedium.translate(
-                text,
-                detected?.languageCode ?: "",
-                phraseOption.targetLanguageCode.first()
-            )
-
+            var translate = translationMedium.translate(text, phraseOption.targetLanguageCode.first())
             val translationIterator = translationMediums.iterator()
             while (translate.isNullOrBlank() && translationIterator.hasNext()) {
                 val medium = translationIterator.next()
                 if (medium == translationMedium)
                     continue
-                translate = medium.translate(
-                    text,
-                    detected?.languageCode ?: "",
-                    phraseOption.targetLanguageCode.first()
-                )
+
+                translate = medium.translate(text, phraseOption.targetLanguageCode.first())
                 translationMedium = medium
             }
+            val inCache =
+                translationMedium.isTranslationInCached(text, phraseOption.targetLanguageCode.first())
             PhraseTranslation(translate, translationMedium.name(), detected, inCache)
         }
     }

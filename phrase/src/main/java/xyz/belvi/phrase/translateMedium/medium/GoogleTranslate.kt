@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import xyz.belvi.phrase.options.PhraseDetected
+import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.translateMedium.Languages
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 import java.io.InputStream
@@ -30,20 +31,18 @@ class GoogleTranslate(
 
     override suspend fun translate(
         text: String,
-        sourceLanguage: String,
         targeting: String
     ): String {
-        val key = "$sourceLanguage:$targeting:$text"
-        if (cacheTranslation.containsKey(key))
-            return cacheTranslation[key]!!
+        val key = cacheKey(text, targeting)
+        if (isTranslationInCached(key, targeting))
+            return phraseCache[key]?.translation!!
         val result = translate.await().translate(
             text,
-            Translate.TranslateOption.sourceLanguage(sourceLanguage),
             Translate.TranslateOption.targetLanguage(targeting),
             Translate.TranslateOption.format("text")
 
         ).translatedText
-        cacheTranslation[key] = result
+        cache(key, result)
         return result
 
     }
@@ -52,30 +51,43 @@ class GoogleTranslate(
         return "Google"
     }
 
-    override fun isTranslationInCached(
-        text: String,
-        sourceLanguage: String,
-        targeting: String
-    ): Boolean {
-        val key = "$sourceLanguage:$targeting:$text"
-        return cacheTranslation.containsKey(key)
+    override fun cacheKey(text: String, targeting: String): String {
+        return "$targeting:${text.hashCode()}"
     }
 
-    override suspend fun detect(text: String, targeting: String): PhraseDetected? {
-        if (cacheDetected.containsKey(text))
-            return cacheDetected[text]!!.copy(fromCache = true)
+
+    override fun clearCache() {
+        phraseCache.evictAll()
+    }
+
+    override fun isTranslationInCached(
+        text: String,
+        targeting: String
+    ): Boolean {
+        return !phraseCache[cacheKey(text, targeting)]?.translation.isNullOrBlank()
+    }
+
+    override suspend fun detect(
+        text: String,
+        targeting: String
+    ): PhraseDetected? {
+        val key = cacheKey(text, targeting)
+        if (phraseCache[key]?.detectedSource != null)
+            return phraseCache[key]?.detectedSource?.copy(fromCache = true)
         val result = translate.await().translate(
             text,
             Translate.TranslateOption.targetLanguage(targeting.toLowerCase()),
             Translate.TranslateOption.format("text")
         )
-        val key = "${result.sourceLanguage}:$targeting:$text"
-        if (!result.translatedText.isNullOrBlank())
-            cacheTranslation[key] = result.translatedText
         val languageName =
             Languages.values().find { it.code == result.sourceLanguage.toLowerCase() }?.name
                 ?: result.sourceLanguage
-        return PhraseDetected(text, result.sourceLanguage, languageName, name())
+
+        return PhraseDetected(text, result.sourceLanguage, languageName, name()).also {
+            if (!result.translatedText.isNullOrBlank()) {
+                cache(key, result.translatedText, it)
+            }
+        }
     }
 
 }

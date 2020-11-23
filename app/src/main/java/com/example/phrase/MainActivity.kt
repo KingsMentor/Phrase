@@ -31,10 +31,7 @@ class MainActivity : AppCompatActivity() {
         // setting up phrase
         val pOptions = options {
             targeting = listOf(target.text.toString())
-            preferredSources = listOf("es", "yo")
-            sourceTranslation = listOf(SourceTranslationRule("es", listOf("en"), listOf(DeepL("b1957aec-bc22-14ca-bc0a-1a0755b3b364"))))
             behaviour = behaviour {
-                flags = setOf(Behaviour.BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY)
                 signatureTypeface = font
                 signatureColor =
                     ContextCompat.getColor(this@MainActivity, R.color.white)
@@ -47,15 +44,14 @@ class MainActivity : AppCompatActivity() {
                 "Translated from ${phraseTranslation.detectedSource?.languageName} by "
             }
         }
-        val phrase = phrase {
-            mediums = listOf(GoogleTranslate(this@MainActivity, R.raw.credential))
+        phrase {
+            mediums = listOf(DeepL("b8648ff6-a380-e388-ef66-c12b71c5f67b"))
             options = pOptions
         }
 
         phraseSpannableBuilder =
             object : PhraseSpannableBuilder("", null) {
                 override fun onContentChanged(content: PhraseSpannableBuilder) {
-                    super.onContentChanged(content)
                     translated.text = content
                 }
             }

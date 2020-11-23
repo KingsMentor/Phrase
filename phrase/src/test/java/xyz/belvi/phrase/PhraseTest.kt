@@ -60,7 +60,7 @@ class PhraseTest {
         runBlocking {
             Mockito.`when`(googleTranslate.detect(originalText, targetLanguage))
                 .thenReturn(detected)
-            Mockito.`when`(googleTranslate.translate(originalText, languageCode, "fr"))
+            Mockito.`when`(googleTranslate.translate(originalText, "fr"))
                 .thenReturn(translated)
             val result = phrase.translate(originalText)
             Assert.assertEquals(result?.translation ?: "", translated)
@@ -166,9 +166,9 @@ class PhraseTest {
         runBlocking {
             Mockito.`when`(googleTranslate.detect(originalText, targetLanguage))
                 .thenReturn(detected)
-            Mockito.`when`(googleTranslate.translate(originalText, languageCode, "fr"))
+            Mockito.`when`(googleTranslate.translate(originalText, "fr"))
                 .thenReturn(translated)
-            Mockito.`when`(googleTranslate.translate(originalText, languageCode, "en"))
+            Mockito.`when`(googleTranslate.translate(originalText, "en"))
                 .thenReturn(originalText)
             val result = phrase.translate(originalText)
             Assert.assertEquals(result?.translation ?: "", originalText)
@@ -178,7 +178,7 @@ class PhraseTest {
     @Test
     fun `when medium defined in sourceTranslation`() {
         phraseOptions.preferredDetection = listOf(googleTranslate)
-        phraseOptions.preferredSources = listOf("en","fr")
+        phraseOptions.preferredSources = listOf("en", "fr")
         phraseOptions.sourcePreferredTranslation = SourceTranslationPreference(
             listOf(
                 SourceTranslationRule("en", listOf("fr"), listOf(deepL))
@@ -195,12 +195,12 @@ class PhraseTest {
         runBlocking {
             Mockito.`when`(deepL.detect(originalText, targetLanguage))
                 .thenReturn(detected)
-            Mockito.`when`(deepL.translate(originalText, languageCode, "fr"))
+            Mockito.`when`(deepL.translate(originalText, "fr"))
                 .thenReturn(translated)
             val result = phrase.translate(originalText)
             Assert.assertEquals(result?.translation ?: "", translated)
             // instead of using googleTranslate to run translation, deepL is used because it has been specified to translate en text to fr.
-            Assert.assertEquals(result?.detectedSource ?.detectionMediumName, deepL.name())
+            Assert.assertEquals(result?.detectedSource?.detectionMediumName, deepL.name())
         }
     }
 }

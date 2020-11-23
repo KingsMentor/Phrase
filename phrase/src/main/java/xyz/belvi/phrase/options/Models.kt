@@ -17,8 +17,8 @@ import xyz.belvi.phrase.options.Behaviour.Companion.BEHAVIOR_TRANSLATE_PREFERRED
  */
 data class PhraseDetected(
     val text: String,
-    val languageCode: String,
-    val languageName: String,
+    var languageCode: String,
+    var languageName: String,
     val detectionMediumName: String?,
     val fromCache: Boolean = false
 )
