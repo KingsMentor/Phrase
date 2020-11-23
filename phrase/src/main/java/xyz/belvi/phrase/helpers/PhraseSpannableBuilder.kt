@@ -3,6 +3,7 @@ package xyz.belvi.phrase.helpers
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Build
+import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.style.ClickableSpan
@@ -74,6 +75,85 @@ abstract class PhraseSpannableBuilder constructor(
 
     fun cancelPendingJobs() {
         scope.cancel()
+    }
+
+    fun performSpannableClickOn(view: View) {
+        onActionClick(actionStatus)
+        // if text is currently prompting user to translate
+        if (actionStatus == ActionStatus.SHOWING_WITH_TRANSLATE_ACTION) {
+            // notify listener of tranalation
+            onPhraseTranslating()
+            // translate text
+            scope.launch {
+                val options = options()
+                phraseTranslation =
+                    withContext(Dispatchers.IO) {
+                        Phrase.instance().translate(source.toString(), options)
+                    }
+                // build translated string
+                buildTranslatedPhraseSpan()
+                // notify listener of translation
+                onPhraseTranslated(phraseTranslation)
+            }
+
+        } else {
+            // resultActionLabel is clicked, show original state of text
+            buildTranslateActionSpan(source)
+        }
+        view.invalidate()
+    }
+
+    fun translateTextSpan(phraseDetected: PhraseDetected): SpannableString {
+        val options = options() ?: return SpannableString("")
+        return SpannableString(options.translateText.invoke(phraseDetected)).also {
+            options.behavioursOptions.actionLabelForegroundColor.let { color ->
+                setSpan(
+                    ForegroundColorSpan(color),
+                    0,
+                    length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+        }
+    }
+
+    fun translatedFromTextSpan(phraseTranslation: PhraseTranslation): SpannableString {
+        val options = options() ?: return SpannableString("")
+        val optionBehavior = options.behavioursOptions.behaviours
+        return SpannableString(options.translateFrom.invoke(phraseTranslation)).also {
+            options.behavioursOptions.actionLabelForegroundColor.let { color ->
+                setSpan(
+                    ForegroundColorSpan(color),
+                    0,
+                    length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            if (!optionBehavior.hideSignature()) {
+                val start = length
+                append("${phraseTranslation.translationMediumName}")
+                options.behavioursOptions.signatureTypeFace?.let { typeFace ->
+                    setSpan(
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) TypefaceSpan(
+                            typeFace
+                        ) else CustomTypefaceSpan(
+                            typeFace
+                        ),
+                        start,
+                        length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+                options.behavioursOptions.signatureColor.let { color ->
+                    setSpan(
+                        ForegroundColorSpan(color),
+                        start,
+                        length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            }
+        }
     }
 
     /**
@@ -194,30 +274,7 @@ abstract class PhraseSpannableBuilder constructor(
      */
     inner class SpannablePhraseClickableSpan : ClickableSpan() {
         override fun onClick(widget: View) {
-            onActionClick(actionStatus)
-            // if text is currently prompting user to translate
-            if (actionStatus == ActionStatus.SHOWING_WITH_TRANSLATE_ACTION) {
-                // notify listener of tranalation
-                onPhraseTranslating()
-                // translate text
-                scope.launch {
-                    val options = options()
-                    phraseTranslation =
-                        withContext(Dispatchers.IO) {
-                            Phrase.instance().translate(source.toString(), options)
-                        }
-                    // build translated string
-                    buildTranslatedPhraseSpan()
-                    // notify listener of translation
-                    onPhraseTranslated(phraseTranslation)
-                }
-
-            } else {
-                // resultActionLabel is clicked, show original state of text
-                buildTranslateActionSpan(source)
-            }
-            widget.invalidate()
-
+            performSpannableClickOn(widget)
         }
 
         override fun updateDrawState(ds: TextPaint) {

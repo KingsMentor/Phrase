@@ -72,7 +72,9 @@ data class BehaviourOptions internal constructor(
      * use BEHAVIOR_HIDE_CREDIT to hide this credit.
      * use BEHAVIOR_HIDE_TRANSLATE_PROMPT to hide prompt entire
      */
-    @ColorInt val signatureColor: Int = Color.BLACK
+    @ColorInt val signatureColor: Int = Color.BLACK,
+
+    @ColorInt val actionLabelForegroundColor: Int = Color.BLACK
 )
 
 /**

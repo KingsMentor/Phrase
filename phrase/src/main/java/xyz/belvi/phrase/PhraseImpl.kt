@@ -354,6 +354,11 @@ class PhraseImpl internal constructor() : PhraseUseCase {
          */
         @ColorInt
         var signatureColor: Int = Color.BLACK
+        /**
+         * foreground color for actionLabel . This is only applied for PhraseStringBuilder translateTextSpan() and translatedFromTextSpan() to style SpannableStrings returned
+         */
+        @ColorInt
+        var actionLabelForegroundColor: Int = Color.BLACK
 
         /**
          * set typeface for translationMedium name shown to user after translation. This is to give credit to the medium used for translation.
@@ -372,7 +377,8 @@ class PhraseImpl internal constructor() : PhraseUseCase {
             return BehaviourOptions(
                 Behaviour(flags),
                 signatureTypeface,
-                signatureColor
+                signatureColor,
+                actionLabelForegroundColor
             )
         }
     }

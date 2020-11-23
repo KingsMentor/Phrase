@@ -36,6 +36,9 @@ class MainActivity : AppCompatActivity() {
                 signatureTypeface = font
                 signatureColor =
                     ContextCompat.getColor(this@MainActivity, R.color.white)
+                actionLabelForegroundColor =
+                    ContextCompat.getColor(this@MainActivity, R.color.white)
+
             }
             actionLabel = { detected ->
                 "Translate"
