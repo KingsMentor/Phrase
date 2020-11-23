@@ -21,7 +21,7 @@ open class PhraseTranslateListenerAdapter constructor(
 
     }
 
-    override fun onContentChanged(content: PhraseSpannableBuilder) {
+    override fun onContentChanged(content: PhraseSpannableBuilder, actionStatus: ActionStatus) {
 
     }
 

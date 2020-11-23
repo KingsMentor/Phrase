@@ -40,6 +40,7 @@
             android:padding="8dp"
             android:text="En"
             android:textColor="@android:color/white"
+            android:textColorHint="#dadada"
             android:textSize="12sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

@@ -10,6 +10,7 @@ import com.google.firebase.FirebaseApp
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.belvi.phrase.Phrase
 import xyz.belvi.phrase.behaviour
+import xyz.belvi.phrase.helpers.ActionStatus
 import xyz.belvi.phrase.helpers.PhraseSpannableBuilder
 import xyz.belvi.phrase.options
 import xyz.belvi.phrase.options.Behaviour
@@ -45,13 +46,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
         phrase {
-            mediums = listOf(DeepL("b8648ff6-a380-e388-ef66-c12b71c5f67b"))
+            mediums = listOf(DeepL(""))
             options = pOptions
         }
 
         phraseSpannableBuilder =
             object : PhraseSpannableBuilder("", null) {
-                override fun onContentChanged(content: PhraseSpannableBuilder) {
+                override fun onContentChanged(
+                    content: PhraseSpannableBuilder,
+                    actionStatus: ActionStatus
+                ) {
                     translated.text = content
                 }
             }

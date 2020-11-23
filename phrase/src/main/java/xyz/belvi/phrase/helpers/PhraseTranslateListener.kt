@@ -27,5 +27,5 @@ interface PhraseTranslateListener {
      * fired when PhraseSpannableBuilder content has changed
      * @param content is the updated content
      */
-    fun onContentChanged(content: PhraseSpannableBuilder)
+    fun onContentChanged(content: PhraseSpannableBuilder,actionStatus: ActionStatus)
 }

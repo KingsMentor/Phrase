@@ -40,7 +40,10 @@ open class PhraseTextView(context: Context, attrs: AttributeSet) :
                     phraseTextViewListener?.onActionClick(actionStatus)
                 }
 
-                override fun onContentChanged(content: PhraseSpannableBuilder) {
+                override fun onContentChanged(
+                    content: PhraseSpannableBuilder,
+                    actionStatus: ActionStatus
+                ) {
                     text = content
                 }
             }

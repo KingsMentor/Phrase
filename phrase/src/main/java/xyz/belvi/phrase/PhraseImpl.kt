@@ -5,6 +5,9 @@ import android.graphics.Typeface
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import xyz.belvi.phrase.helpers.ActionStatus
 import java.util.Locale
 import xyz.belvi.phrase.helpers.PhraseTextWatcher
 import xyz.belvi.phrase.helpers.PhraseTranslateListener
@@ -16,6 +19,7 @@ import xyz.belvi.phrase.options.PhraseOptions
 import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.options.SourceTranslationRule
 import xyz.belvi.phrase.options.SourceTranslationPreference
+import xyz.belvi.phrase.translateMedium.Languages
 import xyz.belvi.phrase.translateMedium.TranslationMedium
 
 class PhraseImpl internal constructor() : PhraseUseCase {
@@ -156,7 +160,8 @@ class PhraseImpl internal constructor() : PhraseUseCase {
         // run translation with the translationMediums found. fallback implementation is based on this list.
         return translationMediums?.let {
             var translationMedium = translationMediums.first()
-            var translate = translationMedium.translate(text, phraseOption.targetLanguageCode.first())
+            var translate =
+                translationMedium.translate(text, phraseOption.targetLanguageCode.first())
             val translationIterator = translationMediums.iterator()
             while (translate.isNullOrBlank() && translationIterator.hasNext()) {
                 val medium = translationIterator.next()
@@ -167,13 +172,108 @@ class PhraseImpl internal constructor() : PhraseUseCase {
                 translationMedium = medium
             }
             val inCache =
-                translationMedium.isTranslationInCached(text, phraseOption.targetLanguageCode.first())
+                translationMedium.isTranslationInCached(
+                    text,
+                    phraseOption.targetLanguageCode.first()
+                )
             PhraseTranslation(translate, translationMedium.name(), detected, inCache)
         }
     }
 
     override fun updateOptions(options: PhraseOptions) {
         this.phraseOptions = options
+    }
+
+    override suspend fun eligibleForTranslation(
+        source: String,
+        sourceLanguage: String?,
+        phraseOptions: PhraseOptions?
+    ): PhraseDetected? {
+        val options =
+            (phraseOptions ?: this.phraseOptions) ?: return null
+        val behaviors = options.behavioursOptions.behaviours
+
+        /*
+         * detected source language. is sourceLanguage is provided, we want to skip language detection.
+         * if sourceLanguage is not provided and BEHAVIOR_IGNORE_DETECTION is set, phraseDetected is null since we want to skip language detection.
+         * Otherwise,  Phrase.instance().detectLanguage(source.toString()) is executed.
+         */
+        val phraseDetected =
+            sourceLanguage?.let { _sourceLanguage ->
+                val languageName =
+                    Languages.values().find { it.code == _sourceLanguage.toLowerCase() }?.name
+                        ?: _sourceLanguage.toLowerCase()
+                PhraseDetected(
+                    source,
+                    _sourceLanguage.toLowerCase(),
+                    languageName,
+                    null,
+                    true
+                )
+            } ?: if (behaviors.ignoreDetection() || source.isEmpty())
+                null
+            else {
+                withContext(Dispatchers.IO) {
+                    Phrase.instance().detectLanguage(source.toString())
+                }
+            }
+
+        if (options.excludeSources.indexOfFirst {
+                it.toLowerCase() == (phraseDetected?.languageCode ?: "").toLowerCase()
+            } > 0) {
+            return null
+        }
+        /* with the detected sourceLanguage, check to see if there's any rule that check against translating from the source language at all
+         */
+
+        phraseDetected?.let { detected ->
+            // halt this process if the sourceLanguage is part of the excluded list or it is same with the target language,
+            if ((options.targetLanguageCode.indexOfFirst {
+                    it.toLowerCase() == (detected.languageCode).toLowerCase()
+                } >= 0) || options.excludeSources.indexOfFirst {
+                    it.equals(
+                        detected.languageCode,
+                        true
+                    )
+                } > 0
+            ) {
+                return null
+            }
+
+            // if options supports translation of only preferred sources, check if sourceLanguage is in preferred list.
+            var allowTranslation =
+                if (options.behavioursOptions.behaviours.translatePreferredSourceOnly()) {
+                    options.preferredSources.indexOfFirst {
+                        it.equals(detected.languageCode, true)
+                    } >= 0
+                } else {
+                    true
+                }
+            // check if source language is defined in languageTranslation preference
+            allowTranslation =
+                (options.sourcePreferredTranslation.sourceTranslateRule.filter { it.sourceLanguageCode.toLowerCase() == detected.languageCode.toLowerCase() }
+                    .let { sourceOptions ->
+                        sourceOptions.find { sourceTranslationOption ->
+                            sourceTranslationOption.targetLanguageCode.map { it.toLowerCase() }
+                                .intersect(options.targetLanguageCode.map { it.toLowerCase() })
+                                .isNotEmpty()
+                                    || sourceTranslationOption.targetLanguageCode.contains(
+                                "*"
+                            )
+                        }?.let { true }
+                            ?: !options.behavioursOptions.behaviours.translatePreferredSourceOnly()
+                    }) || allowTranslation
+            // if source language is neither in sourcePreferredTranslation nor preferredSources and BEHAVIOR_TRANSLATE_PREFERRED_OPTION_ONLY is set, actionLable for translation shouldn't be appended to this string.
+            if (!allowTranslation) {
+                return null
+            }
+        }
+        // another check to ensure nullable phraseDetected is only allowed for BEHAVIOR_IGNORE_DETECTION
+        if (phraseDetected == null && !behaviors.ignoreDetection()) {
+            return null
+        }
+
+        return phraseDetected
     }
 
     /**
