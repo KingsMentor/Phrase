@@ -13,11 +13,9 @@ import xyz.belvi.phrase.behaviour
 import xyz.belvi.phrase.helpers.ActionStatus
 import xyz.belvi.phrase.helpers.PhraseSpannableBuilder
 import xyz.belvi.phrase.options
-import xyz.belvi.phrase.options.Behaviour
-import xyz.belvi.phrase.options.SourceTranslationRule
+import xyz.belvi.phrase.options.PhraseTranslation
 import xyz.belvi.phrase.phrase
 import xyz.belvi.phrase.translateMedium.medium.DeepL
-import xyz.belvi.phrase.translateMedium.medium.GoogleTranslate
 
 
 class MainActivity : AppCompatActivity() {
@@ -57,7 +55,8 @@ class MainActivity : AppCompatActivity() {
             object : PhraseSpannableBuilder("", null) {
                 override fun onContentChanged(
                     content: PhraseSpannableBuilder,
-                    actionStatus: ActionStatus
+                    actionStatus: ActionStatus,
+                    phraseTranslation: PhraseTranslation?
                 ) {
                     translated.text = content
                 }

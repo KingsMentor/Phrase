@@ -189,10 +189,13 @@ abstract class PhraseSpannableBuilder constructor(
 
                     }
                     actionStatus = ActionStatus.SHOWING_WITH_TRANSLATE_ACTION
-                    onContentChanged(this@PhraseSpannableBuilder, actionStatus)
+                    onContentChanged(
+                        this@PhraseSpannableBuilder, actionStatus,
+                        PhraseTranslation("", "", it)
+                    )
                 } ?: run {
                 actionStatus = ActionStatus.SHOWING_SOURCE
-                onContentChanged(this@PhraseSpannableBuilder, actionStatus)
+                onContentChanged(this@PhraseSpannableBuilder, actionStatus, null)
             }
 
         }
@@ -253,7 +256,7 @@ abstract class PhraseSpannableBuilder constructor(
             appendln("\n")
             append(phraseTranslation.translation)
             actionStatus = ActionStatus.SHOWING_TRANSLATED
-            onContentChanged(this@PhraseSpannableBuilder, actionStatus)
+            onContentChanged(this@PhraseSpannableBuilder, actionStatus, phraseTranslation)
         } ?: kotlin.run {
             buildTranslateActionSpan(source)
         }

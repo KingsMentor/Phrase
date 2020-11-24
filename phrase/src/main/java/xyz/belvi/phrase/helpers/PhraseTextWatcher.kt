@@ -46,9 +46,10 @@ open class PhraseTextWatcher(
 
                 override fun onContentChanged(
                     content: PhraseSpannableBuilder,
-                    actionStatus: ActionStatus
+                    actionStatus: ActionStatus,
+                    phraseTranslation: PhraseTranslation?
                 ) {
-                    phraseTranslateListener?.onContentChanged(content,actionStatus)
+                    phraseTranslateListener?.onContentChanged(content,actionStatus,phraseTranslation)
                     updateEditable(content)
                 }
             }
