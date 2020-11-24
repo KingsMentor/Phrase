@@ -103,7 +103,7 @@ abstract class PhraseSpannableBuilder constructor(
         view.invalidate()
     }
 
-    fun translateTextSpan(phraseDetected: PhraseDetected): SpannableString {
+    fun translateTextSpan(phraseDetected: PhraseDetected?): SpannableString {
         val options = options() ?: return SpannableString("")
         return SpannableString(options.translateText.invoke(phraseDetected)).also {
             options.behavioursOptions.actionLabelForegroundColor.let { color ->
