@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Build
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.style.ClickableSpan
@@ -103,9 +104,9 @@ abstract class PhraseSpannableBuilder constructor(
         view.invalidate()
     }
 
-    fun translateTextSpan(phraseDetected: PhraseDetected?): SpannableString {
-        val options = options() ?: return SpannableString("")
-        return SpannableString(options.translateText.invoke(phraseDetected)).also {
+    fun translateTextSpan(phraseDetected: PhraseDetected?): SpannableStringBuilder {
+        val options = options() ?: return SpannableStringBuilder("")
+        return SpannableStringBuilder(options.translateText.invoke(phraseDetected)).apply {
             options.behavioursOptions.actionLabelForegroundColor.let { color ->
                 setSpan(
                     ForegroundColorSpan(color),
@@ -117,12 +118,12 @@ abstract class PhraseSpannableBuilder constructor(
         }
     }
 
-    fun translatedFromTextSpan(phraseTranslation: PhraseTranslation): SpannableString {
-        val options = options() ?: return SpannableString("")
+    fun translatedFromTextSpan(phraseTranslation: PhraseTranslation): SpannableStringBuilder {
+        val options = options() ?: return SpannableStringBuilder("")
         val optionBehavior = options.behavioursOptions.behaviours
-        return SpannableString(options.translateFrom.invoke(phraseTranslation)).also {
+        return SpannableStringBuilder(options.translateFrom.invoke(phraseTranslation)).apply {
             options.behavioursOptions.actionLabelForegroundColor.let { color ->
-                setSpan(
+                this.setSpan(
                     ForegroundColorSpan(color),
                     0,
                     length,

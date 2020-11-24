@@ -42,7 +42,8 @@ open class PhraseTextView(context: Context, attrs: AttributeSet) :
 
                 override fun onContentChanged(
                     content: PhraseSpannableBuilder,
-                    actionStatus: ActionStatus
+                    actionStatus: ActionStatus,
+                    phraseTranslation: PhraseTranslation?
                 ) {
                     text = content
                 }
